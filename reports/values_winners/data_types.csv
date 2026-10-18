@@ -1,0 +1,7 @@
+column,category,type,nature,csv_type,unique_values,examples
+Fondi_limit,Numeric,Ratio,Continuous,text,102064,"741,600.00 | 208,330.00 | 25,000,000.00"
+Vlera_e_fituesit,Numeric,Ratio,Continuous,text,70706,"390,000.00 | 185,000.00 | 29,649,600.00"
+Vlera_e_fituesit_ne_lidhjen_e_kontrates,Numeric,Ratio,Continuous,text,37018,"29,649,600.00 | 2,252,232.00 | 1,109,831.58"
+Lidhja_e_kontrates_me_TVSH,Categorical,Binary (Po/Jo),Discrete,text,2,Jo | Po
+Fituesi,Categorical,Nominal,Discrete,text,8269,KREATX | ALTEC SHPK | PORSCHE ALBANIA SH.P.K
+NIPT_i_fituesit,Categorical,Nominal (identifier),Discrete,text,8305,L12121023B | K57923807W | K51914014P
