@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Raw data files - large CSV files shared via Google Drive, not stored in repo
+data/raw/
