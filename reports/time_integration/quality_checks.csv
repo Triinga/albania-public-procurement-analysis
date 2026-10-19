@@ -1,0 +1,18 @@
+dimension,column,check,rows,base,pct_of_base
+Completeness,Data_e_publikimit,Missing value,0,277764,0.0
+Completeness,Data_e_hapjes,Missing value,169,277764,0.06
+Completeness,Data_e_mbylljes,Missing value,1092,277764,0.39
+Completeness,Numri_i_references,Missing value,0,277764,0.0
+Format,Data_e_publikimit,Invalid date format (not DD.MM.YYYY),0,277764,0.0
+Format,Data_e_hapjes,Invalid date format (not DD.MM.YYYY),0,277595,0.0
+Format,Data_e_mbylljes,Invalid date format (not DD.MM.YYYY),0,276672,0.0
+Format,Data_e_publikimit,Extra whitespace,0,277764,0.0
+Format,Data_e_hapjes,Extra whitespace,0,277595,0.0
+Format,Data_e_mbylljes,Extra whitespace,0,276672,0.0
+Accuracy,Data_e_hapjes,Opening date before publication date,7170,277595,2.58
+Accuracy,Data_e_mbylljes,Closing date before opening date,5,276672,0.0
+Accuracy,Data_e_mbylljes,Closing date before publication date,245,276672,0.09
+Accuracy,Data_e_publikimit,Publication date in the future,0,277764,0.0
+Accuracy,Data_e_hapjes,Opening date in the future,0,277595,0.0
+Accuracy,Data_e_mbylljes,Closing date in the far future (> 2030),1,276672,0.0
+Accuracy,Data_e_mbylljes,Same day opening and closing,16037,276672,5.8
