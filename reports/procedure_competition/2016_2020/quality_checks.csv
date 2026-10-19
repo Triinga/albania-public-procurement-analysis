@@ -1,0 +1,30 @@
+dimension,column,check,rows,base,pct_of_base
+Completeness,Autoriteti_kontraktues,Missing or blank value,0,151007,0.0
+Completeness,Objekti_i_prokurimit,Missing or blank value,3,151007,0.0
+Completeness,Lloji_i_procedures,Missing or blank value,0,151007,0.0
+Completeness,Tipi_i_kontrates,Missing or blank value,0,151007,0.0
+Completeness,Lloji_i_marreveshjes_kuader,Missing or blank value,142824,151007,94.58
+Completeness,Anulluar,Missing or blank value,0,151007,0.0
+Completeness,Arsyeja_e_anullimit,Missing or blank value,108652,151007,71.95
+Completeness,Pezulluar,Missing or blank value,0,151007,0.0
+Completeness,Numri_i_ofertave_te_dorezuara,Missing or blank value,0,151007,0.0
+Completeness,Numri_i_ofertave_te_kualifikuara,Missing or blank value,0,151007,0.0
+Completeness,Kodet_CPV,Missing or blank value,59095,151007,39.13
+Uniqueness,Procedure/competition fields,Rows identical across these 11 fields,2396,151007,1.59
+Format,Autoriteti_kontraktues,Leading/trailing or repeated whitespace,5677,151007,3.76
+Format,Objekti_i_prokurimit,Leading/trailing or repeated whitespace,25373,151004,16.8
+Format,Lloji_i_procedures,Leading/trailing or repeated whitespace,0,151007,0.0
+Format,Tipi_i_kontrates,Leading/trailing or repeated whitespace,0,151007,0.0
+Format,Lloji_i_marreveshjes_kuader,Leading/trailing or repeated whitespace,0,8183,0.0
+Format,Arsyeja_e_anullimit,Leading/trailing or repeated whitespace,6850,42355,16.17
+Format,Kodet_CPV,Leading/trailing or repeated whitespace,91912,91912,100.0
+Format,Anulluar,Value outside Po/Jo vocabulary,0,151007,0.0
+Format,Pezulluar,Value outside Po/Jo vocabulary,0,151007,0.0
+Format,Numri_i_ofertave_te_dorezuara,Non-numeric value,0,151007,0.0
+Accuracy,Numri_i_ofertave_te_dorezuara,Negative offer count,0,151007,0.0
+Format,Numri_i_ofertave_te_kualifikuara,Non-numeric value,0,151007,0.0
+Accuracy,Numri_i_ofertave_te_kualifikuara,Negative offer count,0,151007,0.0
+Consistency,Numri_i_ofertave_te_kualifikuara,Qualified offers exceed submitted offers,0,151007,0.0
+Consistency,Arsyeja_e_anullimit,Cancellation reason present when procedure is not marked cancelled,0,42355,0.0
+Format,Kodet_CPV,Non-empty cell contains no 8-digit CPV code,0,91912,0.0
+Format,Kodet_CPV,More than one CPV code in cell,22088,91912,24.03

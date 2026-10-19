@@ -221,3 +221,5 @@ __marimo__/
 
 # Raw data files - large CSV files shared via Google Drive, not stored in repo
 data/raw/
+# Generated full-size prepared extract; share outside Git with the group.
+/reports/procedure_competition/*/procedure_competition_clean.csv

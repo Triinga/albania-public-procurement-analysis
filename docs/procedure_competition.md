@@ -1,0 +1,40 @@
+# Procedura dhe konkurrenca
+
+Analiza përdor eksportet e APP-së për **2016–2025** (277,764 procedura), sipas scope-it të planit të grupit.
+
+Kodi: [`src/procedure_competition/prepare.py`](../src/procedure_competition/prepare.py) · Raportet: [`reports/procedure_competition/`](../reports/procedure_competition/)
+
+Ekzekutimi nga rrënja e repository-t; mund të zgjedhësh intervalin e viteve:
+
+```powershell
+python -m src.procedure_competition.prepare "C:\rruga\te\CSV-te" 2016 2020
+python -m src.procedure_competition.prepare "C:\rruga\te\CSV-te" 2021 2025
+```
+
+Skripti pret një CSV për secilin vit të intervalit. Nëse gjenden disa eksporte për një vit, përparësi ka eksporti `Gjeneruar_me_19102026`. Të dhënat e papërpunuara lexohen si tekst; skedarët burimorë nuk ndryshohen. Rezultatet ruhen veçmas në nënfolder sipas intervalit, p.sh. `reports/procedure_competition/2016_2020/`. Dataset-i i pastruar ka po aq rreshta sa hyrja.
+
+## Atributet dhe trajtimi
+
+| Atributet                                                               | Tipi / trajtimi                                                                                                                                                  |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Autoriteti_kontraktues`                                                | Kategorik nominal; hiqen hapësirat e tepërta, mungesat ruhen si bosh.                                                                                            |
+| `Objekti_i_prokurimit`, `Arsyeja_e_anullimit`                           | Tekst; normalizohen hapësirat, mungesat nuk plotësohen me tekst të hamendësuar.                                                                                  |
+| `Lloji_i_procedures`, `Tipi_i_kontrates`, `Lloji_i_marreveshjes_kuader` | Kategorik nominal; pastrohen hapësirat, vlerat bosh mbeten mungesa.                                                                                              |
+| `Anulluar`, `Pezulluar`                                                 | `Po`/`Jo` kthehen në boolean `True`/`False`; vlerat e tjera ose bosh bëhen missing dhe numërohen te kontrolli i formatit.                                        |
+| `Numri_i_ofertave_te_dorezuara`, `Numri_i_ofertave_te_kualifikuara`     | Numra të plotë; vlerat jo numerike bëhen missing. Asnjë rresht nuk hiqet për numër negativ ose mospërputhje, vetëm raportohet.                                   |
+| `Kodet_CPV`                                                             | Teksti burimor ruhet; nxirren kodet 8-shifrore në rendin e paraqitjes. Shtohen numri i kodeve, kodi i parë dhe dy shifrat e para të kodit të parë si ndarje CPV. |
+
+Nuk ishte dhënë tabelë/reference e veçantë CPV. Prandaj integrimi këtu nxjerr kodet dhe përshkrimin e tyre nga qeliza e APP-së; nuk bën lookup të jashtëm të përshkrimeve zyrtare.
+
+Vetitë e krijuara janë `cpv_count`, `primary_cpv_code`, `primary_cpv_division`, `offers_missing`, `no_submitted_offers`, `qualified_offer_share` dhe `has_cancellation_reason`. Pjesëtimi i ofertave të kualifikuara me ofertat e dorëzuara lihet missing kur numri i dorëzuar është zero ose mungon.
+
+## Raportet dhe rezultatet
+
+- `data_types.csv`: tipi konceptual, tipi në CSV, numri i vlerave unike dhe shembujt.
+- `quality_checks.csv`: kompletësia, formati, konsistenca dhe kontrollet e vlefshmërisë para pastrimit.
+- `category_profile.csv`: frekuencat për llojin e procedurës/kontratës, marrëveshjen kuadër dhe statuset.
+- `yearly_row_counts.csv`: numri i rreshtave sipas vitit.
+- `preparation_summary.csv`: përmbledhja e përgatitjes dhe ruajtjes së rreshtave.
+- `procedure_competition_clean.csv`: kolonat e pastruara dhe veçoritë e reja për integrim në hapin e pipeline-it final.
+
+Në ekzekutimin me eksportet e 19.10.2026 u lexuan 277,764 procedura dhe u ruajtën të gjitha. U gjetën 216,076 procedura me së paku një kod CPV; 61,968 qeliza kishin më shumë se një kod. Marrëveshja kuadër mungon në 258,340 raste (93.0%), ndaj boshllëqet mbeten missing dhe nuk imputohen. Këto përmbledhje janë në raportet CSV; numrat rifreskohen kur skripti ekzekutohet me eksporte të reja.
