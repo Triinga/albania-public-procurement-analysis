@@ -1,0 +1,4 @@
+step,unique_names
+Raw names,8269
+After trimming whitespace,7438
+"After normalizing (upper case, no punctuation)",7422

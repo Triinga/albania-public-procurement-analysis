@@ -1,0 +1,30 @@
+dimension,column,check,rows,base,pct_of_base
+Uniqueness,All columns,Exact duplicate row (all 21 columns),0,277764,0.0
+Uniqueness,Numri_i_references,Reference number used by more than one procedure,14,277764,0.01
+Uniqueness,Fituesi,"Same reference, different winner",10,14,71.43
+Completeness,Fondi_limit,Missing value,25564,277764,9.2
+Completeness,Vlera_e_fituesit,Missing value,57382,277764,20.66
+Completeness,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Missing value,226259,277764,81.46
+Completeness,Lidhja_e_kontrates_me_TVSH,Missing value,0,277764,0.0
+Completeness,Fituesi,Missing value,53894,277764,19.4
+Completeness,NIPT_i_fituesit,Missing value,53880,277764,19.4
+Format,Fondi_limit,"Amount not in APP format 1,234.56",0,252200,0.0
+Format,Vlera_e_fituesit,"Amount not in APP format 1,234.56",0,220382,0.0
+Format,Vlera_e_fituesit_ne_lidhjen_e_kontrates,"Amount not in APP format 1,234.56",0,51505,0.0
+Format,NIPT_i_fituesit,Extra whitespace or newlines,7946,223884,3.55
+Format,Fituesi,Extra whitespace or newlines,21523,223870,9.61
+Format,NIPT_i_fituesit,Several NIPTs in one cell (joint winners),169,223884,0.08
+Format,Fituesi,Several winners in one cell (joint winners),169,223870,0.08
+Format,NIPT_i_fituesit,Single NIPT not in Albanian format (after trimming),244,223715,0.11
+Accuracy,Fondi_limit,Value is 0,13329,252200,5.29
+Accuracy,Fondi_limit,Value between 0 and 1 lek,3394,252200,1.35
+Accuracy,Vlera_e_fituesit,Value is 0,37,220382,0.02
+Accuracy,Vlera_e_fituesit,Value between 0 and 1 lek,19,220382,0.01
+Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value is 0,112,51505,0.22
+Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value between 0 and 1 lek,6,51505,0.01
+Accuracy,Vlera_e_fituesit,Winner value above fund limit,8571,205231,4.18
+Accuracy,Fondi_limit,Fund is 0 but a winner value exists,13234,13329,99.29
+Consistency,Fituesi,Cancelled procedure with a winner,27707,73423,37.74
+Consistency,Vlera_e_fituesit,Cancelled procedure with a winner value,27618,73423,37.61
+Consistency,NIPT_i_fituesit,NIPT without winner name,14,223884,0.01
+Consistency,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Contract value differs from winner value,26749,51505,51.93
