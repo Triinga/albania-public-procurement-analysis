@@ -1,0 +1,12 @@
+column,category,type,nature,csv_type,unique_values,examples
+Autoriteti_kontraktues,Categorical,Nominal,Discrete,text,1630,Qendra Spitalore Universitare Nene Tereza Tirane | Drejtoria Rajonale e Autoritetit Kombetar te Ushqimit Shkoder | Muzeu Skenderbeu Kruje
+Objekti_i_prokurimit,Categorical,Text,Discrete,text,110628,"Transporti i materialit te bute, i klasifikuar si mbetje urbane, nga QSUT ne landfill | Loti  61: Furnizim Vendosje të Sondës së Zemres  (Kardiake) për EKO Prodhuesi GE Model VIVID 85 Nr. Inventari  20158 | Blerje dokumentacioni"
+Lloji_i_procedures,Categorical,Nominal,Discrete,text,11,Small Value | Open Local | Request for Proposals
+Tipi_i_kontrates,Categorical,Nominal,Discrete,text,3,Services | Supplies | Works
+Lloji_i_marreveshjes_kuader,Categorical,Nominal,Discrete,text,3,Marreveshje Kuader me disa Operatore Ekonomik | Marreveshje Kuader me nje Operator Ekonomik | Marreveshje Kuader me disa Operatore Ekonomike (e ri-hapur)
+Anulluar,Categorical,Binary (Po/Jo),Discrete,text,2,Po | Jo
+Arsyeja_e_anullimit,Categorical,Text,Discrete,text,19963,"Arsyeja e anullimit është për shkak të tërheqjes si dhe mos paraqitjes brenda afateve te operatorëve ekonomikë pjesëmarrës në këtë proçedurë prokurimi, të renditur deri në vendin e 5 (pestë) të klasifikimit. | për arsye se asnjë nga ofertat e paraqitura nuk përputhet me kriteret e përcaktuara në dokumentat e tenderit | asnjë nga ofertat e paraqitura nuk përputhet me kriteret e përcaktuara në dokumentet e tenderit dhe si pasoje procedura anullohet. "
+Pezulluar,Categorical,Binary (Po/Jo),Discrete,text,2,Jo | Po
+Numri_i_ofertave_te_dorezuara,Numeric,Count,Discrete,text,63,10 | 1 | 3
+Numri_i_ofertave_te_kualifikuara,Numeric,Count,Discrete,text,62,10 | 0 | 3
+Kodet_CPV,Categorical,Multi-valued nominal,Discrete,text,11064, 45442110-1 Lyerje ndërtesash |  33680000-0 Artikuj farmaceutikë |  30190000-7 Furnizime dhe pajisje të ndryshme zyre
