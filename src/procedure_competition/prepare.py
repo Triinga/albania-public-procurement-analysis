@@ -8,6 +8,7 @@ a year-range subfolder under reports/procedure_competition. Raw data is untouche
 """
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
@@ -19,6 +20,7 @@ from src.procedure_competition.columns import BINARY, COLUMNS, NUMERIC
 
 OUT_DIR = Path("reports/procedure_competition")
 CPV_PATTERN = re.compile(r"(?<!\d)(\d{8})(?:-(\d))?")
+EXPORT_DATE_PATTERN = re.compile(r"Gjeneruar_me_(\d{8})", re.IGNORECASE)
 
 
 def _is_blank(series):
@@ -29,6 +31,40 @@ def _cpv_codes(value):
     if pd.isna(value):
         return []
     return list(dict.fromkeys(match.group(1) for match in CPV_PATTERN.finditer(str(value))))
+
+
+def _export_date(path):
+    """Return the generation date encoded in an APP export filename."""
+    match = EXPORT_DATE_PATTERN.search(path.stem)
+    if not match:
+        return None
+    try:
+        return datetime.strptime(match.group(1), "%d%m%Y").date()
+    except ValueError:
+        return None
+
+
+def _select_year_file(folder, year):
+    """Select one yearly APP export, preferring the newest dated export."""
+    candidates = [p for p in folder.glob(FILE_PATTERN.format(year=year)) if "(" not in p.name]
+    if not candidates:
+        raise FileNotFoundError(f"No source file found for {year} in {folder}")
+    if len(candidates) == 1:
+        return candidates[0]
+
+    dated = [(_export_date(path), path) for path in candidates]
+    dated = [(date, path) for date, path in dated if date is not None]
+    if not dated:
+        raise FileNotFoundError(
+            f"Found {len(candidates)} source files for {year} in {folder}, but none has a generation date"
+        )
+    newest_date = max(date for date, _ in dated)
+    newest = [path for date, path in dated if date == newest_date]
+    if len(newest) != 1:
+        raise FileNotFoundError(
+            f"Expected one newest source file for {year} in {folder}; found {len(newest)} dated {newest_date}"
+        )
+    return newest[0]
 
 
 def quality_report(df):
@@ -128,15 +164,8 @@ def main():
     out_dir = OUT_DIR / f"{start_year}_{end_year}"
     parts = []
     for year in years:
-        candidates = [p for p in folder.glob(FILE_PATTERN.format(year=year)) if "(" not in p.name]
-        # Prefer the user's October 19 export if older downloads are also present.
-        current = [p for p in candidates if "Gjeneruar_me_19102026" in p.name]
-        selected = current if current else candidates
-        if len(selected) != 1:
-            raise FileNotFoundError(
-                f"Expected one source file for {year} (or one 19102026 export) in {folder}; found {len(selected)}"
-            )
-        part = pd.read_csv(selected[0], dtype=str, usecols=list(COLUMNS))
+        source_file = _select_year_file(folder, year)
+        part = pd.read_csv(source_file, dtype=str, usecols=list(COLUMNS))
         part["year"] = year
         parts.append(part)
     # Load every source field as text and append the source year, with no row sampling.

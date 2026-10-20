@@ -1,0 +1,7 @@
+metric,value
+source_years,2021-2025
+input_rows,126757
+output_rows,126757
+rows_removed,0
+rows_with_CPV_code,124164
+rows_with_multiple_CPV_codes,39880

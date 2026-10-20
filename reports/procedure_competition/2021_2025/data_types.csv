@@ -1,0 +1,15 @@
+column,category,type,nature,csv_type,unique_values,examples
+Autoriteti_kontraktues,Categorical,Nominal,Discrete,text,1495,Bashkia Shkoder | Reparti Ushtarak Nr.3001 Komanda e Forcave Ajrore Tirane | Instituti i Sigurimeve Shoqerore
+Objekti_i_prokurimit,Categorical,Text,Discrete,text,87742,"Kolaudim i punimeve per objektet: Rikualifikim urban blloqe banimi dhe rikonstruksion rrugë Qytet (2021) (Rruga ""Zhasin  Hakard"") | bileta per Trieste | Shpenzimet e sigurimit të mjeteve të transportit të ISSH-së"
+Lloji_i_procedures,Categorical,Nominal,Discrete,text,12,Small Value | Purchase Tickets | Open Simple
+Tipi_i_kontrates,Categorical,Nominal,Discrete,text,3,Services | Supplies | Works
+Lloji_i_marreveshjes_kuader,Categorical,Nominal,Discrete,text,3,Marreveshje Kuader me nje Operator Ekonomik | Marreveshje Kuader me disa Operatore Ekonomik | Marreveshje Kuader me disa Operatore Ekonomike (e ri-hapur)
+Anulluar,Categorical,Binary (Po/Jo),Discrete,text,2,Po | Jo
+Arsyeja_e_anullimit,Categorical,Text,Discrete,text,3554,"Anullimi i proçedurës bëhet për shkak se Ofertuesit nuk kane respektuar legjislacioni në fuqi (Vendimin nr.354, datë 11.05.2016) dhe rekomandimi i APP-se (Nr. 5585 prot., Datë 25.07.2017) për tarifen e sherbimit të kolaudimit të punimeve, pasi ofertat e dhena jane mbi ose nen vlerën e tarifes së sherbimit të kolaudimit të punimeve. . | të gjitha ofertat e paraqitura përmbajnë çmime që e tejkalojnë buxhetin e autoritetit kontraktor, të parashikuar për një kontratë të caktuar | Bazuar ne Ligjin Nr.162, date 23.12.2020 ”Per Prokurimin Publik”, neni 98
+Operatori ekonomik i shpallur fitues pas dorezimit dhe vleresimit te dokumentacionit perkates nga Komisioni i Prokurimit me Vlere te Vogel  si dhe konfirmimit te bere nga operatori ekonomik fitues  IT STORE per marrjen persiper te realizimit te sherbimit te kerkuar , terhiqet nga realizimi i  procedures  se prokurimit per aresye se  distributori i antiviruseve ka refuzuar ti ofroje sherbimin e kerkuar.
+Per me siper ne respektim  te afatit 2 ditor  te ankimit  sipas te cilit nuk pati asnje ankese nga operatoret e tjere qe moren pjese ne kete procedure prokurimi , por vetem kerkesa per terheqje te operatorit IT STORE,  procedura anullohet per aresye te shpalljes fitues te nje operatori te vetem i cili u terhoq nga ofrimi i sherbimit te kerkuar.
+"
+Pezulluar,Categorical,Binary (Po/Jo),Discrete,text,2,Jo | Po
+Numri_i_ofertave_te_dorezuara,Numeric,Count,Discrete,text,69,3 | 6 | 1
+Numri_i_ofertave_te_kualifikuara,Numeric,Count,Discrete,text,60,0 | 6 | 1
+Kodet_CPV,Categorical,Multi-valued nominal,Discrete,text,17125, 98390000-3 Shërbime të tjera |  34980000-0 Bileta transporti |  98341140-8 Shërbime sigurimi
