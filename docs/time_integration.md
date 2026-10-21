@@ -52,8 +52,24 @@ Kontrollet e cilësisë identifikojnë probleme në tre dimensione:
 
 **Gjetje kryesore:** 7,170 procedure (2.58%) kanë data të hapjes para datës së publikimit - logjikisht të pamundur. Këto kërkojnë pastrimin e mëtejshëm.
 
+## 2.2 Vlerat e zbrazëta
+
+Asnjë rresht nuk fshihet. Datat që mungojnë plotësohen me vlerësim logjik dhe çdo vlerë e plotësuar shënohet me kolonë `*_imputed`.
+
+| Kolona | Mungesa | Metoda |
+|---|---|---|
+| `Data_e_hapjes` | 169 | Data e publikimit + mediana e vonesës publikim→hapje e vitit përkatës |
+| `Data_e_mbylljes` | 1,092 | Data e hapjes + mediana e kohëzgjatjes hapje→mbyllje e vitit përkatës |
+| `Data_e_publikimit`, `Numri_i_references` | 0 | Nuk kërkohet veprim |
+
+- Mediana llogaritet sipas vitit (afatet ndryshojnë nga viti në vit) dhe përdor vetëm diferenca ≥ 0, ndaj data e plotësuar nuk mund të dalë para datës nga e cila rrjedh. Nëse një vit nuk ka diferenca të vlefshme, përdoret mediana globale.
+- Pas plotësimit mbeten 0 mungesa dhe 277,764 rreshta (asnjë i fshirë).
+- Kodi: `python -m src.time_integration.missing_values`
+
 ## 3. Raportet e gjeneruara
 
+- **missing_summary.csv**: Mungesat para/pas plotësimit dhe numri i vlerave të plotësuara
+- **missing_by_year.csv**: Përqindja e mungesave sipas vitit
 - **data_types.csv**: Tipet e të dhënave për çdo kolonë
 - **integration_summary.csv**: Përmbledhja e 277,764 procedurave
 - **elections_mapping.csv**: Procedurat gjatë periudhave zgjedhore (13 total)
