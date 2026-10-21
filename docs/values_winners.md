@@ -8,6 +8,9 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > |---|---|---|
 > | 1. Tipet e të dhënave | [`src/values_winners/data_types.py`](../src/values_winners/data_types.py) | [`data_types.csv`](../reports/values_winners/data_types.csv) |
 > | 2. Kualiteti i të dhënave | [`src/values_winners/quality.py`](../src/values_winners/quality.py) | [`quality_checks.csv`](../reports/values_winners/quality_checks.csv), [`shared_references.csv`](../reports/values_winners/shared_references.csv), [`invalid_nipt.csv`](../reports/values_winners/invalid_nipt.csv), [`winner_inconsistencies.csv`](../reports/values_winners/winner_inconsistencies.csv), [`winner_names.csv`](../reports/values_winners/winner_names.csv) |
+> | 3. Pastrimi | [`src/values_winners/cleaning.py`](../src/values_winners/cleaning.py) | [`cleaning_summary.csv`](../reports/values_winners/cleaning_summary.csv) |
+>
+> Të dhënat e pastruara ruhen te `data/processed/` (jashtë git-it).
 
 ## 1. Tipet e të dhënave
 
@@ -109,3 +112,20 @@ Për kontrollin e duplikateve lexohen të 21 kolonat. Kolona `Anulluar` (nga pje
 - Vlera në kontratë ndryshon nga vlera e fituesit te gjysma e rasteve. Kjo mund të jetë normale (negociata, TVSH, kontrata në disa lote), prandaj s'është domosdoshmërisht gabim. Nevojitet kontroll para se të mbahet vetëm njëra kolonë.
 - **Emrat e fituesve janë jokonsistentë.** I njëjti NIPT shfaqet me emrin e shkruar në disa mënyra (861 NIPT), kryesisht nga hapësirat dhe `\n`. Disa emra (30) kanë disa NIPT, p.sh. persona fizikë me të njëjtin emër ose kompani të ndryshme me emër të njëjtë. Shembujt: [`winner_inconsistencies.csv`](../reports/values_winners/winner_inconsistencies.csv).
 - Numri i emrave unikë bie nga **8,269** (bruto) në **7,438** pas heqjes së hapësirave dhe në **7,422** pas normalizimit (shkronja të mëdha, pa pikësim). Prandaj **NIPT-i** (i pastruar) duhet të jetë çelësi për identifikimin e fituesit, jo emri. Njësimi i fituesve bëhet në hapin e pastrimit.
+
+## 3. Pastrimi
+
+Pastrimi rregullon problemet e **formatit** dhe të **konsistencës** që u gjetën te kualiteti. Vlerat logjikisht të pamundura (p.sh. vlera e fituesit mbi fondin) **nuk ndryshohen** këtu: ato i takojnë Pjesës II.
+
+| Kolona | Hapi | Para | Pas |
+|---|---|---|---|
+| `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontrates` | Tekst (`"741,600.00"`) → numër | tekst | `float` (të gjitha vlerat u konvertuan, asnjë nuk humbi) |
+| `Lidhja_e_kontrates_me_TVSH` | `Po`/`Jo` → boolean | `Jo` 251,197 · `Po` 26,567 | `False` 251,197 · `True` 26,567 |
+| `NIPT_i_fituesit` | Heqja e hapësirave dhe `\n`, shkronja të mëdha | 8,305 të ndryshëm | **7,444** |
+| `Fituesi` | Heqja e hapësirave dhe `\n`, shkronja të mëdha, **një emër për çdo NIPT** | 8,269 të ndryshëm | **7,403** |
+
+**Vendimet:**
+- **Fitues të përbashkët (konsorciume):** emrat dhe NIPT-et që ishin në rreshta të veçantë brenda qelizës bashkohen me ` | ` (p.sh. `ALBANIAN TELECOMMUNICATIONS UNION | ABISSNET | ...`). Mbahen si **një fitues i përbashkët**, sepse kontrata është fituar bashkërisht.
+- **Një emër për çdo NIPT:** kur i njëjti NIPT shfaqet me emra të shkruar ndryshe, merret emri që përdoret më shpesh me atë NIPT. Pas pastrimit, **asnjë NIPT nuk ka më shumë se një emër** (para pastrimit: 861).
+- Emrat që kanë disa NIPT (p.sh. persona fizikë me të njëjtin emër) **nuk bashkohen**, sepse janë subjekte të ndryshme. Prandaj ka pak më shumë NIPT (7,444) se emra (7,403).
+- NIPT-et e huaja (p.sh. `SI24635812`) mbahen siç janë, sepse janë të vlefshme në vendin e tyre.
