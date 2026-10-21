@@ -10,6 +10,7 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > | 2. Kualiteti i të dhënave | [`src/values_winners/quality.py`](../src/values_winners/quality.py) | [`quality_checks.csv`](../reports/values_winners/quality_checks.csv), [`shared_references.csv`](../reports/values_winners/shared_references.csv), [`invalid_nipt.csv`](../reports/values_winners/invalid_nipt.csv), [`winner_inconsistencies.csv`](../reports/values_winners/winner_inconsistencies.csv), [`winner_names.csv`](../reports/values_winners/winner_names.csv) |
 > | 3. Pastrimi | [`src/values_winners/cleaning.py`](../src/values_winners/cleaning.py) | [`cleaning_summary.csv`](../reports/values_winners/cleaning_summary.csv) |
 > | 4. Vlerat e zbrazëta | [`src/values_winners/missing_values.py`](../src/values_winners/missing_values.py) | [`missing_summary.csv`](../reports/values_winners/missing_summary.csv), [`missing_by_year.csv`](../reports/values_winners/missing_by_year.csv), [`missing_winner_by_cancellation.csv`](../reports/values_winners/missing_winner_by_cancellation.csv), [`missing_fund_by_procedure_type.csv`](../reports/values_winners/missing_fund_by_procedure_type.csv), [`missing_value_vs_winner.csv`](../reports/values_winners/missing_value_vs_winner.csv), [`missing_strategies.csv`](../reports/values_winners/missing_strategies.csv) |
+> | 5. Krijimi i vetive, diskretizimi, binarizimi | [`src/values_winners/features.py`](../src/values_winners/features.py) | [`features_summary.csv`](../reports/values_winners/features_summary.csv), [`discretization_fund.csv`](../reports/values_winners/discretization_fund.csv), [`fund_categories.csv`](../reports/values_winners/fund_categories.csv) |
 >
 > Të dhënat e pastruara ruhen te `data/processed/` (jashtë git-it).
 
@@ -226,3 +227,45 @@ Pastrimi rregullon problemet e **formatit** dhe të **konsistencës** që u gjet
 | `Lidhja_e_kontrates_me_TVSH` | – | Nuk ka mungesa |
 
 Rezultati ruhet te `data/processed/values_winners_missing_handled.csv`.
+
+## 5. Krijimi i vetive, diskretizimi dhe binarizimi
+
+Vetitë krijohen mbi të dhënat e pastruara, me strategjinë e zgjedhur për vlerat e zbrazëta. Këtu krijohen vetëm veti që dalin nga vetë rreshti; vetitë sipas fituesit (numri i kontratave, pjesa e tregut) llogariten në hapin e agregimit.
+
+### 5.1 Krijimi i vetive
+
+| Vetia | Përkufizimi | Vlera |
+|---|---|---|
+| `kursimi` | `Fondi_limit − Vlera_e_fituesit` (lekë) | 201,837 procedura (kur ka edhe fond edhe vlerë fituese) |
+| `kursimi_pct` | `kursimi / Fondi_limit × 100` | 201,837 procedura |
+| `nr_fituesve` | Numri i fituesve në qelizë (anëtarët e konsorciumit) | 1 te 223,701 procedura; 2–35 te 169 |
+| `fitues_i_perbashket` | 1 nëse kontrata është fituar nga një konsorcium | 169 procedura |
+
+**Vërejtje:**
+- `kursimi` tregon sa më pak u paguan nga fondi i parashikuar; `kursimi_pct` e bën të krahasueshëm mes procedurave të madhësive të ndryshme.
+- Te **5,178** procedura kursimi del negativ, sepse vlera e fituesit është mbi fondin limit (problemi i gjetur te saktësia). Vetia llogaritet siç është; trajtimi i këtyre rasteve i takon Pjesës II.
+
+### 5.2 Diskretizimi i `Fondi_limit`
+
+U krahasuan dy mënyra për ta ndarë fondin në 4 kategori:
+
+| Kategoria | Gjerësi e barabartë: intervali (lekë) | Procedura | Frekuencë e barabartë: intervali (lekë) | Procedura |
+|---|---|---|---|---|
+| Shumë i vogël | deri në ~9.8 miliardë | 235,466 | deri në 134,964 | 58,870 |
+| I vogël | 9.8 – 19.7 miliardë | 5 | 134,964 – 390,000 | 58,980 |
+| I mesëm | 19.7 – 29.5 miliardë | 1 | 390,000 – 1,000,000 | 61,425 |
+| I madh | 29.5 – 39.3 miliardë | 5 | mbi 1,000,000 | 56,202 |
+
+**Pse frekuencë e barabartë:** me **gjerësi të barabartë**, pothuajse të gjitha procedurat (235,466) bien në kategorinë e parë, sepse disa fonde shumë të mëdha e zgjerojnë intervalin. Me **frekuencë të barabartë** (kuartilet), çdo kategori ka rreth një të katërtën e procedurave, prandaj kategoritë janë të dobishme për krahasim. Procedurat pa fond (42,287) mbeten pa kategori.
+
+Vetia e re: `kategoria_e_fondit` (Shumë i vogël / I vogël / I mesëm / I madh).
+
+### 5.3 Binarizimi
+
+| Kolona | Para | Pas |
+|---|---|---|
+| `me_tvsh` (nga `Lidhja_e_kontrates_me_TVSH`) | `Po` / `Jo` | 1 (26,567) / 0 (251,197) |
+| `fitues_i_perbashket` | po / jo | 1 / 0 |
+| `Fondi_limit_missing`, `Vlera_e_fituesit_missing`, `Fituesi_missing` | po / jo | 1 / 0 |
+
+Rezultati ruhet te `data/processed/values_winners_features.csv`.

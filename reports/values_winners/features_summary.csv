@@ -1,0 +1,10 @@
+feature,step,definition,non_null,dtype
+kursimi,Created,Fondi_limit - Vlera_e_fituesit (lekë),201837,float64
+kursimi_pct,Created,kursimi / Fondi_limit * 100,201837,float64
+nr_fituesve,Created,Number of winners in the cell (consortium members),223870,Int64
+fitues_i_perbashket,Created + binarized,1 if the contract was won by a consortium,223870,Int8
+kategoria_e_fondit,Discretized,Fondi_limit in 4 equal-frequency bins,235477,category
+me_tvsh,Binarized,Lidhja_e_kontrates_me_TVSH: Po/Jo -> 1/0,277764,Int8
+Fondi_limit_missing,Binarized,Missing-value flag -> 1/0,277764,Int8
+Vlera_e_fituesit_missing,Binarized,Missing-value flag -> 1/0,277764,Int8
+Fituesi_missing,Binarized,Missing-value flag -> 1/0,277764,Int8
