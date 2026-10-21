@@ -1,0 +1,12 @@
+column,missing_before,pct_before,missing_after,pct_after,treatment
+Autoriteti_kontraktues,0,0.0,0,0.0,Whitespace normalized; blank values retained as missing
+Objekti_i_prokurimit,0,0.0,0,0.0,Whitespace normalized; blank values retained as missing
+Lloji_i_procedures,0,0.0,0,0.0,Whitespace normalized; blank values retained as missing
+Tipi_i_kontrates,0,0.0,0,0.0,Whitespace normalized; blank values retained as missing
+Lloji_i_marreveshjes_kuader,115516,91.13,115516,91.13,Retained as missing; no reliable source value to impute
+Anulluar,0,0.0,0,0.0,Mapped Po/Jo to boolean; invalid or blank values retained as missing
+Arsyeja_e_anullimit,97207,76.69,97207,76.69,Retained as missing; only applicable to cancelled procedures
+Pezulluar,0,0.0,0,0.0,Mapped Po/Jo to boolean; invalid or blank values retained as missing
+Numri_i_ofertave_te_dorezuara,0,0.0,0,0.0,Converted to nullable integer; missing values retained
+Numri_i_ofertave_te_kualifikuara,0,0.0,0,0.0,Converted to nullable integer; missing values retained
+Kodet_CPV,2593,2.05,2593,2.05,Whitespace normalized; missing values retained

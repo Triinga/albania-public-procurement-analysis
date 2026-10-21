@@ -26,5 +26,6 @@ Format,Numri_i_ofertave_te_kualifikuara,Non-numeric value,0,126757,0.0
 Accuracy,Numri_i_ofertave_te_kualifikuara,Negative offer count,0,126757,0.0
 Consistency,Numri_i_ofertave_te_kualifikuara,Qualified offers exceed submitted offers,0,126757,0.0
 Consistency,Arsyeja_e_anullimit,Cancellation reason present when procedure is not marked cancelled,0,29550,0.0
+Completeness,Arsyeja_e_anullimit,Cancellation reason missing when procedure is marked cancelled,387,29937,1.29
 Format,Kodet_CPV,Non-empty cell contains no 8-digit CPV code,0,124164,0.0
 Format,Kodet_CPV,More than one CPV code in cell,39880,124164,32.12
