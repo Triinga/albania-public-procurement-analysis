@@ -1,0 +1,7 @@
+column,step,before,after
+Fondi_limit,Text amount -> number,"text (252,200 values)","float64 (252,200 values)"
+Vlera_e_fituesit,Text amount -> number,"text (220,382 values)","float64 (220,382 values)"
+Vlera_e_fituesit_ne_lidhjen_e_kontrates,Text amount -> number,"text (51,505 values)","float64 (51,505 values)"
+Lidhja_e_kontrates_me_TVSH,Po/Jo -> boolean,"{'Jo': 251197, 'Po': 26567}","{'False': np.int64(251197), 'True': np.int64(26567)}"
+NIPT_i_fituesit,"Trim whitespace/newlines, upper case","8,305 distinct","7,444 distinct"
+Fituesi,"Trim whitespace/newlines, upper case, one name per NIPT","8,269 distinct","7,403 distinct"

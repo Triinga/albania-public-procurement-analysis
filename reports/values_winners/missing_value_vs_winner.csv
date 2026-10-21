@@ -1,0 +1,4 @@
+case,rows
+"Winner present, winner value missing",6583
+"Winner missing, winner value present",3095
+Both missing,50799

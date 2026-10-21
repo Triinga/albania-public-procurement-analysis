@@ -1,0 +1,11 @@
+column,strategy,rows_kept,still_missing,median,mean
+Fondi_limit,Original (with NaN),277764,42287,390000.0,9150130.36
+Fondi_limit,Deletion (drop rows),235477,0,390000.0,9150130.36
+Fondi_limit,Median imputation,277764,0,390000.0,7816481.53
+Fondi_limit,Median by group,277764,0,263277.0,7789468.91
+Fondi_limit,Keep NaN + missing flag,277764,42287,390000.0,9150130.36
+Vlera_e_fituesit,Original (with NaN),277764,57382,234900.0,163343336.59
+Vlera_e_fituesit,Deletion (drop rows),220382,0,234900.0,163343336.59
+Vlera_e_fituesit,Median imputation,277764,0,234900.0,129647507.36
+Vlera_e_fituesit,Median by group,277764,0,250000.0,131019235.35
+Vlera_e_fituesit,Keep NaN + missing flag,277764,57382,234900.0,163343336.59
