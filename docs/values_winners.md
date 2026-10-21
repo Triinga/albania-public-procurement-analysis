@@ -9,6 +9,7 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > | 1. Tipet e të dhënave | [`src/values_winners/data_types.py`](../src/values_winners/data_types.py) | [`data_types.csv`](../reports/values_winners/data_types.csv) |
 > | 2. Kualiteti i të dhënave | [`src/values_winners/quality.py`](../src/values_winners/quality.py) | [`quality_checks.csv`](../reports/values_winners/quality_checks.csv), [`shared_references.csv`](../reports/values_winners/shared_references.csv), [`invalid_nipt.csv`](../reports/values_winners/invalid_nipt.csv), [`winner_inconsistencies.csv`](../reports/values_winners/winner_inconsistencies.csv), [`winner_names.csv`](../reports/values_winners/winner_names.csv) |
 > | 3. Pastrimi | [`src/values_winners/cleaning.py`](../src/values_winners/cleaning.py) | [`cleaning_summary.csv`](../reports/values_winners/cleaning_summary.csv) |
+> | 4. Vlerat e zbrazëta | [`src/values_winners/missing_values.py`](../src/values_winners/missing_values.py) | [`missing_summary.csv`](../reports/values_winners/missing_summary.csv), [`missing_by_year.csv`](../reports/values_winners/missing_by_year.csv), [`missing_winner_by_cancellation.csv`](../reports/values_winners/missing_winner_by_cancellation.csv), [`missing_fund_by_procedure_type.csv`](../reports/values_winners/missing_fund_by_procedure_type.csv), [`missing_value_vs_winner.csv`](../reports/values_winners/missing_value_vs_winner.csv), [`missing_strategies.csv`](../reports/values_winners/missing_strategies.csv) |
 >
 > Të dhënat e pastruara ruhen te `data/processed/` (jashtë git-it).
 
@@ -129,3 +130,99 @@ Pastrimi rregullon problemet e **formatit** dhe të **konsistencës** që u gjet
 - **Një emër për çdo NIPT:** kur i njëjti NIPT shfaqet me emra të shkruar ndryshe, merret emri që përdoret më shpesh me atë NIPT. Pas pastrimit, **asnjë NIPT nuk ka më shumë se një emër** (para pastrimit: 861).
 - Emrat që kanë disa NIPT (p.sh. persona fizikë me të njëjtin emër) **nuk bashkohen**, sepse janë subjekte të ndryshme. Prandaj ka pak më shumë NIPT (7,444) se emra (7,403).
 - NIPT-et e huaja (p.sh. `SI24635812`) mbahen siç janë, sepse janë të vlefshme në vendin e tyre.
+
+## 4. Vlerat e zbrazëta
+
+### 4.1 Identifikimi
+
+| Kolona | Mungon (bruto) | % | Mungon (me mungesat e maskuara) | % |
+|---|---|---|---|---|
+| `Fondi_limit` | 25,564 | 9.20 | **42,287** | **15.22** |
+| `Vlera_e_fituesit` | 57,382 | 20.66 | 57,382 | 20.66 |
+| `Vlera_e_fituesit_ne_lidhjen_e_kontrates` | 226,259 | 81.46 | 226,259 | 81.46 |
+| `Lidhja_e_kontrates_me_TVSH` | 0 | 0.00 | 0 | 0.00 |
+| `Fituesi` | 53,894 | 19.40 | 53,894 | 19.40 |
+| `NIPT_i_fituesit` | 53,880 | 19.40 | 53,880 | 19.40 |
+
+**Mungesat e maskuara:** fondet **0 ose ≤ 1 lek** (16,723) nuk janë shuma reale, por vlera të paracaktuara kur fondi nuk publikohet. Ato shënohen si **mungesë** (`NaN`). Me to, mungesa e fondit rritet nga 9.2% në 15.2%.
+
+### 4.2 Nga vijnë mungesat
+
+**Sipas vitit (%):**
+
+| Viti | Procedura | Fondi_limit | Vlera_e_fituesit | Vlera në kontratë | Fituesi | NIPT |
+|---|---|---|---|---|---|---|
+| 2016 | 33,375 | 12.4 | 19.8 | 85.9 | 19.8 | 19.8 |
+| 2017 | 31,769 | 9.5 | 17.6 | **47.7** | 17.7 | 17.7 |
+| 2018 | 33,880 | 12.8 | 22.6 | 80.4 | **26.8** | **26.8** |
+| 2019 | 28,313 | 19.0 | 18.7 | 84.9 | 23.2 | 23.2 |
+| 2020 | 23,670 | 11.3 | 18.3 | 83.8 | 18.6 | 18.6 |
+| 2021 | 22,653 | 13.0 | 19.7 | 86.4 | 16.0 | 15.9 |
+| 2022 | 26,034 | 17.7 | 24.5 | 88.2 | 19.1 | 19.1 |
+| 2023 | 25,137 | 19.9 | 20.9 | 88.8 | 16.4 | 16.4 |
+| 2024 | 27,466 | 19.6 | 24.0 | 87.2 | 18.0 | 18.0 |
+| 2025 | 25,467 | 19.0 | 20.6 | 88.5 | 15.6 | 15.6 |
+
+**Fituesi sipas anulimit:**
+
+| Procedura | Gjithsej | Pa fitues | % |
+|---|---|---|---|
+| Jo e anuluar | 204,341 | 8,178 | 4.0 |
+| E anuluar | 73,423 | 45,716 | **62.3** |
+
+**Fondi sipas llojit të procedurës** (llojet kryesore):
+
+| Lloji i procedurës | Procedura | Pa fond | % |
+|---|---|---|---|
+| Small Value | 183,329 | 27,330 | 14.9 |
+| Purchase Tickets | 17,766 | 14,842 | **83.5** |
+| Negotiated without Notice | 5,307 | 44 | 0.8 |
+| Open Local | 21,980 | 43 | 0.2 |
+| Request for Proposals | 25,549 | 10 | 0.0 |
+
+**Vlera e fituesit krahasuar me fituesin:**
+
+| Rasti | Rreshta |
+|---|---|
+| Ka fitues, mungon vlera | 6,583 |
+| Mungon fituesi, ka vlerë | 3,095 |
+| Mungojnë të dyja | 50,799 |
+
+**Vërejtje (lloji i mungesës):**
+- **Fituesi/NIPT:** 84.8% e procedurave pa fitues janë **të anuluara**. Mungesa ka shpjegim (procedura nuk përfundoi me fitues), pra është **MAR** (*Missing At Random*, e lidhur me një kolonë tjetër), jo gabim.
+- **Fondi:** mungesa përqendrohet te **blerja e biletave** (83.5%), ku fondi zakonisht nuk publikohet. Edhe kjo është **MAR**.
+- **Vlera e fituesit:** në shumicën e rasteve mungon bashkë me fituesin (50,799). Vetëm 6,583 procedura kanë fitues pa vlerë.
+- **Vlera në kontratë:** mungon te 81.5%, por te 2017 vetëm te 47.7%. Mungesa varet nga mënyra e plotësimit të fushës ndër vite.
+- Mungesat sipas vitit janë të qëndrueshme; nuk ka një vit që i shkakton ato.
+
+### 4.3 Krahasimi i strategjive
+
+| Kolona | Strategjia | Rreshta që mbeten | Mbeten bosh | Mediana | Mesatarja |
+|---|---|---|---|---|---|
+| `Fondi_limit` | Origjinali (me `NaN`) | 277,764 | 42,287 | 390,000 | 9,150,130 |
+| | Fshirje e rreshtave | 235,477 | 0 | 390,000 | 9,150,130 |
+| | Imputim me medianë | 277,764 | 0 | 390,000 | 7,816,482 |
+| | Imputim me medianë sipas llojit të procedurës | 277,764 | 0 | 263,277 | 7,789,469 |
+| | `NaN` + flag për mungesën | 277,764 | 42,287 | 390,000 | 9,150,130 |
+| `Vlera_e_fituesit` | Origjinali (me `NaN`) | 277,764 | 57,382 | 234,900 | 163,343,337 |
+| | Fshirje e rreshtave | 220,382 | 0 | 234,900 | 163,343,337 |
+| | Imputim me medianë | 277,764 | 0 | 234,900 | 129,647,507 |
+| | Imputim me medianë sipas llojit të procedurës | 277,764 | 0 | 250,000 | 131,019,235 |
+| | `NaN` + flag për mungesën | 277,764 | 57,382 | 234,900 | 163,343,337 |
+
+**Çfarë tregon krahasimi:**
+- **Fshirja** humb 15–21% të procedurave. Për analizat e vlerës kjo do të hiqte kryesisht procedurat e anuluara dhe blerjet e biletave, pra e shtrembëron pamjen e prokurimit.
+- **Imputimi me medianë** mbush të gjitha vlerat, por e ul mesataren dhe krijon shuma artificiale për procedura që nuk kanë pasur fond ose fitues. Me medianë sipas llojit të procedurës, mediana e fondit ndryshon (390,000 → 263,277), sepse shumica e mungesave janë te procedurat e vogla.
+- **`NaN` + flag** nuk shpik vlera dhe ruan të gjitha procedurat.
+
+### 4.4 Strategjia e zgjedhur
+
+| Kolona | Trajtimi | Pse |
+|---|---|---|
+| `Fondi_limit` | 0 / ≤ 1 lek → `NaN`; mbetet `NaN` + flag `Fondi_limit_missing` | Mungesa ka shpjegim (bileta, fond i papublikuar); një fond i shpikur do të prishte llogaritjen e kursimit |
+| `Vlera_e_fituesit` | Mbetet `NaN` + flag `Vlera_e_fituesit_missing` | Shumica mungon sepse nuk ka fitues; imputimi do të krijonte kontrata që nuk ekzistojnë |
+| `Fituesi`, `NIPT_i_fituesit` | Mbetet `NaN` + flag `Fituesi_missing` | Procedura pa fitues (kryesisht të anuluara) janë informacion, jo gabim |
+| `Vlera_e_fituesit_ne_lidhjen_e_kontrates` | Nuk imputohet | Mungon te 81.5%; kandidate për heqje te zgjedhja e vetive |
+| `Lidhja_e_kontrates_me_TVSH` | – | Nuk ka mungesa |
+
+Rezultati ruhet te `data/processed/values_winners_missing_handled.csv`.
