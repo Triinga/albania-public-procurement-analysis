@@ -26,7 +26,9 @@ Skripti pret një CSV për secilin vit të intervalit. Nëse gjenden disa ekspor
 
 Nuk ishte dhënë tabelë/reference e veçantë CPV. Prandaj integrimi këtu nxjerr kodet dhe përshkrimin e tyre nga qeliza e APP-së; nuk bën lookup të jashtëm të përshkrimeve zyrtare.
 
-Vetitë e krijuara janë `cpv_count`, `primary_cpv_code`, `primary_cpv_division`, `offers_missing`, `no_submitted_offers`, `qualified_offer_share`, `single_bidder`, `no_qualified_offers`, `is_framework_agreement`, `has_cancellation_reason` dhe `cancelled_without_reason`. Pjesëtimi i ofertave të kualifikuara me ofertat e dorëzuara lihet missing kur numri i dorëzuar është zero ose mungon. `cancelled_without_reason` shënon vetëm procedurat e anuluara që nuk kanë arsye anulimi. `is_framework_agreement` është `True` kur lloji i marrëveshjes kuadër është i plotësuar dhe `False` kur fusha burimore është bosh.
+Vetitë e krijuara janë `cpv_count`, `primary_cpv_code`, `primary_cpv_division`, `offers_missing`, `no_submitted_offers`, `qualified_offer_share`, `single_bidder`, `no_qualified_offers`, `competition_band`, `is_framework_agreement`, `has_cancellation_reason` dhe `cancelled_without_reason`. Pjesëtimi i ofertave të kualifikuara me ofertat e dorëzuara lihet missing kur numri i dorëzuar është zero ose mungon. `cancelled_without_reason` shënon vetëm procedurat e anuluara që nuk kanë arsye anulimi. `is_framework_agreement` është `True` kur lloji i marrëveshjes kuadër është i plotësuar dhe `False` kur fusha burimore është bosh.
+
+`competition_band` e ndan numrin e ofertave të dorëzuara në katër grupe: `No offers`, `Single offer`, `2-3 offers` dhe `4+ offers`. Vlera mbetet missing kur numri i ofertave mungon ose është negativ.
 
 Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hapësirat dhe boshllëqet normalizohen, ndërsa mungesat ruhen me tipe nullable. Politika dhe numri i mungesave para/pas pastrimit dokumentohen në `missing_values.csv`.
 
@@ -36,6 +38,7 @@ Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hap
 - `quality_checks.csv`: kompletësia, formati, konsistenca dhe kontrollet e vlefshmërisë para pastrimit.
 - `quality_after.csv`: të njëjtat kontrolle pas normalizimit të tipeve dhe vlerave.
 - `missing_values.csv`: mungesat para/pas pastrimit dhe trajtimi i përdorur për secilën kolonë.
+- `competition_by_year.csv`: shpërndarja e grupeve të konkurrencës për secilin vit.
 - `category_profile.csv`: frekuencat për llojin e procedurës/kontratës, marrëveshjen kuadër dhe statuset.
 - `yearly_row_counts.csv`: numri i rreshtave sipas vitit.
 - `preparation_summary.csv`: përmbledhja e përgatitjes dhe ruajtjes së rreshtave.
