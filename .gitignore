@@ -223,3 +223,6 @@ __marimo__/
 data/raw/
 # Generated full-size prepared extract; share outside Git with the group.
 /reports/procedure_competition/*/procedure_competition_clean.csv
+
+# Generated datasets (features, final dataset) - recreated by the scripts
+data/processed/
