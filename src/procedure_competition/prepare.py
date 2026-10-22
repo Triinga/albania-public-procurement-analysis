@@ -67,8 +67,8 @@ def _select_year_file(folder, year):
     return newest[0]
 
 
-def quality_report(df):
-    """Return row-level quality counts before cleaning; no source rows removed."""
+def quality_report(df, cleaned=False):
+    """Return row-level quality counts without removing source rows."""
     all_rows = pd.Series(True, index=df.index)
     checks = []
     for col in COLUMNS:
@@ -85,10 +85,15 @@ def quality_report(df):
         checks.append(("Format", col, "Leading/trailing or repeated whitespace",
                        present & has_extra_whitespace(s), present))
     for col in BINARY:
-        s = df[col].astype("string").str.strip().str.casefold()
-        present = ~_is_blank(s)
-        checks.append(("Format", col, "Value outside Po/Jo vocabulary",
-                       present & ~s.isin(["po", "jo"]), present))
+        present = ~_is_blank(df[col])
+        if cleaned:
+            invalid = present & ~df[col].isin([True, False])
+            description = "Value outside boolean vocabulary"
+        else:
+            s = df[col].astype("string").str.strip().str.casefold()
+            invalid = present & ~s.isin(["po", "jo"])
+            description = "Value outside Po/Jo vocabulary"
+        checks.append(("Format", col, description, invalid, present))
     for col in NUMERIC:
         n = pd.to_numeric(df[col].astype("string").str.strip(), errors="coerce")
         present = ~_is_blank(df[col])
@@ -101,11 +106,19 @@ def quality_report(df):
     both = submitted.notna() & qualified.notna()
     checks.append(("Consistency", "Numri_i_ofertave_te_kualifikuara",
                    "Qualified offers exceed submitted offers", both & qualified.gt(submitted), both))
-    cancelled = df["Anulluar"].astype("string").str.strip().str.casefold().eq("po")
-    checks.append(("Consistency", "Arsyeja_e_anullimit",
-                   "Cancellation reason present when procedure is not marked cancelled",
-                   ~_is_blank(df["Arsyeja_e_anullimit"]) & ~cancelled,
-                   ~_is_blank(df["Arsyeja_e_anullimit"])))
+    if cleaned:
+        cancelled = df["Anulluar"].eq(True).fillna(False)
+    else:
+        cancelled = df["Anulluar"].astype("string").str.strip().str.casefold().eq("po")
+    reason_missing = _is_blank(df["Arsyeja_e_anullimit"])
+    checks += [
+        ("Consistency", "Arsyeja_e_anullimit",
+         "Cancellation reason present when procedure is not marked cancelled",
+         ~reason_missing & ~cancelled, ~reason_missing),
+        ("Completeness", "Arsyeja_e_anullimit",
+         "Cancellation reason missing when procedure is marked cancelled",
+         reason_missing & cancelled, cancelled),
+    ]
     cpv_present = ~_is_blank(df["Kodet_CPV"])
     cpv_count = df["Kodet_CPV"].map(lambda x: len(_cpv_codes(x)))
     checks += [
@@ -115,6 +128,36 @@ def quality_report(df):
          cpv_count.gt(1), cpv_present),
     ]
     return run_checks(df, checks)
+
+
+def missing_value_report(before, after):
+    """Summarize missing values before and after cleaning and record their treatment."""
+    treatments = {
+        "Lloji_i_marreveshjes_kuader": "Retained as missing; no reliable source value to impute",
+        "Arsyeja_e_anullimit": "Retained as missing; only applicable to cancelled procedures",
+        "Kodet_CPV": "Whitespace normalized; missing values retained",
+    }
+    rows = []
+    for col in COLUMNS:
+        before_missing = int(_is_blank(before[col]).sum())
+        after_missing = int(_is_blank(after[col]).sum())
+        if col in NUMERIC:
+            treatment = "Converted to nullable integer; missing values retained"
+        elif col in BINARY:
+            treatment = "Mapped Po/Jo to boolean; invalid or blank values retained as missing"
+        else:
+            treatment = treatments.get(
+                col, "Whitespace normalized; blank values retained as missing"
+            )
+        rows.append({
+            "column": col,
+            "missing_before": before_missing,
+            "pct_before": round(before_missing * 100 / len(before), 2) if len(before) else 0.0,
+            "missing_after": after_missing,
+            "pct_after": round(after_missing * 100 / len(after), 2) if len(after) else 0.0,
+            "treatment": treatment,
+        })
+    return pd.DataFrame(rows)
 
 
 def category_profile(df):
@@ -151,6 +194,9 @@ def clean_and_engineer(df):
     )
     # Preserve original reason but add a usable indicator. Missing stays missing.
     out["has_cancellation_reason"] = out["Arsyeja_e_anullimit"].notna().astype("boolean")
+    out["cancelled_without_reason"] = (
+        out["Anulluar"].eq(True) & out["Arsyeja_e_anullimit"].isna()
+    ).fillna(False).astype("boolean")
     return out
 
 
@@ -175,6 +221,8 @@ def main():
     quality_report(df).to_csv(out_dir / "quality_checks.csv", index=False)
     category_profile(df).to_csv(out_dir / "category_profile.csv", index=False)
     clean = clean_and_engineer(df)
+    quality_report(clean, cleaned=True).to_csv(out_dir / "quality_after.csv", index=False)
+    missing_value_report(df, clean).to_csv(out_dir / "missing_values.csv", index=False)
 
     yearly = df.groupby("year", dropna=False).size().rename("procedures").reset_index()
     yearly.to_csv(out_dir / "yearly_row_counts.csv", index=False)
@@ -185,6 +233,7 @@ def main():
         {"metric": "rows_removed", "value": len(df) - len(clean)},
         {"metric": "rows_with_CPV_code", "value": int(clean["cpv_count"].gt(0).sum())},
         {"metric": "rows_with_multiple_CPV_codes", "value": int(clean["cpv_count"].gt(1).sum())},
+        {"metric": "cancelled_without_reason", "value": int(clean["cancelled_without_reason"].sum())},
     ])
     summary.to_csv(out_dir / "preparation_summary.csv", index=False)
     # Clean rows are emitted separately for downstream integration; raw data remains untouched.

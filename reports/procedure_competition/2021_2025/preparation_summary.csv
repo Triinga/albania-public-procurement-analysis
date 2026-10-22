@@ -5,3 +5,4 @@ output_rows,126757
 rows_removed,0
 rows_with_CPV_code,124164
 rows_with_multiple_CPV_codes,39880
+cancelled_without_reason,387
