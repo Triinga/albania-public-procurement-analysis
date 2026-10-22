@@ -26,7 +26,7 @@ Skripti pret një CSV për secilin vit të intervalit. Nëse gjenden disa ekspor
 
 Nuk ishte dhënë tabelë/reference e veçantë CPV. Prandaj integrimi këtu nxjerr kodet dhe përshkrimin e tyre nga qeliza e APP-së; nuk bën lookup të jashtëm të përshkrimeve zyrtare.
 
-Vetitë e krijuara janë `cpv_count`, `primary_cpv_code`, `primary_cpv_division`, `offers_missing`, `no_submitted_offers`, `qualified_offer_share`, `has_cancellation_reason` dhe `cancelled_without_reason`. Pjesëtimi i ofertave të kualifikuara me ofertat e dorëzuara lihet missing kur numri i dorëzuar është zero ose mungon. `cancelled_without_reason` shënon vetëm procedurat e anuluara që nuk kanë arsye anulimi.
+Vetitë e krijuara janë `cpv_count`, `primary_cpv_code`, `primary_cpv_division`, `offers_missing`, `no_submitted_offers`, `qualified_offer_share`, `single_bidder`, `no_qualified_offers`, `is_framework_agreement`, `has_cancellation_reason` dhe `cancelled_without_reason`. Pjesëtimi i ofertave të kualifikuara me ofertat e dorëzuara lihet missing kur numri i dorëzuar është zero ose mungon. `cancelled_without_reason` shënon vetëm procedurat e anuluara që nuk kanë arsye anulimi. `is_framework_agreement` është `True` kur lloji i marrëveshjes kuadër është i plotësuar dhe `False` kur fusha burimore është bosh.
 
 Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hapësirat dhe boshllëqet normalizohen, ndërsa mungesat ruhen me tipe nullable. Politika dhe numri i mungesave para/pas pastrimit dokumentohen në `missing_values.csv`.
 
@@ -43,4 +43,4 @@ Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hap
 
 Në ekzekutimin me eksportet e 19.10.2026 u lexuan 277,764 procedura dhe u ruajtën të gjitha. U gjetën 216,076 procedura me së paku një kod CPV; 61,968 qeliza kishin më shumë se një kod. Marrëveshja kuadër mungon në 258,340 raste (93.0%), ndaj boshllëqet mbeten missing dhe nuk imputohen. Këto përmbledhje janë në raportet CSV; numrat rifreskohen kur skripti ekzekutohet me eksporte të reja.
 
-Raportet e commit-uara janë ndarë në dy intervale të verifikueshme. Për 2016–2020 u ruajtën 151,007 nga 151,007 procedura. Për 2021–2025 u ruajtën 126,757 nga 126,757 procedura: 124,164 kishin së paku një kod CPV, 39,880 kishin disa kode CPV dhe 387 procedura të anuluara nuk kishin arsye anulimi. Shuma e dy intervaleve është 277,764 procedura.
+Raportet e commit-uara janë ndarë në dy intervale të verifikueshme. Për 2016–2020 u ruajtën 151,007 nga 151,007 procedura. Për 2021–2025 u ruajtën 126,757 nga 126,757 procedura: 124,164 kishin së paku një kod CPV, 39,880 kishin disa kode CPV dhe 387 procedura të anuluara nuk kishin arsye anulimi. Në këtë interval, 16,556 procedura kishin vetëm një ofertë, 17,490 nuk kishin oferta të kualifikuara dhe 11,241 ishin marrëveshje kuadër. Shuma e dy intervaleve është 277,764 procedura.

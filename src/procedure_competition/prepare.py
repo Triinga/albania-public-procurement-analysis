@@ -192,6 +192,14 @@ def clean_and_engineer(df):
         out["Numri_i_ofertave_te_kualifikuara"] /
         out["Numri_i_ofertave_te_dorezuara"].where(out["Numri_i_ofertave_te_dorezuara"].gt(0))
     )
+    submitted = out["Numri_i_ofertave_te_dorezuara"]
+    qualified = out["Numri_i_ofertave_te_kualifikuara"]
+    out["single_bidder"] = submitted.eq(1).where(submitted.notna(), pd.NA).astype("boolean")
+    out["no_qualified_offers"] = qualified.eq(0).where(qualified.notna(), pd.NA).astype("boolean")
+    # A populated framework type identifies a framework agreement; the source field is preserved.
+    out["is_framework_agreement"] = (
+        out["Lloji_i_marreveshjes_kuader"].notna().astype("boolean")
+    )
     # Preserve original reason but add a usable indicator. Missing stays missing.
     out["has_cancellation_reason"] = out["Arsyeja_e_anullimit"].notna().astype("boolean")
     out["cancelled_without_reason"] = (
@@ -223,7 +231,6 @@ def main():
     clean = clean_and_engineer(df)
     quality_report(clean, cleaned=True).to_csv(out_dir / "quality_after.csv", index=False)
     missing_value_report(df, clean).to_csv(out_dir / "missing_values.csv", index=False)
-
     yearly = df.groupby("year", dropna=False).size().rename("procedures").reset_index()
     yearly.to_csv(out_dir / "yearly_row_counts.csv", index=False)
     summary = pd.DataFrame([
@@ -234,6 +241,9 @@ def main():
         {"metric": "rows_with_CPV_code", "value": int(clean["cpv_count"].gt(0).sum())},
         {"metric": "rows_with_multiple_CPV_codes", "value": int(clean["cpv_count"].gt(1).sum())},
         {"metric": "cancelled_without_reason", "value": int(clean["cancelled_without_reason"].sum())},
+        {"metric": "single_bidder_procedures", "value": int(clean["single_bidder"].sum())},
+        {"metric": "procedures_without_qualified_offers", "value": int(clean["no_qualified_offers"].sum())},
+        {"metric": "framework_agreements", "value": int(clean["is_framework_agreement"].sum())},
     ])
     summary.to_csv(out_dir / "preparation_summary.csv", index=False)
     # Clean rows are emitted separately for downstream integration; raw data remains untouched.
