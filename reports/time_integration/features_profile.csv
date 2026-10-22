@@ -1,0 +1,4 @@
+feature,count,mean,std,min,25%,50%,75%,max
+ditet_publikim_hapje,277764.0,0.29,7.77,-3986.0,0.0,0.0,1.0,213.0
+kohezgjatja_e_tenderit,277764.0,6.15,58.58,-12.0,1.0,1.0,9.0,30316.0
+ditet_nga_zgjedhjet,277764.0,-2.11,211.95,-374.0,-192.0,-16.0,185.0,486.0
