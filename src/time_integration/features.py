@@ -1,8 +1,8 @@
-"""Temporal, election and COVID features of the time columns (2016-2025).
+"""Temporal, election and COVID features of the time columns (2016-2025),
+their discretization and binarization.
 
 Builds on the cleaned dates (see cleaning) with missing values filled (see
 missing_values), so the gaps in days are never negative.
-Discretization and binarization of these features are a separate step.
 
 Usage (from the repository root):
     python -m src.time_integration.features [csv_folder]
@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from src.common.data_loading import DATA_DIR, YEARS, read_years
+from src.common.features import to_binary
 from src.time_integration.cleaning import clean
 from src.time_integration.columns import COLUMNS
 from src.time_integration.elections import ELECTIONS
@@ -29,6 +30,20 @@ PROCESSED_DIR = Path("data/processed")
 COVID_START = pd.Timestamp(2020, 3, 11)
 COVID_END = pd.Timestamp(2021, 12, 31)
 COVID_LABELS = ["Para COVID", "Gjatë COVID", "Pas COVID"]
+
+# More than half of the tenders last exactly 1 day, so equal-frequency bins
+# collapse; the duration is split at meaningful limits instead.
+DURATION_BINS = [-1, 0, 3, 14, 30, np.inf]
+DURATION_LABELS = ["E njëjta ditë", "1-3 ditë", "4-14 ditë", "15-30 ditë", "Mbi 30 ditë"]
+
+# Pre-election period: 4 months before voting day, when the Electoral Code
+# (art. 91/4) restricts the use of public resources
+ELECTION_WINDOW = pd.DateOffset(months=4)
+ELECTION_LABELS = ["Mbi 4 muaj para", "Periudha parazgjedhore (4 muaj)",
+                   "Deri 4 muaj pas", "Mbi 4 muaj pas"]
+
+FLAGS = [f"{PUB}_corrected", f"{OPEN}_invalid", f"{CLOSE}_invalid",
+         f"{OPEN}_imputed", f"{CLOSE}_imputed"]
 
 
 def prepare(raw):
@@ -75,6 +90,66 @@ def add_covid_features(df):
     return df
 
 
+def election_proximity(df):
+    """Publication date relative to the 4 months before/after the nearest election.
+
+    Voting day belongs to the pre-election period.
+    """
+    election, pub = df["zgjedhjet_me_te_aferta"], df[PUB]
+    conditions = [
+        pub < election - ELECTION_WINDOW,
+        pub <= election,
+        pub <= election + ELECTION_WINDOW,
+    ]
+    labels = np.select(conditions, ELECTION_LABELS[:3], default=ELECTION_LABELS[3])
+    return pd.Categorical(labels, categories=ELECTION_LABELS, ordered=True)
+
+
+def discretize(df):
+    df = df.copy()
+    df["kategoria_e_kohezgjatjes"] = pd.cut(df["kohezgjatja_e_tenderit"], DURATION_BINS,
+                                            labels=DURATION_LABELS)
+    df["afersia_me_zgjedhjet"] = election_proximity(df)
+    return df
+
+
+def binarize(df):
+    """Yes/no columns as 0/1."""
+    df = df.copy()
+    df["gjate_covid"] = to_binary(df["periudha_covid"] == "Gjatë COVID")
+    df["periudhe_parazgjedhore"] = to_binary(df["afersia_me_zgjedhjet"] == ELECTION_LABELS[1])
+    df["publikim_ne_fundjave"] = to_binary(df["dita_e_javes_publikimit"] >= 5)
+    df["publikim_ne_dhjetor"] = to_binary(df["muaji_publikimit"] == 12)
+    df["hapje_mbyllje_e_njejta_dite"] = to_binary(df["kohezgjatja_e_tenderit"] == 0)
+    for flag in FLAGS:
+        df[flag] = to_binary(df[flag])
+    return df
+
+
+def discretization_comparison(values, n_bins, bins, labels):
+    """Rows per bin for equal width, equal frequency and the chosen limits."""
+    schemes = {
+        "Equal width": pd.cut(values, n_bins),
+        # Repeated quantiles are merged, so fewer than n_bins remain
+        "Equal frequency": pd.qcut(values, n_bins, duplicates="drop"),
+        "Chosen limits": pd.cut(values, bins, labels=labels),
+    }
+    return pd.concat([
+        counts.value_counts(sort=False).rename_axis("bin").reset_index(name="rows")
+        .assign(method=method, bin=lambda t: t["bin"].astype(str))
+        for method, counts in schemes.items()
+    ])[["method", "bin", "rows"]]
+
+
+def binary_summary(df):
+    binaries = ["gjate_covid", "periudhe_parazgjedhore", "publikim_ne_fundjave", "publikim_ne_dhjetor",
+                "hapje_mbyllje_e_njejta_dite", *FLAGS]
+    return pd.DataFrame([
+        {"feature": name, "ones": int(df[name].sum()), "pct_ones": round(df[name].mean() * 100, 2)}
+        for name in binaries
+    ])
+
+
 def features_summary(df):
     rows = [
         ("muaji_publikimit", "Kohore", "Muaji i Data_e_publikimit (1-12)"),
@@ -85,6 +160,14 @@ def features_summary(df):
         ("zgjedhjet_me_te_aferta", "Zgjedhore", "Data e zgjedhjeve më afër Data_e_publikimit"),
         ("ditet_nga_zgjedhjet", "Zgjedhore", "Data_e_publikimit - zgjedhjet_me_te_aferta (ditë, < 0 = para)"),
         ("periudha_covid", "COVID", "Para (< 11.03.2020), Gjatë (deri 31.12.2021), Pas COVID"),
+        ("kategoria_e_kohezgjatjes", "Diskretizuar", "kohezgjatja_e_tenderit në 5 grupe me kufij të zgjedhur"),
+        ("afersia_me_zgjedhjet", "Diskretizuar", "Data_e_publikimit në 4 grupe (±4 muaj nga zgjedhjet)"),
+        ("gjate_covid", "Binarizuar", "1 nëse periudha_covid = Gjatë COVID"),
+        ("periudhe_parazgjedhore", "Binarizuar", "1 nëse publikuar në 4 muajt para zgjedhjeve (Kodi Zgjedhor, neni 91/4)"),
+        ("publikim_ne_fundjave", "Binarizuar", "1 nëse publikuar të shtunën ose të dielën"),
+        ("publikim_ne_dhjetor", "Binarizuar", "1 nëse publikuar në dhjetor (fundi i vitit buxhetor)"),
+        ("hapje_mbyllje_e_njejta_dite", "Binarizuar", "1 nëse kohezgjatja_e_tenderit = 0"),
+        *[(f, "Binarizuar", "Flamuri i pastrimit/plotësimit -> 1/0") for f in FLAGS],
     ]
     summary = pd.DataFrame([
         {"feature": name, "group": group, "definition": definition,
@@ -109,12 +192,17 @@ def main():
     print(f"Years {YEARS.start}-{YEARS.stop - 1}: {len(raw):,} procedures\n")
 
     df = add_covid_features(add_election_features(add_time_features(prepare(raw))))
+    df = binarize(discretize(df))
     assert len(df) == len(raw), "rows must never be dropped"
 
     summary = features_summary(df)
     profile = numeric_profile(df, ["ditet_publikim_hapje", "kohezgjatja_e_tenderit", "ditet_nga_zgjedhjet"])
     covid = pd.crosstab(df["year"], df["periudha_covid"])
     by_month = pd.crosstab(df["year"], df["muaji_publikimit"])
+    duration_bins = discretization_comparison(df["kohezgjatja_e_tenderit"], len(DURATION_LABELS),
+                                              DURATION_BINS, DURATION_LABELS)
+    election_bins = pd.crosstab(df["year"], df["afersia_me_zgjedhjet"])
+    binaries = binary_summary(df)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
@@ -122,6 +210,9 @@ def main():
     profile.to_csv(OUT_DIR / "features_profile.csv", index=False)
     covid.to_csv(OUT_DIR / "covid_periods_by_year.csv")
     by_month.to_csv(OUT_DIR / "procedures_by_month.csv")
+    duration_bins.to_csv(OUT_DIR / "discretization_duration.csv", index=False)
+    election_bins.to_csv(OUT_DIR / "election_proximity_by_year.csv")
+    binaries.to_csv(OUT_DIR / "binary_summary.csv", index=False)
     df.to_csv(PROCESSED_DIR / "time_features.csv", index=False)
 
     with pd.option_context("display.width", 200, "display.max_columns", 20, "display.max_colwidth", 70):
@@ -132,6 +223,12 @@ def main():
         print(covid.to_string())
         print("\nProcedures by publication month:")
         print(by_month.to_string())
+        print("\nDiscretization of kohezgjatja_e_tenderit:")
+        print(duration_bins.to_string(index=False))
+        print("\nElection proximity by year:")
+        print(election_bins.to_string())
+        print("\nBinary features:")
+        print(binaries.to_string(index=False))
 
 
 if __name__ == "__main__":

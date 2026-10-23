@@ -1,0 +1,15 @@
+method,bin,rows
+Equal width,"(-0.44, 88.0]",277191
+Equal width,"(88.0, 176.0]",525
+Equal width,"(176.0, 264.0]",32
+Equal width,"(264.0, 352.0]",12
+Equal width,"(352.0, 440.0]",4
+Equal frequency,"(-0.001, 1.0]",162177
+Equal frequency,"(1.0, 2.0]",13411
+Equal frequency,"(2.0, 11.0]",55289
+Equal frequency,"(11.0, 440.0]",46887
+Chosen limits,E njëjta ditë,16076
+Chosen limits,1-3 ditë,182232
+Chosen limits,4-14 ditë,44686
+Chosen limits,15-30 ditë,24344
+Chosen limits,Mbi 30 ditë,10426
