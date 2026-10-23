@@ -19,6 +19,7 @@ from src.common.quality import duplicate_rows, has_extra_whitespace, run_checks
 from src.procedure_competition.columns import BINARY, COLUMNS, NUMERIC
 
 OUT_DIR = Path("reports/procedure_competition")
+CPV_DIVISIONS_PATH = Path("data/reference/cpv_divisions.csv")
 CPV_PATTERN = re.compile(r"(?<!\d)(\d{8})(?:-(\d))?")
 EXPORT_DATE_PATTERN = re.compile(r"Gjeneruar_me_(\d{8})", re.IGNORECASE)
 COMPETITION_BANDS = ["No offers", "Single offer", "2-3 offers", "4+ offers"]
@@ -32,6 +33,22 @@ def _cpv_codes(value):
     if pd.isna(value):
         return []
     return list(dict.fromkeys(match.group(1) for match in CPV_PATTERN.finditer(str(value))))
+
+
+def load_cpv_divisions(path=CPV_DIVISIONS_PATH):
+    """Load and validate the official CPV division reference."""
+    reference = pd.read_csv(path, dtype="string")
+    required = {"division_code", "division_name"}
+    missing = required.difference(reference.columns)
+    if missing:
+        raise ValueError(f"CPV reference is missing columns: {sorted(missing)}")
+    if reference["division_code"].duplicated().any():
+        raise ValueError("CPV reference contains duplicate division codes")
+    if not reference["division_code"].str.fullmatch(r"\d{2}").all():
+        raise ValueError("CPV division codes must contain exactly two digits")
+    if _is_blank(reference["division_name"]).any():
+        raise ValueError("CPV reference contains a blank division name")
+    return reference.set_index("division_code")["division_name"].to_dict()
 
 
 def _export_date(path):
@@ -185,8 +202,31 @@ def competition_profile(df):
     return profile
 
 
-def clean_and_engineer(df):
+def cpv_division_profile(df):
+    """Summarize official CPV divisions among rows with a parsed CPV code."""
+    with_cpv = df.loc[df["primary_cpv_division"].notna()].copy()
+    with_cpv["primary_cpv_division_name"] = (
+        with_cpv["primary_cpv_division_name"].fillna("[UNMAPPED]")
+    )
+    profile = (
+        with_cpv.groupby(
+            ["primary_cpv_division", "primary_cpv_division_name"], dropna=False
+        )
+        .size()
+        .rename("rows")
+        .reset_index()
+        .sort_values(["rows", "primary_cpv_division"], ascending=[False, True])
+    )
+    profile["pct_of_rows_with_cpv"] = (
+        profile["rows"] * 100 / len(with_cpv)
+    ).round(3) if len(with_cpv) else 0.0
+    return profile
+
+
+def clean_and_engineer(df, cpv_divisions=None):
     """Normalize whitespace/types and add documented analysis features."""
+    if cpv_divisions is None:
+        cpv_divisions = load_cpv_divisions()
     out = df.copy()
     for col in [c for c in COLUMNS if c not in NUMERIC]:
         out[col] = out[col].astype("string").str.replace(r"\s+", " ", regex=True).str.strip()
@@ -201,6 +241,9 @@ def clean_and_engineer(df):
     out["primary_cpv_code"] = codes.map(lambda items: items[0] if items else pd.NA).astype("string")
     # CPV divisions use the first two digits. Keep as text so leading zeroes survive.
     out["primary_cpv_division"] = out["primary_cpv_code"].str[:2]
+    out["primary_cpv_division_name"] = (
+        out["primary_cpv_division"].map(cpv_divisions).astype("string")
+    )
     out["offers_missing"] = out["Numri_i_ofertave_te_dorezuara"].isna().astype("boolean")
     out["no_submitted_offers"] = out["Numri_i_ofertave_te_dorezuara"].eq(0).fillna(False).astype("boolean")
     out["qualified_offer_share"] = (
@@ -248,10 +291,12 @@ def main():
     describe_types(df, COLUMNS).to_csv(out_dir / "data_types.csv", index=False)
     quality_report(df).to_csv(out_dir / "quality_checks.csv", index=False)
     category_profile(df).to_csv(out_dir / "category_profile.csv", index=False)
-    clean = clean_and_engineer(df)
+    cpv_divisions = load_cpv_divisions()
+    clean = clean_and_engineer(df, cpv_divisions)
     quality_report(clean, cleaned=True).to_csv(out_dir / "quality_after.csv", index=False)
     missing_value_report(df, clean).to_csv(out_dir / "missing_values.csv", index=False)
     competition_profile(clean).to_csv(out_dir / "competition_by_year.csv", index=False)
+    cpv_division_profile(clean).to_csv(out_dir / "cpv_division_profile.csv", index=False)
     yearly = df.groupby("year", dropna=False).size().rename("procedures").reset_index()
     yearly.to_csv(out_dir / "yearly_row_counts.csv", index=False)
     summary = pd.DataFrame([
@@ -261,6 +306,8 @@ def main():
         {"metric": "rows_removed", "value": len(df) - len(clean)},
         {"metric": "rows_with_CPV_code", "value": int(clean["cpv_count"].gt(0).sum())},
         {"metric": "rows_with_multiple_CPV_codes", "value": int(clean["cpv_count"].gt(1).sum())},
+        {"metric": "rows_with_mapped_CPV_division", "value": int(clean["primary_cpv_division_name"].notna().sum())},
+        {"metric": "rows_with_unmapped_CPV_division", "value": int((clean["primary_cpv_division"].notna() & clean["primary_cpv_division_name"].isna()).sum())},
         {"metric": "cancelled_without_reason", "value": int(clean["cancelled_without_reason"].sum())},
         {"metric": "single_bidder_procedures", "value": int(clean["single_bidder"].sum())},
         {"metric": "procedures_without_qualified_offers", "value": int(clean["no_qualified_offers"].sum())},

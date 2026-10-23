@@ -5,6 +5,8 @@ output_rows,126757
 rows_removed,0
 rows_with_CPV_code,124164
 rows_with_multiple_CPV_codes,39880
+rows_with_mapped_CPV_division,124164
+rows_with_unmapped_CPV_division,0
 cancelled_without_reason,387
 single_bidder_procedures,16556
 procedures_without_qualified_offers,17490
