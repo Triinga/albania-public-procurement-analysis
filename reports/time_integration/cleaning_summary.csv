@@ -1,0 +1,4 @@
+column,problem,action,rows
+Data_e_publikimit,"Opening before publication, after registration",Publication date moved back to the opening date,7110
+Data_e_hapjes,Opening before registration or after closing,"Set to missing, then filled (publication + median delay)",65
+Data_e_mbylljes,Closing before registration or after the export date (19.10.2026),"Set to missing, then filled (opening + median duration)",6

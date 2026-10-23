@@ -1,8 +1,7 @@
 """Temporal, election and COVID features of the time columns (2016-2025).
 
-Builds on the dates with missing values already filled (see missing_values).
-Gaps in days keep their sign: a negative value means the dates are in the
-wrong order, a logical issue documented in quality and not changed here.
+Builds on the cleaned dates (see cleaning) with missing values filled (see
+missing_values), so the gaps in days are never negative.
 Discretization and binarization of these features are a separate step.
 
 Usage (from the repository root):
@@ -18,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from src.common.data_loading import DATA_DIR, YEARS, read_years
+from src.time_integration.cleaning import clean
 from src.time_integration.columns import COLUMNS
 from src.time_integration.elections import ELECTIONS
 from src.time_integration.missing_values import CLOSE, OPEN, PUB, fill_missing_dates, parse_dates
@@ -32,8 +32,8 @@ COVID_LABELS = ["Para COVID", "Gjatë COVID", "Pas COVID"]
 
 
 def prepare(raw):
-    """Parsed dates with missing opening/closing dates filled."""
-    return fill_missing_dates(parse_dates(raw))
+    """Parsed and cleaned dates with missing opening/closing dates filled."""
+    return fill_missing_dates(clean(parse_dates(raw)))
 
 
 def add_time_features(df):

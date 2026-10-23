@@ -51,6 +51,9 @@ def fill_missing_dates(df):
 
     open_gap = median_gap_by_year(df[PUB], df[OPEN], df["year"])
     df[OPEN] = df[OPEN].fillna(df[PUB] + pd.to_timedelta(open_gap, unit="D"))
+    # A filled opening date can never fall after a known closing date
+    too_late = df[f"{OPEN}_imputed"] & (df[OPEN] > df[CLOSE])
+    df.loc[too_late, OPEN] = df.loc[too_late, CLOSE]
 
     # The duration is learned only from real opening dates, then applied to the filled one
     real_open = df[OPEN].where(~df[f"{OPEN}_imputed"])
@@ -94,7 +97,7 @@ def main():
         print(by_year.to_string())
     print(f"\nRows: {rows_before:,} -> {len(df):,} (none dropped)")
     print(f"Opening before publication after fill: {(df[OPEN] < df[PUB]).sum():,} "
-          "(pre-existing logical issue, handled separately)")
+          "(pre-existing logical issue, fixed in cleaning)")
     print(f"Closing before opening among imputed: "
           f"{((df[CLOSE] < df[OPEN]) & df[f'{CLOSE}_imputed']).sum():,}")
 
