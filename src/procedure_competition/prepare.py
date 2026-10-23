@@ -21,6 +21,7 @@ from src.procedure_competition.columns import BINARY, COLUMNS, NUMERIC
 OUT_DIR = Path("reports/procedure_competition")
 CPV_PATTERN = re.compile(r"(?<!\d)(\d{8})(?:-(\d))?")
 EXPORT_DATE_PATTERN = re.compile(r"Gjeneruar_me_(\d{8})", re.IGNORECASE)
+COMPETITION_BANDS = ["No offers", "Single offer", "2-3 offers", "4+ offers"]
 
 
 def _is_blank(series):
@@ -170,6 +171,20 @@ def category_profile(df):
     return pd.DataFrame(rows)
 
 
+def competition_profile(df):
+    """Summarize competition bands within each source year."""
+    profile = (
+        df.assign(competition_band=df["competition_band"].astype("string").fillna("[MISSING]"))
+        .groupby(["year", "competition_band"], dropna=False)
+        .size()
+        .rename("rows")
+        .reset_index()
+    )
+    totals = profile.groupby("year")["rows"].transform("sum")
+    profile["pct_within_year"] = (profile["rows"] * 100 / totals).round(2)
+    return profile
+
+
 def clean_and_engineer(df):
     """Normalize whitespace/types and add documented analysis features."""
     out = df.copy()
@@ -191,6 +206,19 @@ def clean_and_engineer(df):
     out["qualified_offer_share"] = (
         out["Numri_i_ofertave_te_kualifikuara"] /
         out["Numri_i_ofertave_te_dorezuara"].where(out["Numri_i_ofertave_te_dorezuara"].gt(0))
+    )
+    submitted = out["Numri_i_ofertave_te_dorezuara"]
+    qualified = out["Numri_i_ofertave_te_kualifikuara"]
+    out["single_bidder"] = submitted.eq(1).where(submitted.notna(), pd.NA).astype("boolean")
+    out["no_qualified_offers"] = qualified.eq(0).where(qualified.notna(), pd.NA).astype("boolean")
+    out["competition_band"] = pd.cut(
+        submitted.where(submitted.ge(0)),
+        bins=[-1, 0, 1, 3, float("inf")],
+        labels=COMPETITION_BANDS,
+    )
+    # A populated framework type identifies a framework agreement; the source field is preserved.
+    out["is_framework_agreement"] = (
+        out["Lloji_i_marreveshjes_kuader"].notna().astype("boolean")
     )
     # Preserve original reason but add a usable indicator. Missing stays missing.
     out["has_cancellation_reason"] = out["Arsyeja_e_anullimit"].notna().astype("boolean")
@@ -223,7 +251,7 @@ def main():
     clean = clean_and_engineer(df)
     quality_report(clean, cleaned=True).to_csv(out_dir / "quality_after.csv", index=False)
     missing_value_report(df, clean).to_csv(out_dir / "missing_values.csv", index=False)
-
+    competition_profile(clean).to_csv(out_dir / "competition_by_year.csv", index=False)
     yearly = df.groupby("year", dropna=False).size().rename("procedures").reset_index()
     yearly.to_csv(out_dir / "yearly_row_counts.csv", index=False)
     summary = pd.DataFrame([
@@ -234,6 +262,9 @@ def main():
         {"metric": "rows_with_CPV_code", "value": int(clean["cpv_count"].gt(0).sum())},
         {"metric": "rows_with_multiple_CPV_codes", "value": int(clean["cpv_count"].gt(1).sum())},
         {"metric": "cancelled_without_reason", "value": int(clean["cancelled_without_reason"].sum())},
+        {"metric": "single_bidder_procedures", "value": int(clean["single_bidder"].sum())},
+        {"metric": "procedures_without_qualified_offers", "value": int(clean["no_qualified_offers"].sum())},
+        {"metric": "framework_agreements", "value": int(clean["is_framework_agreement"].sum())},
     ])
     summary.to_csv(out_dir / "preparation_summary.csv", index=False)
     # Clean rows are emitted separately for downstream integration; raw data remains untouched.
