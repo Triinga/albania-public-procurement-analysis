@@ -1,0 +1,10 @@
+source_column,encoding_method,input_categories,generated_columns,missing_policy
+Lloji_i_procedures,one_hot,12,12,Separate [MISSING] category when present
+Tipi_i_kontrates,one_hot,3,3,Separate [MISSING] category when present
+Lloji_i_marreveshjes_kuader,one_hot,4,4,Separate [MISSING] category when present
+primary_cpv_division,one_hot,46,46,Separate [MISSING] category when present
+competition_band,one_hot,4,4,Separate [MISSING] category when present
+Autoriteti_kontraktues,frequency,1495,1,Missing values treated as a separate category
+primary_cpv_code,frequency,3689,1,Missing values treated as a separate category
+Objekti_i_prokurimit,not_encoded_free_text,86963,0,Original text and missing values preserved
+Arsyeja_e_anullimit,not_encoded_free_text,3496,0,Original text preserved; indicator feature used
