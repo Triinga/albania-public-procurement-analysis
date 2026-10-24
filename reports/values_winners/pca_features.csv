@@ -1,0 +1,10 @@
+feature,part,transformation,non_null_in_dataset,rows_used
+Fondi_limit,values_winners,log(1 + x) + z-score,235477,201837
+Vlera_e_fituesit,values_winners,log(1 + x) + z-score,220382,201837
+ditet_publikim_hapje,time_integration,log(1 + x) + z-score,277764,201837
+kohezgjatja_e_tenderit,time_integration,log(1 + x) + z-score,277764,201837
+ditet_nga_zgjedhjet,time_integration,z-score,277764,201837
+Numri_i_ofertave_te_dorezuara,procedure_competition,log(1 + x) + z-score,277764,201837
+Numri_i_ofertave_te_kualifikuara,procedure_competition,log(1 + x) + z-score,277764,201837
+qualified_offer_share,procedure_competition,z-score,252020,201837
+cpv_count,procedure_competition,log(1 + x) + z-score,277764,201837

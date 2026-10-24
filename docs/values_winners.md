@@ -13,6 +13,7 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > | 5. Krijimi i vetive, diskretizimi, binarizimi | [`src/values_winners/features.py`](../src/values_winners/features.py) | [`features_summary.csv`](../reports/values_winners/features_summary.csv), [`discretization_fund.csv`](../reports/values_winners/discretization_fund.csv), [`fund_categories.csv`](../reports/values_winners/fund_categories.csv) |
 > | 6. Transformimi | [`src/values_winners/transformation.py`](../src/values_winners/transformation.py) | [`transformation_summary.csv`](../reports/values_winners/transformation_summary.csv) |
 > | 7. Agregimi | [`src/values_winners/aggregation.py`](../src/values_winners/aggregation.py) | [`aggregation_year.csv`](../reports/values_winners/aggregation_year.csv), [`aggregation_procedure_type.csv`](../reports/values_winners/aggregation_procedure_type.csv), [`aggregation_election_period.csv`](../reports/values_winners/aggregation_election_period.csv), [`aggregation_covid_period.csv`](../reports/values_winners/aggregation_covid_period.csv), [`aggregation_fund_category.csv`](../reports/values_winners/aggregation_fund_category.csv), [`aggregation_top_authorities.csv`](../reports/values_winners/aggregation_top_authorities.csv), [`aggregation_top_winners.csv`](../reports/values_winners/aggregation_top_winners.csv), [`aggregation_winner_concentration.csv`](../reports/values_winners/aggregation_winner_concentration.csv) |
+> | 8. Reduktimi i dimensionit (PCA) | [`src/values_winners/pca.py`](../src/values_winners/pca.py) | [`pca_summary.csv`](../reports/values_winners/pca_summary.csv), [`pca_features.csv`](../reports/values_winners/pca_features.csv), [`pca_feature_correlation.csv`](../reports/values_winners/pca_feature_correlation.csv), [`pca_explained_variance.csv`](../reports/values_winners/pca_explained_variance.csv), [`pca_loadings.csv`](../reports/values_winners/pca_loadings.csv) |
 >
 > Të dhënat e pastruara ruhen te `data/processed/` (jashtë git-it).
 
@@ -370,3 +371,61 @@ Për çdo fitues (NIPT) llogariten: numri i kontratave, **pjesa e tregut** (% e 
 | 100 më të mëdhenjtë | 82,146 | 36.69 |
 
 Pjesa e tregut matet me **numrin e kontratave**, jo me vlerën, për të njëjtën arsye si mediana: vlerat e pamundura do ta shtrembëronin.
+
+## 8. Reduktimi i dimensionit (PCA)
+
+PCA (*Principal Component Analysis*) bëhet mbi **dataset-in e integruar**, me vetitë sasiore të **të treve pjesëve**. Zgjedhja e vetive për gjithë dataset-in nuk ishte bërë ende, prandaj vetitë hyrëse u zgjodhën këtu nga ato që secila pjesë kishte përgatitur, sipas kritereve të mëposhtme. PCA-ja llogaritet me `numpy` (SVD), pa varësi shtesë.
+
+### 8.1 Vetitë hyrëse
+
+| Vetia | Pjesa | Transformimi |
+|---|---|---|
+| `Fondi_limit` | Vlerat dhe fituesit | log(1 + x) + z-score |
+| `Vlera_e_fituesit` | Vlerat dhe fituesit | log(1 + x) + z-score |
+| `ditet_publikim_hapje` | Koha dhe integrimi | log(1 + x) + z-score |
+| `kohezgjatja_e_tenderit` | Koha dhe integrimi | log(1 + x) + z-score |
+| `ditet_nga_zgjedhjet` | Koha dhe integrimi | z-score (ka vlera negative) |
+| `Numri_i_ofertave_te_dorezuara` | Procedura dhe konkurrenca | log(1 + x) + z-score |
+| `Numri_i_ofertave_te_kualifikuara` | Procedura dhe konkurrenca | log(1 + x) + z-score |
+| `qualified_offer_share` | Procedura dhe konkurrenca | z-score (është përqindje 0–1) |
+| `cpv_count` | Procedura dhe konkurrenca | log(1 + x) + z-score |
+
+**Pse këto vetë:**
+- PCA përmbledh **variacionin e vazhdueshëm**, prandaj merren vetitë sasiore. Flag-et 0/1 dhe kolonat one-hot lihen jashtë, sepse do ta dominonin rezultatin.
+- Lihen jashtë qëllimisht: `Vlera_e_fituesit_ne_lidhjen_e_kontrates` (mungon te 81.5%), `kursimi` dhe `kursimi_pct` (përmbajnë vlerat e pamundura, Pjesa II) dhe `muaji_publikimit` (numër ciklik, jo sasi).
+- **Z-score** u jep të gjitha vetive të njëjtën peshë; pa të, shumat në lekë do të dominonin.
+- PCA kërkon rreshta të plotë. Meqë strategjia e vlerave të zbrazëta nuk imputon, përdoren **201,837 procedura** (72.7%) që kanë të gjitha vetitë.
+
+**Korrelacioni** (pas transformimit) tregon që vetitë nuk janë të pavarura: `Numri_i_ofertave_te_dorezuara` ↔ `_kualifikuara` **0.86**, `Fondi_limit` ↔ `Vlera_e_fituesit` **0.72**, `Fondi_limit` ↔ `kohezgjatja_e_tenderit` **0.60**. Pa log-transformimin, korrelacioni fond–vlerë dilte 0.00, sepse vlerat ekstreme e fshihnin lidhjen. Tabela: [`pca_feature_correlation.csv`](../reports/values_winners/pca_feature_correlation.csv).
+
+### 8.2 Varianca e shpjeguar
+
+| Komponenti | Varianca % | Kumulative % |
+|---|---|---|
+| PC1 | 29.19 | 29.19 |
+| PC2 | 18.53 | 47.71 |
+| PC3 | 14.46 | 62.17 |
+| PC4 | 11.38 | 73.55 |
+| PC5 | 9.95 | **83.50** |
+| PC6 | 8.56 | **92.06** |
+| PC7 | 5.16 | 97.22 |
+| PC8 | 2.64 | 99.86 |
+| PC9 | 0.14 | 100.00 |
+
+**Rezultati:** **5 komponentë** shpjegojnë mbi **80%** të variancës dhe **6 komponentë** mbi **90%**. Pra 9 vetitë mund të zëvendësohen me 5–6 komponentë, me humbje të vogël informacioni. PC9 shpjegon vetëm 0.14%: ai është diferenca mes ofertave të dorëzuara dhe të kualifikuara, që janë pothuajse e njëjta informatë (korrelacion 0.86).
+
+### 8.3 Çfarë përfaqësojnë komponentët kryesorë
+
+Peshat (*loadings*) tregojnë sa kontribuon çdo veti në çdo komponent ([`pca_loadings.csv`](../reports/values_winners/pca_loadings.csv)):
+
+| Komponenti | Vetitë me peshë më të madhe | Kuptimi |
+|---|---|---|
+| **PC1** (29%) | + fondi, + vlera fituese, + kohëzgjatja e tenderit; − numri i ofertave | **Madhësia e procedurës kundrejt konkurrencës**: procedurat e mëdha dhe të gjata kanë më pak oferta |
+| **PC2** (19%) | − ofertat (të dyja), − fondi, − vlera fituese | **Volumi i përgjithshëm** (oferta dhe vlerë njëkohësisht) |
+| **PC3** (14%) | − pjesa e ofertave të kualifikuara, + numri i kodeve CPV | **Cilësia e ofertave kundrejt gjerësisë së objektit** |
+| **PC4** (11%) | − ditët nga zgjedhjet (−0.88) | **Koha në raport me zgjedhjet**: një dimension pothuajse i pavarur nga të tjerët |
+| **PC5** (10%) | + ditët nga publikimi te hapja (0.85) | **Afati për përgatitjen e ofertave** |
+
+Koha në raport me zgjedhjet (PC4) del si dimension më vete, i palidhur me madhësinë dhe konkurrencën. Nëse ka efekt zgjedhor, ai analizohet në Pjesën II.
+
+Komponentët e çdo procedure ruhen te `data/processed/pca_scores.csv`, bashkë me çelësin e procedurës.
