@@ -1,0 +1,5 @@
+sample,rows,fraction_pct,seed
+population,277764,100.0,42
+random,27776,10.0,42
+stratified_by_year,27777,10.0,42
+stratified_by_year_election,27774,10.0,42

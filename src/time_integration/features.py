@@ -105,6 +105,12 @@ def election_proximity(df):
     return pd.Categorical(labels, categories=ELECTION_LABELS, ordered=True)
 
 
+def build_features(raw):
+    """Raw time columns -> cleaned dates with all features, discretized and binarized."""
+    df = add_covid_features(add_election_features(add_time_features(prepare(raw))))
+    return binarize(discretize(df))
+
+
 def discretize(df):
     df = df.copy()
     df["kategoria_e_kohezgjatjes"] = pd.cut(df["kohezgjatja_e_tenderit"], DURATION_BINS,
@@ -191,8 +197,7 @@ def main():
     raw = read_years(folder, columns=cols_to_read)
     print(f"Years {YEARS.start}-{YEARS.stop - 1}: {len(raw):,} procedures\n")
 
-    df = add_covid_features(add_election_features(add_time_features(prepare(raw))))
-    df = binarize(discretize(df))
+    df = build_features(raw)
     assert len(df) == len(raw), "rows must never be dropped"
 
     summary = features_summary(df)

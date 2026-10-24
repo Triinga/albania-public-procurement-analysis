@@ -7,7 +7,7 @@ Kolonat: `Data_e_publikimit`, `Data_e_hapjes`, `Data_e_mbylljes`, `Numri_i_refer
 
 ## 1. Periudha e zgjedhjeve
 
-Integrimi përfshin zgjedhjet kombëtare në Shqipëri për analizën e prokurimit gjatë periudhave elektorale. Burimi: [Komisioni Qendror i Zgjedhjeve (KQZ)](https://kqz.gov.al).
+Integrimi përfshin zgjedhjet kombëtare në Shqipëri për analizën e prokurimit gjatë periudhave elektorale. Burimi: [Komisioni Qendror i Zgjedhjeve (KQZ)](https://kqz.gov.al/subjektet-zgjedhore).
 
 | Viti | Lloji | Data |
 |------|-------|------|
@@ -168,6 +168,69 @@ Flamujt e pastrimit dhe të plotësimit (`Data_e_publikimit_corrected`, `Data_e_
 - Kodi: `python -m src.time_integration.features`
 - Dataset-i me vetitë ruhet në `data/processed/time_features.csv` (jo në git).
 
+## 2.6 Mostrimi
+
+Mostra merr **10%** të procedurave (~27,777 nga 277,764), pa zëvendësim dhe me seed fiks (`42`), ndaj çdo ekzekutim jep të njëjtën mostër. U krahasuan tri metoda:
+
+| Metoda | Përshkrimi |
+|---|---|
+| Rastësore e thjeshtë | 10% e rreshtave zgjidhen rastësisht nga i gjithë dataset-i |
+| E shtresëzuar sipas vitit | 10% nga çdo vit |
+| **E shtresëzuar sipas vitit dhe afërsisë me zgjedhjet** ✅ | 10% nga çdo kombinim viti × `afersia_me_zgjedhjet` (40 shtresa) |
+
+Një seed i vetëm mund ta favorizojë rastësisht njërën metodë, prandaj secila metodë u përsërit me **50 seed-e** dhe u mat devijimi më i madh nga dataset-i i plotë (në pikë përqindjeje, pp):
+
+| Variabli | Rastësore | Sipas vitit | **Sipas vitit + zgjedhjeve** |
+|---|---|---|---|
+| `year` | 0.32 | 0.01 | **0.01** |
+| `periudha_covid` | 0.32 | 0.06 | **0.05** |
+| `afersia_me_zgjedhjet` | 0.31 | 0.32 | **0.00** |
+| `periudhe_parazgjedhore` | 0.15 | 0.17 | **0.00** |
+| `kategoria_e_kohezgjatjes` | 0.27 | 0.30 | 0.31 |
+| `publikim_ne_dhjetor` | 0.14 | 0.15 | 0.12 |
+| `hapje_mbyllje_e_njejta_dite` | 0.10 | 0.09 | 0.12 |
+
+*(mesatarja e 50 seed-eve; rasti më i keq gjendet te `sampling_max_deviation.csv`)*
+
+**Zgjedhja:** mostra e shtresëzuar sipas **vitit dhe afërsisë me zgjedhjet**. Ajo ruan saktësisht përqindjen e çdo viti dhe të periudhave zgjedhore, që janë boshti i integrimit (10 vite + zgjedhjet), dhe ruan edhe periudhat COVID. Për variablat jashtë shtresave, të tri metodat kanë luhatje të ngjashme e të vogla (< 0.35 pp mesatarisht), ndaj shtresëzimi nuk humb asgjë. Mesatarja dhe mediana e vetive në ditë mbeten të afërta me dataset-in e plotë (p.sh. kohëzgjatja mesatare 6.04 → 6.12 ditë, mediana 1 → 1).
+
+Funksionet e mostrimit janë të përgjithshme ([`src/common/sampling.py`](../src/common/sampling.py)), që pipeline-i final t'i zbatojë mbi dataset-in e integruar.
+
+- Kodi: `python -m src.time_integration.sampling`
+- Mostra ruhet në `data/processed/time_sample.csv` (jo në git).
+
+## 2.7 Dataset-i i integruar
+
+Dataset-i i integruar bashkon në një tabelë kolonat e përgatitura të **të tri pjesëve** të grupit për të 10 vitet (2016–2025), bashkë me integrimin e zgjedhjeve (KQZ) dhe të ndarjeve CPV.
+
+| Pjesa | Përgatitja (kodi i secilit) | Kolona |
+|---|---|---|
+| Çelësi | `Numri_i_references`, `Autoriteti_kontraktues`, `year` | 3 |
+| Vlerat dhe fituesit (Marigona Hamiti) | Pastrimi, vlerat e zbrazëta, vetitë, diskretizimi, binarizimi | 15 |
+| Koha dhe integrimi (Semine Muharremi) | Pastrimi i datave, vlerat e zbrazëta, vetitë kohore/zgjedhore/COVID, diskretizimi, binarizimi | 23 |
+| Procedura dhe konkurrenca (Tringa Baftiu) | Pastrimi, integrimi CPV, vetitë e konkurrencës | 23 |
+| **Gjithsej** | | **64** |
+
+**Si bashkohen pjesët:**
+- Të tri pjesët përgatiten nga i njëjti lexim i të dhënave raw, secila me kodin e vet, pa e kopjuar atë. Kështu, një ndryshim te pastrimi i një pjese kalon automatikisht në dataset-in e integruar.
+- Një procedurë identifikohet nga **referenca bashkë me autoritetin kontraktues**, sepse referenca vetëm përdoret nga 7 çifte procedurash (shih [values_winners.md](values_winners.md)).
+- Bashkimi bëhet mbi vlerat **origjinale** të çelësit. Pjesa e procedurave e pastron emrin e autoritetit (hapësirat), dhe bashkimi mbi emrin e pastruar mund të humbiste përputhje. Në dataset mbahet emri i **pastruar**.
+- Çdo bashkim kontrollohet të jetë **një-me-një**, çdo rresht duhet të gjejë çiftin e vet dhe viti duhet të jetë i njëjtë në të tri pjesët.
+
+| Kontrolli | Rezultati |
+|---|---|
+| Rreshta raw (10 skedarë) | 277,764 |
+| Rreshta të integruar | 277,764 |
+| Rreshta të humbur ose të dyfishuar | **0** |
+| Çelësa të përsëritur | **0** |
+| Vitet | 2016–2025 |
+
+Ky dataset nuk përmban ende transformimin dhe PCA-në, që janë hapat e mbetur të pjesës së vlerave dhe fituesve. Ato i shtohen te dataset-i përfundimtar (`prokurimi_final.csv`).
+
+- Kodi: `python -m src.time_integration.integrated_dataset`
+- Dataset-i ruhet në `data/processed/prokurimi_integruar.csv` (~155 MB, jo në git).
+- Lista e kolonave, me burimin, tipin dhe përqindjen e mungesave: [`integrated_columns.csv`](../reports/time_integration/integrated_columns.csv).
+
 ## 3. Raportet e gjeneruara
 
 - **missing_summary.csv**: Mungesat para/pas plotësimit dhe numri i vlerave të plotësuara
@@ -185,3 +248,10 @@ Flamujt e pastrimit dhe të plotësimit (`Data_e_publikimit_corrected`, `Data_e_
 - **discretization_duration.csv**: Krahasimi equal width / equal frequency / kufij të zgjedhur për kohëzgjatjen
 - **election_proximity_by_year.csv**: Procedurat sipas afërsisë me zgjedhjet dhe vitit
 - **binary_summary.csv**: Numri dhe përqindja e vlerave 1 për çdo veti binare
+- **sampling_sizes.csv**: Madhësia e çdo mostre dhe seed-i
+- **sampling_comparison.csv**: Përqindja e çdo vlere në dataset-in e plotë dhe në secilën mostër
+- **sampling_max_deviation.csv**: Devijimi më i madh nga dataset-i i plotë (mesatarja dhe rasti më i keq në 50 seed-e)
+- **sampling_numeric.csv**: Mesatarja dhe mediana e vetive në ditë, dataset i plotë kundrejt mostrave
+- **integrated_summary.csv**: Kontrollet e dataset-it të integruar (rreshta, çelësa, kolona sipas pjesës)
+- **integrated_columns.csv**: Çdo kolonë e dataset-it të integruar me burimin, personin, tipin dhe mungesat
+- **integrated_rows_by_year.csv**: Procedurat e dataset-it të integruar sipas vitit

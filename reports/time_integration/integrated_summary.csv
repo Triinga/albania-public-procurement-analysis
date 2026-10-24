@@ -1,0 +1,11 @@
+metric,value
+Raw rows (10 yearly files),277764
+Integrated rows,277764
+Rows lost or duplicated,0
+Duplicated procedure keys,0
+Columns,64
+Columns from key,3
+Columns from values_winners,15
+Columns from time_integration,23
+Columns from procedure_competition,23
+Years,2016-2025
