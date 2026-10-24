@@ -11,6 +11,7 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > | 3. Pastrimi | [`src/values_winners/cleaning.py`](../src/values_winners/cleaning.py) | [`cleaning_summary.csv`](../reports/values_winners/cleaning_summary.csv) |
 > | 4. Vlerat e zbrazëta | [`src/values_winners/missing_values.py`](../src/values_winners/missing_values.py) | [`missing_summary.csv`](../reports/values_winners/missing_summary.csv), [`missing_by_year.csv`](../reports/values_winners/missing_by_year.csv), [`missing_winner_by_cancellation.csv`](../reports/values_winners/missing_winner_by_cancellation.csv), [`missing_fund_by_procedure_type.csv`](../reports/values_winners/missing_fund_by_procedure_type.csv), [`missing_value_vs_winner.csv`](../reports/values_winners/missing_value_vs_winner.csv), [`missing_strategies.csv`](../reports/values_winners/missing_strategies.csv) |
 > | 5. Krijimi i vetive, diskretizimi, binarizimi | [`src/values_winners/features.py`](../src/values_winners/features.py) | [`features_summary.csv`](../reports/values_winners/features_summary.csv), [`discretization_fund.csv`](../reports/values_winners/discretization_fund.csv), [`fund_categories.csv`](../reports/values_winners/fund_categories.csv) |
+> | 6. Transformimi | [`src/values_winners/transformation.py`](../src/values_winners/transformation.py) | [`transformation_summary.csv`](../reports/values_winners/transformation_summary.csv) |
 >
 > Të dhënat e pastruara ruhen te `data/processed/` (jashtë git-it).
 
@@ -269,3 +270,38 @@ Vetia e re: `kategoria_e_fondit` (Shumë i vogël / I vogël / I mesëm / I madh
 | `Fondi_limit_missing`, `Vlera_e_fituesit_missing`, `Fituesi_missing` | po / jo | 1 / 0 |
 
 Rezultati ruhet te `data/processed/values_winners_features.csv`.
+
+## 6. Transformimi
+
+Transformohen tri kolonat e shumave: `Fondi_limit`, `Vlera_e_fituesit` dhe `Vlera_e_fituesit_ne_lidhjen_e_kontrates`. Vlerat që mungojnë mbeten `NaN`.
+
+### 6.1 Pse logaritmi
+
+Shumat në lekë kanë një bisht shumë të gjatë djathtas: shumica e procedurave janë të vogla, por pak procedura janë miliarda lekë. **Asimetria (skewness)** e tyre është 136–469 (një shpërndarje simetrike ka 0). Prandaj fillimisht aplikohet **`log(1 + x)`** (`1 +` lejon edhe vlerat 0).
+
+| Kolona | Asimetria para | Asimetria pas `log(1 + x)` |
+|---|---|---|
+| `Fondi_limit` | 135.74 | **0.02** |
+| `Vlera_e_fituesit` | 469.45 | **−0.87** |
+| `Vlera_e_fituesit_ne_lidhjen_e_kontrates` | 226.95 | **−1.30** |
+
+### 6.2 Normalizimi dhe standardizimi
+
+| Kolona | Transformimi | Intervali pas | Mesatarja pas | Devijimi standard pas |
+|---|---|---|---|---|
+| `Fondi_limit` | min-max **pa** log | 0 – 1 | 0.0002 | 0.0052 |
+| | log + min-max | 0 – 1 | 0.517 | 0.092 |
+| | log + z-score | −5.64 – 5.27 | 0 | 1 |
+| `Vlera_e_fituesit` | min-max **pa** log | 0 – 1 | 0.0000 | 0.0021 |
+| | log + min-max | 0 – 1 | 0.396 | 0.071 |
+| | log + z-score | −5.59 – 8.51 | 0 | 1 |
+| `Vlera_e_fituesit_ne_lidhjen_e_kontrates` | min-max **pa** log | 0 – 1 | 0.0000 | 0.0044 |
+| | log + min-max | 0 – 1 | 0.448 | 0.097 |
+| | log + z-score | −4.60 – 5.66 | 0 | 1 |
+
+**Vërejtje:**
+- **Min-max pa log nuk funksionon:** për shkak të shumave shumë të mëdha, pothuajse të gjitha procedurat marrin vlerë afër 0 (mesatarja 0.0002). Pas logaritmit, vlerat shpërndahen në të gjithë intervalin [0, 1].
+- **Log + min-max** përdoret kur duhen vlera në intervalin [0, 1]; **log + z-score** (mesatarja 0, devijimi 1) përdoret për PCA, që kolonat të kenë të njëjtën peshë.
+- **Kursimi (`kursimi`, `kursimi_pct`) nuk transformohet ende.** Ai përmban vlerat logjikisht të pamundura (vlera e fituesit shumë mbi fondin, p.sh. `kursimi_pct` deri në −8.75 miliardë %), që do ta shtrembëronin çdo shkallëzim. Transformohet pasi këto raste të trajtohen në Pjesën II.
+
+Kolonat e reja: `<kolona>_log`, `<kolona>_log_minmax`, `<kolona>_log_z`. Rezultati ruhet te `data/processed/values_winners_transformed.csv`.
