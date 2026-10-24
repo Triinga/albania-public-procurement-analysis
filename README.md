@@ -23,6 +23,7 @@ Projekt grupor (Grupi 13) për lëndën **Përgatitja dhe vizualizimi i të dhë
 | **Çfarë u shkarkua** | Një skedar CSV për çdo vit, 2016–2025 (10 skedarë), me 21 kolona për procedurë |
 | **Data e eksportit** | 19.10.2026 (shihet në emrin e skedarit: `Gjeneruar_me_19102026`) |
 | **Madhësia** | 277,764 procedura, ~85 MB |
+| **Kopja e grupit** | [Google Drive](https://drive.google.com/drive/folders/13KJ_SU6EgI5bSg2fhqaC3aZEcLcJkuGo?usp=drive_link) (dosja `data_raw`) |
 | **Emri i skedarëve** | `Procedurat_e_prokurimit_-_viti_<VITI>_-_Gjeneruar_me_19102026.csv` |
 
 - **Objekti** i të dhënave është një procedurë prokurimi (tender): çdo rresht është një procedurë.
@@ -63,9 +64,17 @@ Të dhënat raw dhe dataset-et e gjeneruara nuk ruhen në git, sepse janë të m
 pip install -r requirements.txt
 ```
 
-**2. Të dhënat:** shkarkoni 10 skedarët CSV nga faqja e APP-së (ose nga Google Drive i grupit) dhe vendosini në `data/raw/`.
+**2. Të dhënat:** shkarkoni 10 skedarët CSV nga [Google Drive i grupit](https://drive.google.com/drive/folders/13KJ_SU6EgI5bSg2fhqaC3aZEcLcJkuGo?usp=drive_link) (dosja `data_raw`) ose nga faqja e APP-së, dhe vendosini në `data/raw/` pa ua ndryshuar emrat. Dataset-i i integruar i gatshëm (`prokurimi_integruar.csv`) gjendet në të njëjtin Drive, te dosja `data_processed`.
 
-**3. Ekzekutimi** nga rrënja e repository-t. Çdo skript pranon si argument opsional dosjen me CSV-të (parazgjedhja: `data/raw/`):
+**3. Dataset-i i integruar** (të tri pjesët në një tabelë). Mjafton **një komandë**, nga rrënja e repository-t:
+
+```bash
+python -m src.time_integration.integrated_dataset
+```
+
+Skripti i bën vetë të gjithë hapat e përgatitjes së të tri pjesëve (pastrimin, vlerat e zbrazëta, vetitë, integrimin e zgjedhjeve dhe CPV), ndaj nuk duhet ekzekutuar asnjë skript tjetër më parë. Zgjat 1–2 minuta dhe krijon `data/processed/prokurimi_integruar.csv` (277,764 rreshta × 64 kolona, ~155 MB). Përshkrimi i kolonave: [`reports/time_integration/integrated_columns.csv`](reports/time_integration/integrated_columns.csv).
+
+**4. Hapat e veçantë** (opsionale: për të rigjeneruar raportet e secilës pjesë). Çdo skript pranon si argument opsional dosjen me CSV-të (parazgjedhja: `data/raw/`):
 
 ```bash
 # Vlerat dhe fituesit
@@ -83,6 +92,7 @@ python -m src.time_integration.cleaning
 python -m src.time_integration.missing_values
 python -m src.time_integration.features
 python -m src.time_integration.sampling
+python -m src.time_integration.integrated_dataset
 
 # Procedura dhe konkurrenca (dosja dhe intervali i viteve)
 python -m src.procedure_competition.prepare data/raw 2016 2020

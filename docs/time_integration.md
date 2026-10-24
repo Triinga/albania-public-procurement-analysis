@@ -199,6 +199,38 @@ Funksionet e mostrimit janë të përgjithshme ([`src/common/sampling.py`](../sr
 - Kodi: `python -m src.time_integration.sampling`
 - Mostra ruhet në `data/processed/time_sample.csv` (jo në git).
 
+## 2.7 Dataset-i i integruar
+
+Dataset-i i integruar bashkon në një tabelë kolonat e përgatitura të **të tri pjesëve** të grupit për të 10 vitet (2016–2025), bashkë me integrimin e zgjedhjeve (KQZ) dhe të ndarjeve CPV.
+
+| Pjesa | Përgatitja (kodi i secilit) | Kolona |
+|---|---|---|
+| Çelësi | `Numri_i_references`, `Autoriteti_kontraktues`, `year` | 3 |
+| Vlerat dhe fituesit (Marigona Hamiti) | Pastrimi, vlerat e zbrazëta, vetitë, diskretizimi, binarizimi | 15 |
+| Koha dhe integrimi (Semine Muharremi) | Pastrimi i datave, vlerat e zbrazëta, vetitë kohore/zgjedhore/COVID, diskretizimi, binarizimi | 23 |
+| Procedura dhe konkurrenca (Tringa Baftiu) | Pastrimi, integrimi CPV, vetitë e konkurrencës | 23 |
+| **Gjithsej** | | **64** |
+
+**Si bashkohen pjesët:**
+- Të tri pjesët përgatiten nga i njëjti lexim i të dhënave raw, secila me kodin e vet, pa e kopjuar atë. Kështu, një ndryshim te pastrimi i një pjese kalon automatikisht në dataset-in e integruar.
+- Një procedurë identifikohet nga **referenca bashkë me autoritetin kontraktues**, sepse referenca vetëm përdoret nga 7 çifte procedurash (shih [values_winners.md](values_winners.md)).
+- Bashkimi bëhet mbi vlerat **origjinale** të çelësit. Pjesa e procedurave e pastron emrin e autoritetit (hapësirat), dhe bashkimi mbi emrin e pastruar mund të humbiste përputhje. Në dataset mbahet emri i **pastruar**.
+- Çdo bashkim kontrollohet të jetë **një-me-një**, çdo rresht duhet të gjejë çiftin e vet dhe viti duhet të jetë i njëjtë në të tri pjesët.
+
+| Kontrolli | Rezultati |
+|---|---|
+| Rreshta raw (10 skedarë) | 277,764 |
+| Rreshta të integruar | 277,764 |
+| Rreshta të humbur ose të dyfishuar | **0** |
+| Çelësa të përsëritur | **0** |
+| Vitet | 2016–2025 |
+
+Ky dataset nuk përmban ende transformimin dhe PCA-në, që janë hapat e mbetur të pjesës së vlerave dhe fituesve. Ato i shtohen te dataset-i përfundimtar (`prokurimi_final.csv`).
+
+- Kodi: `python -m src.time_integration.integrated_dataset`
+- Dataset-i ruhet në `data/processed/prokurimi_integruar.csv` (~155 MB, jo në git).
+- Lista e kolonave, me burimin, tipin dhe përqindjen e mungesave: [`integrated_columns.csv`](../reports/time_integration/integrated_columns.csv).
+
 ## 3. Raportet e gjeneruara
 
 - **missing_summary.csv**: Mungesat para/pas plotësimit dhe numri i vlerave të plotësuara
@@ -220,3 +252,6 @@ Funksionet e mostrimit janë të përgjithshme ([`src/common/sampling.py`](../sr
 - **sampling_comparison.csv**: Përqindja e çdo vlere në dataset-in e plotë dhe në secilën mostër
 - **sampling_max_deviation.csv**: Devijimi më i madh nga dataset-i i plotë (mesatarja dhe rasti më i keq në 50 seed-e)
 - **sampling_numeric.csv**: Mesatarja dhe mediana e vetive në ditë, dataset i plotë kundrejt mostrave
+- **integrated_summary.csv**: Kontrollet e dataset-it të integruar (rreshta, çelësa, kolona sipas pjesës)
+- **integrated_columns.csv**: Çdo kolonë e dataset-it të integruar me burimin, personin, tipin dhe mungesat
+- **integrated_rows_by_year.csv**: Procedurat e dataset-it të integruar sipas vitit
