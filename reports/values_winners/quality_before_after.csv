@@ -1,0 +1,31 @@
+dimension,column,check,para,pas,statusi,arsyeja
+Uniqueness,All columns,Exact duplicate row (all 21 columns),0,0,Nuk ka problem,
+Uniqueness,Numri_i_references,Reference number used by more than one procedure,14,14,Mbetet qëllimisht,Procedura të ndryshme (autoritete të ndryshme); identifikohen me referencë + autoritet
+Completeness,Fondi_limit,Missing value,25564,42287,Rritet: fondet 0 / ≤ 1 lek u bënë mungesë (mungesa të maskuara),
+Completeness,Vlera_e_fituesit,Missing value,57382,57382,Mbetet qëllimisht,"Strategjia e vlerave të zbrazëta: NaN + flag, pa imputim"
+Completeness,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Missing value,226259,226259,Mbetet qëllimisht,"Strategjia e vlerave të zbrazëta: NaN + flag, pa imputim"
+Completeness,Lidhja_e_kontrates_me_TVSH,Missing value,0,0,Nuk ka problem,
+Completeness,Fituesi,Missing value,53894,53894,Mbetet qëllimisht,"Strategjia e vlerave të zbrazëta: NaN + flag, pa imputim"
+Completeness,NIPT_i_fituesit,Missing value,53880,53880,Mbetet qëllimisht,"Strategjia e vlerave të zbrazëta: NaN + flag, pa imputim"
+Format,NIPT_i_fituesit,Extra whitespace or newlines,7946,0,Rregulluar,Hapësirat dhe rreshtat e rinj (\n) u hoqën
+Format,Fituesi,Extra whitespace or newlines,21523,0,Rregulluar,Hapësirat dhe rreshtat e rinj (\n) u hoqën
+Format,NIPT_i_fituesit,Several NIPTs in one cell (joint winners),169,169,Mbetet qëllimisht,"Konsorcium: mbahet si një fitues i përbashkët, i ndarë me ' | '"
+Format,Fituesi,Several winners in one cell (joint winners),169,169,Mbetet qëllimisht,"Konsorcium: mbahet si një fitues i përbashkët, i ndarë me ' | '"
+Format,NIPT_i_fituesit,Single NIPT not in Albanian format (after trimming),244,244,Mbetet qëllimisht,Kompani të huaja me numër TVSH të vendit të tyre
+Format,Fondi_limit,Amount stored as text,252200,0,Rregulluar,U kthye në numër (u hoq presja e mijësheve)
+Format,Vlera_e_fituesit,Amount stored as text,220382,0,Rregulluar,U kthye në numër (u hoq presja e mijësheve)
+Format,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Amount stored as text,51505,0,Rregulluar,U kthye në numër (u hoq presja e mijësheve)
+Format,Lidhja_e_kontrates_me_TVSH,Po/Jo stored as text,277764,0,Rregulluar,U kthye në boolean
+Accuracy,Fondi_limit,Value is 0,13329,0,Rregulluar,Fondi 0 u shënua si mungesë e maskuar (NaN)
+Accuracy,Fondi_limit,Value between 0 and 1 lek,3394,0,Rregulluar,Fondi ≤ 1 lek u shënua si mungesë e maskuar (NaN)
+Accuracy,Vlera_e_fituesit,Value is 0,37,37,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II
+Accuracy,Vlera_e_fituesit,Value between 0 and 1 lek,19,19,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II
+Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value is 0,112,112,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II
+Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value between 0 and 1 lek,6,6,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II
+Accuracy,Vlera_e_fituesit,Winner value above fund limit,8571,5178,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II; bie sepse fondet ≤ 1 lek u bënë mungesë dhe nuk krahasohen më
+Accuracy,Fondi_limit,Fund is 0 but a winner value exists,13234,0,Rregulluar,Fondi 0 u shënua si mungesë e maskuar (NaN)
+Consistency,Fituesi,Cancelled procedure with a winner,27707,27707,Mbetet qëllimisht,Shënohet me kontrate_e_lidhur / anulim_kontradiktor në dataset-in përfundimtar
+Consistency,Vlera_e_fituesit,Cancelled procedure with a winner value,27618,27618,Mbetet qëllimisht,Shënohet me kontrate_e_lidhur / anulim_kontradiktor në dataset-in përfundimtar
+Consistency,NIPT_i_fituesit,NIPT without winner name,14,14,Mbetet qëllimisht,Emri mungon në burim; NIPT-i mbahet si identifikues
+Consistency,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Contract value differs from winner value,26749,26749,Mbetet qëllimisht,"Mund të jetë e rregullt (negociata, TVSH, lote); kontrollohet në Pjesën II"
+Consistency,Fituesi,NIPT written with more than one winner name,861,0,Rregulluar,Çdo NIPT merr emrin që përdoret më shpesh
