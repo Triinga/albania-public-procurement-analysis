@@ -36,6 +36,12 @@ Kategoritë me kardinalitet të ulët kodohen me one-hot encoding: lloji i proce
 
 `Autoriteti_kontraktues` dhe `primary_cpv_code` kanë shumë kategori, prandaj përdoret frequency encoding. Vlera tregon pjesën e rreshtave ku shfaqet kategoria. `Objekti_i_prokurimit` dhe `Arsyeja_e_anullimit` janë tekst i lirë dhe nuk one-hot kodohen; ruhen në formën e pastruar, ndërsa arsyeja përfaqësohet edhe nga `has_cancellation_reason`. Kjo shmang krijimin e dhjetëra mijëra kolonave të rralla. Për përdorim në një model parashikues, frekuencat duhet të mësohen vetëm nga pjesa e trajnimit.
 
+## Përzgjedhja finale e vetive
+
+Dataset-i final për analizë përmban vetëm kolona numerike dhe boolean të kthyera në `0`/`1`. Ai ruan vitin, statuset e anulimit dhe pezullimit, numrat e ofertave, vetitë e krijuara, kolonat one-hot dhe dy kolonat frequency-encoded. `procedure_row_id` identifikon rendin e rreshtit brenda të njëjtit ekzekutim dhe nuk përdoret si veti analitike.
+
+Kolonat tekstuale dhe kategoritë burimore të zëvendësuara nga encoding-u përjashtohen nga matrica numerike, por vazhdojnë të ruhen në `procedure_competition_clean.csv`. Kjo shmang dyfishimin e të njëjtit informacion. `feature_selection.csv` dokumenton vendimin për secilën kolonë hyrëse.
+
 Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hapësirat dhe boshllëqet normalizohen, ndërsa mungesat ruhen me tipe nullable. Politika dhe numri i mungesave para/pas pastrimit dokumentohen në `missing_values.csv`.
 
 ## Raportet dhe rezultatet
@@ -47,11 +53,13 @@ Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hap
 - `competition_by_year.csv`: shpërndarja e grupeve të konkurrencës për secilin vit.
 - `cpv_division_profile.csv`: numri dhe përqindja e procedurave sipas ndarjes zyrtare CPV.
 - `encoding_summary.csv`: metoda e encoding-ut, numri i kategorive dhe kolonat e krijuara.
+- `feature_selection.csv`: kolonat e zgjedhura ose të përjashtuara, roli dhe arsyeja e vendimit.
 - `category_profile.csv`: frekuencat për llojin e procedurës/kontratës, marrëveshjen kuadër dhe statuset.
 - `yearly_row_counts.csv`: numri i rreshtave sipas vitit.
 - `preparation_summary.csv`: përmbledhja e përgatitjes dhe ruajtjes së rreshtave.
 - `procedure_competition_clean.csv`: kolonat e pastruara dhe veçoritë e reja për integrim në hapin e pipeline-it final.
 - `procedure_competition_encoded.csv`: dataset-i i pastruar me kolonat e koduara; rikrijohet lokalisht dhe nuk ruhet në Git për shkak të madhësisë.
+- `procedure_competition_analysis_ready.csv`: matrica finale numerike për analizë; rikrijohet lokalisht dhe nuk ruhet në Git për shkak të madhësisë.
 
 Në ekzekutimin me eksportet e 19.10.2026 u lexuan 277,764 procedura dhe u ruajtën të gjitha. U gjetën 216,076 procedura me së paku një kod CPV; 61,968 qeliza kishin më shumë se një kod. Marrëveshja kuadër mungon në 258,340 raste (93.0%), ndaj boshllëqet mbeten missing dhe nuk imputohen. Këto përmbledhje janë në raportet CSV; numrat rifreskohen kur skripti ekzekutohet me eksporte të reja.
 
