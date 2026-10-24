@@ -12,6 +12,7 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > | 4. Vlerat e zbrazëta | [`src/values_winners/missing_values.py`](../src/values_winners/missing_values.py) | [`missing_summary.csv`](../reports/values_winners/missing_summary.csv), [`missing_by_year.csv`](../reports/values_winners/missing_by_year.csv), [`missing_winner_by_cancellation.csv`](../reports/values_winners/missing_winner_by_cancellation.csv), [`missing_fund_by_procedure_type.csv`](../reports/values_winners/missing_fund_by_procedure_type.csv), [`missing_value_vs_winner.csv`](../reports/values_winners/missing_value_vs_winner.csv), [`missing_strategies.csv`](../reports/values_winners/missing_strategies.csv) |
 > | 5. Krijimi i vetive, diskretizimi, binarizimi | [`src/values_winners/features.py`](../src/values_winners/features.py) | [`features_summary.csv`](../reports/values_winners/features_summary.csv), [`discretization_fund.csv`](../reports/values_winners/discretization_fund.csv), [`fund_categories.csv`](../reports/values_winners/fund_categories.csv) |
 > | 6. Transformimi | [`src/values_winners/transformation.py`](../src/values_winners/transformation.py) | [`transformation_summary.csv`](../reports/values_winners/transformation_summary.csv) |
+> | 7. Agregimi | [`src/values_winners/aggregation.py`](../src/values_winners/aggregation.py) | [`aggregation_year.csv`](../reports/values_winners/aggregation_year.csv), [`aggregation_procedure_type.csv`](../reports/values_winners/aggregation_procedure_type.csv), [`aggregation_election_period.csv`](../reports/values_winners/aggregation_election_period.csv), [`aggregation_covid_period.csv`](../reports/values_winners/aggregation_covid_period.csv), [`aggregation_fund_category.csv`](../reports/values_winners/aggregation_fund_category.csv), [`aggregation_top_authorities.csv`](../reports/values_winners/aggregation_top_authorities.csv), [`aggregation_top_winners.csv`](../reports/values_winners/aggregation_top_winners.csv), [`aggregation_winner_concentration.csv`](../reports/values_winners/aggregation_winner_concentration.csv) |
 >
 > Të dhënat e pastruara ruhen te `data/processed/` (jashtë git-it).
 
@@ -305,3 +306,67 @@ Shumat në lekë kanë një bisht shumë të gjatë djathtas: shumica e procedur
 - **Kursimi (`kursimi`, `kursimi_pct`) nuk transformohet ende.** Ai përmban vlerat logjikisht të pamundura (vlera e fituesit shumë mbi fondin, p.sh. `kursimi_pct` deri në −8.75 miliardë %), që do ta shtrembëronin çdo shkallëzim. Transformohet pasi këto raste të trajtohen në Pjesën II.
 
 Kolonat e reja: `<kolona>_log`, `<kolona>_log_minmax`, `<kolona>_log_z`. Rezultati ruhet te `data/processed/values_winners_transformed.csv`.
+
+## 7. Agregimi
+
+Agregimi bëhet mbi **dataset-in e integruar** (277,764 procedura, kolonat e të treve), që procedurat të grupohen edhe sipas kolonave të koleges (lloji i procedurës, periudha zgjedhore, COVID-i).
+
+**Pse mediana:** shumat përmblidhen me **medianë**, jo me shumë ose mesatare. Shuma dhe mesatarja do të dominoheshin nga vlerat logjikisht të pamundura (deri në 35 mijë miliardë lekë), që trajtohen në Pjesën II; mediana nuk ndikohet prej tyre.
+
+Për çdo grup llogariten: numri i procedurave, procedurat me fitues (dhe %), konsorciumet, procedurat me TVSH (dhe %), mediana e fondit, mediana e vlerës fituese dhe mediana e kursimit (%).
+
+### 7.1 Sipas vitit
+
+| Viti | Procedura | Me fitues % | Me TVSH % | Mediana e fondit | Mediana e vlerës fituese | Mediana e kursimit % |
+|---|---|---|---|---|---|---|
+| 2016 | 33,375 | 80.2 | 0.0 | 250,000 | 169,875 | 12.4 |
+| 2017 | 31,769 | 82.3 | 2.2 | 272,000 | 176,700 | 12.3 |
+| 2018 | 33,880 | 73.2 | 13.6 | 297,390 | 199,700 | 8.3 |
+| 2019 | 28,313 | 76.8 | 12.7 | 356,400 | 199,000 | 9.1 |
+| 2020 | 23,670 | 81.4 | 14.2 | 400,000 | 244,880 | 8.5 |
+| 2021 | 22,653 | 84.1 | 12.1 | 404,050 | 270,050 | 8.1 |
+| 2022 | 26,034 | 80.9 | 11.1 | 468,656 | 293,000 | 8.0 |
+| 2023 | 25,137 | 83.6 | 10.5 | 499,000 | 280,000 | 10.2 |
+| 2024 | 27,466 | 82.0 | 11.9 | 560,607 | 300,000 | 11.1 |
+| 2025 | 25,467 | 84.4 | 10.9 | 500,000 | 289,850 | 13.6 |
+
+**Vërejtje mbi të dhënat:** TVSH-ja shënohet pothuajse vetëm nga **2018** (2016: 0.02%), dhe konsorciumet shfaqen vetëm nga **2020**. Këto ndryshime vijnë nga mënyra si plotësohen fushat ndër vite, jo domosdoshmërisht nga prokurimi vetë; duhen mbajtur parasysh kur krahasohen vitet.
+
+### 7.2 Sipas periudhës zgjedhore dhe COVID-it
+
+| Periudha | Procedura | Me fitues % | Mediana e fondit | Mediana e vlerës fituese | Mediana e kursimit % |
+|---|---|---|---|---|---|
+| Mbi 4 muaj para zgjedhjeve | 95,986 | 80.0 | 375,000 | 230,000 | 9.9 |
+| Periudha parazgjedhore (4 muaj) | 47,804 | 80.2 | 441,859 | 257,890 | 10.1 |
+| Deri 4 muaj pas zgjedhjeve | 40,002 | 82.8 | 372,000 | 230,000 | 10.7 |
+| Mbi 4 muaj pas zgjedhjeve | 93,972 | 80.5 | 372,050 | 226,000 | 10.4 |
+| Para COVID | 131,436 | 78.3 | 297,000 | 187,000 | 10.6 |
+| Gjatë COVID | 42,198 | 82.5 | 400,000 | 264,400 | 8.2 |
+| Pas COVID | 104,130 | 82.7 | 500,000 | 291,730 | 10.6 |
+
+Periudhat zgjedhore dhe të COVID-it vijnë nga vetitë kohore (`afersia_me_zgjedhjet`, `periudha_covid`). Interpretimi i dallimeve (p.sh. a janë fondet më të mëdha para zgjedhjeve) bëhet në analizën e Pjesës II.
+
+### 7.3 Sipas kategorisë së fondit dhe llojit të procedurës
+
+| Kategoria e fondit | Procedura | Me fitues % | Me TVSH % | Mediana e vlerës fituese |
+|---|---|---|---|---|
+| Shumë i vogël | 58,870 | 87.5 | 0.9 | 50,500 |
+| I vogël | 58,980 | 96.4 | 1.7 | 187,450 |
+| I mesëm | 61,425 | 96.0 | 3.1 | 525,000 |
+| I madh | 56,202 | 67.6 | 41.2 | 4,076,608 |
+| Pa fond | 42,287 | 43.9 | 0.0 | 94,860 |
+
+Sipas llojit të procedurës, **Small Value** ka shumicën e procedurave (183,329) dhe **Purchase Tickets** ka përqindjen më të lartë me fitues (92.9%). Tabela e plotë: [`aggregation_by_procedure_type.csv`](../reports/values_winners/aggregation_by_procedure_type.csv). 20 autoritetet me më shumë procedura: [`aggregation_top_authorities.csv`](../reports/values_winners/aggregation_top_authorities.csv).
+
+### 7.4 Sipas fituesit
+
+Për çdo fitues (NIPT) llogariten: numri i kontratave, **pjesa e tregut** (% e kontratave me fitues), vitet aktive dhe mediana e vlerës fituese. Tabela e plotë (7,444 fitues) ruhet te `data/processed/values_winners_by_winner.csv`; 20 të parët: [`aggregation_top_winners.csv`](../reports/values_winners/aggregation_top_winners.csv).
+
+| Fituesit | Kontrata | Pjesa e tregut % |
+|---|---|---|
+| Të gjithë (7,444) | 223,884 | 100.0 |
+| 1 më i madhi (AMADEUS TRAWELL AND TOURS) | 5,762 | 2.57 |
+| 10 më të mëdhenjtë | 22,368 | 9.99 |
+| 100 më të mëdhenjtë | 82,146 | 36.69 |
+
+Pjesa e tregut matet me **numrin e kontratave**, jo me vlerën, për të njëjtën arsye si mediana: vlerat e pamundura do ta shtrembëronin.
