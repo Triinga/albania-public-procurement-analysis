@@ -18,6 +18,7 @@ from src.common.data_types import describe_types
 from src.common.quality import duplicate_rows, has_extra_whitespace, run_checks
 from src.procedure_competition.columns import BINARY, COLUMNS, NUMERIC
 from src.procedure_competition.encoding import encode_categories
+from src.procedure_competition.feature_selection import select_analysis_features
 
 OUT_DIR = Path("reports/procedure_competition")
 CPV_DIVISIONS_PATH = Path("data/reference/cpv_divisions.csv")
@@ -295,11 +296,13 @@ def main():
     cpv_divisions = load_cpv_divisions()
     clean = clean_and_engineer(df, cpv_divisions)
     encoded, encoding_summary = encode_categories(clean)
+    analysis_ready, feature_selection = select_analysis_features(encoded)
     quality_report(clean, cleaned=True).to_csv(out_dir / "quality_after.csv", index=False)
     missing_value_report(df, clean).to_csv(out_dir / "missing_values.csv", index=False)
     competition_profile(clean).to_csv(out_dir / "competition_by_year.csv", index=False)
     cpv_division_profile(clean).to_csv(out_dir / "cpv_division_profile.csv", index=False)
     encoding_summary.to_csv(out_dir / "encoding_summary.csv", index=False)
+    feature_selection.to_csv(out_dir / "feature_selection.csv", index=False)
     yearly = df.groupby("year", dropna=False).size().rename("procedures").reset_index()
     yearly.to_csv(out_dir / "yearly_row_counts.csv", index=False)
     summary = pd.DataFrame([
@@ -316,13 +319,16 @@ def main():
         {"metric": "procedures_without_qualified_offers", "value": int(clean["no_qualified_offers"].sum())},
         {"metric": "framework_agreements", "value": int(clean["is_framework_agreement"].sum())},
         {"metric": "encoded_feature_columns", "value": len(encoded.columns) - len(clean.columns)},
+        {"metric": "selected_analysis_features", "value": len(analysis_ready.columns) - 1},
+        {"metric": "excluded_columns_after_selection", "value": int(feature_selection["status"].eq("excluded").sum())},
     ])
     summary.to_csv(out_dir / "preparation_summary.csv", index=False)
-    # Clean rows are emitted separately for downstream integration; raw data remains untouched.
+    # Prepared extracts are emitted separately for downstream use; raw data remains untouched.
     clean.to_csv(out_dir / "procedure_competition_clean.csv", index=False)
     encoded.to_csv(out_dir / "procedure_competition_encoded.csv", index=False)
+    analysis_ready.to_csv(out_dir / "procedure_competition_analysis_ready.csv", index=False)
     print(summary.to_string(index=False))
-    print(f"Reports and cleaned extract written to {out_dir}")
+    print(f"Reports and prepared extracts written to {out_dir}")
 
 
 if __name__ == "__main__":
