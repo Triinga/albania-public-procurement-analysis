@@ -7,7 +7,7 @@ Kolonat: `Data_e_publikimit`, `Data_e_hapjes`, `Data_e_mbylljes`, `Numri_i_refer
 
 ## 1. Periudha e zgjedhjeve
 
-Integrimi përfshin zgjedhjet kombëtare në Shqipëri për analizën e prokurimit gjatë periudhave elektorale. Burimi: [Komisioni Qendror i Zgjedhjeve (KQZ)](https://kqz.gov.al).
+Integrimi përfshin zgjedhjet kombëtare në Shqipëri për analizën e prokurimit gjatë periudhave elektorale. Burimi: [Komisioni Qendror i Zgjedhjeve (KQZ)](https://kqz.gov.al/subjektet-zgjedhore).
 
 | Viti | Lloji | Data |
 |------|-------|------|
