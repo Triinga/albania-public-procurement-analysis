@@ -1,0 +1,29 @@
+variable,value,population,random,stratified_by_year,stratified_by_year_election
+year,2016,12.02,12.04,12.02,12.01
+year,2017,11.44,11.48,11.44,11.44
+year,2018,12.2,11.92,12.2,12.2
+year,2019,10.19,10.37,10.19,10.19
+year,2020,8.52,8.76,8.52,8.52
+year,2021,8.16,8.06,8.15,8.16
+year,2022,9.37,9.35,9.37,9.37
+year,2023,9.05,8.87,9.05,9.05
+year,2024,9.89,9.72,9.89,9.89
+year,2025,9.17,9.44,9.17,9.17
+periudha_covid,Para COVID,47.32,47.34,47.32,47.28
+periudha_covid,Gjatë COVID,15.19,15.28,15.2,15.23
+periudha_covid,Pas COVID,37.49,37.38,37.49,37.49
+afersia_me_zgjedhjet,Mbi 4 muaj para,34.56,34.13,34.51,34.56
+afersia_me_zgjedhjet,Periudha parazgjedhore (4 muaj),17.21,17.35,16.88,17.21
+afersia_me_zgjedhjet,Deri 4 muaj pas,14.4,14.47,14.65,14.4
+afersia_me_zgjedhjet,Mbi 4 muaj pas,33.83,34.05,33.96,33.83
+kategoria_e_kohezgjatjes,E njëjta ditë,5.79,5.77,5.87,5.69
+kategoria_e_kohezgjatjes,1-3 ditë,65.61,65.61,66.12,65.2
+kategoria_e_kohezgjatjes,4-14 ditë,16.09,16.31,15.55,16.4
+kategoria_e_kohezgjatjes,15-30 ditë,8.76,8.5,8.61,8.81
+kategoria_e_kohezgjatjes,Mbi 30 ditë,3.75,3.81,3.85,3.9
+periudhe_parazgjedhore,0,82.79,82.65,83.12,82.79
+periudhe_parazgjedhore,1,17.21,17.35,16.88,17.21
+publikim_ne_dhjetor,0,90.78,90.81,90.86,90.93
+publikim_ne_dhjetor,1,9.22,9.19,9.14,9.07
+hapje_mbyllje_e_njejta_dite,0,94.21,94.23,94.13,94.31
+hapje_mbyllje_e_njejta_dite,1,5.79,5.77,5.87,5.69
