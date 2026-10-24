@@ -9,6 +9,7 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 > | 1. Tipet e të dhënave | [`src/values_winners/data_types.py`](../src/values_winners/data_types.py) | [`data_types.csv`](../reports/values_winners/data_types.csv) |
 > | 2. Kualiteti i të dhënave | [`src/values_winners/quality.py`](../src/values_winners/quality.py) | [`quality_checks.csv`](../reports/values_winners/quality_checks.csv), [`shared_references.csv`](../reports/values_winners/shared_references.csv), [`invalid_nipt.csv`](../reports/values_winners/invalid_nipt.csv), [`winner_inconsistencies.csv`](../reports/values_winners/winner_inconsistencies.csv), [`winner_names.csv`](../reports/values_winners/winner_names.csv) |
 > | 3. Pastrimi | [`src/values_winners/cleaning.py`](../src/values_winners/cleaning.py) | [`cleaning_summary.csv`](../reports/values_winners/cleaning_summary.csv) |
+> | 3.1 Kualiteti pas pastrimit | [`src/values_winners/quality_after.py`](../src/values_winners/quality_after.py) | [`quality_before_after.csv`](../reports/values_winners/quality_before_after.csv) |
 > | 4. Vlerat e zbrazëta | [`src/values_winners/missing_values.py`](../src/values_winners/missing_values.py) | [`missing_summary.csv`](../reports/values_winners/missing_summary.csv), [`missing_by_year.csv`](../reports/values_winners/missing_by_year.csv), [`missing_winner_by_cancellation.csv`](../reports/values_winners/missing_winner_by_cancellation.csv), [`missing_fund_by_procedure_type.csv`](../reports/values_winners/missing_fund_by_procedure_type.csv), [`missing_value_vs_winner.csv`](../reports/values_winners/missing_value_vs_winner.csv), [`missing_strategies.csv`](../reports/values_winners/missing_strategies.csv) |
 > | 5. Krijimi i vetive, diskretizimi, binarizimi | [`src/values_winners/features.py`](../src/values_winners/features.py) | [`features_summary.csv`](../reports/values_winners/features_summary.csv), [`discretization_fund.csv`](../reports/values_winners/discretization_fund.csv), [`fund_categories.csv`](../reports/values_winners/fund_categories.csv) |
 > | 6. Transformimi | [`src/values_winners/transformation.py`](../src/values_winners/transformation.py) | [`transformation_summary.csv`](../reports/values_winners/transformation_summary.csv) |
@@ -134,6 +135,40 @@ Pastrimi rregullon problemet e **formatit** dhe të **konsistencës** që u gjet
 - **Një emër për çdo NIPT:** kur i njëjti NIPT shfaqet me emra të shkruar ndryshe, merret emri që përdoret më shpesh me atë NIPT. Pas pastrimit, **asnjë NIPT nuk ka më shumë se një emër** (para pastrimit: 861).
 - Emrat që kanë disa NIPT (p.sh. persona fizikë me të njëjtin emër) **nuk bashkohen**, sepse janë subjekte të ndryshme. Prandaj ka pak më shumë NIPT (7,444) se emra (7,403).
 - NIPT-et e huaja (p.sh. `SI24635812`) mbahen siç janë, sepse janë të vlefshme në vendin e tyre.
+
+### 3.1 Kualiteti pas pastrimit
+
+Të njëjtat kontrolle të kualitetit (seksioni 2) ekzekutohen përsëri mbi të dhënat e pastruara, bashkë me mungesat e maskuara (seksioni 4). Për çdo kontroll shënohet nëse problemi **u rregullua** apo **mbetet qëllimisht**, dhe pse.
+
+**U rregulluan:**
+
+| Kontrolli | Para | Pas | Si |
+|---|---|---|---|
+| `Fituesi` me hapësira ose `\n` | 21,523 | **0** | Hapësirat dhe `\n` u hoqën |
+| `NIPT_i_fituesit` me hapësira ose `\n` | 7,946 | **0** | Hapësirat dhe `\n` u hoqën |
+| NIPT me disa emra fituesi | 861 | **0** | Çdo NIPT merr emrin që përdoret më shpesh |
+| Shumat të ruajtura si tekst (3 kolona) | 252,200 / 220,382 / 51,505 | **0** | U kthyen në numra |
+| TVSH e ruajtur si tekst (`Po`/`Jo`) | 277,764 | **0** | U kthye në boolean |
+| `Fondi_limit` = 0 | 13,329 | **0** | U shënua si mungesë e maskuar |
+| `Fondi_limit` mes 0 dhe 1 lek | 3,394 | **0** | U shënua si mungesë e maskuar |
+| Fondi 0, por ka vlerë fituese | 13,234 | **0** | Fondi u shënua si mungesë e maskuar |
+
+**Mbeten qëllimisht:**
+
+| Kontrolli | Para | Pas | Pse mbetet |
+|---|---|---|---|
+| Mungesa e `Fondi_limit` | 25,564 | **42,287** | Rritet, sepse fondet 0 / ≤ 1 lek u bënë mungesë; strategjia: `NaN` + flag |
+| Mungesa e vlerës, fituesit, NIPT-it, kontratës | 57,382 / 53,894 / 53,880 / 226,259 | të njëjta | Strategjia e vlerave të zbrazëta: `NaN` + flag, pa imputim |
+| Referenca e përdorur nga dy procedura | 14 | 14 | Procedura të ndryshme; identifikohen me referencë + autoritet |
+| Konsorciume (disa fitues në një qelizë) | 169 | 169 | Mbahen si një fitues i përbashkët, të ndarë me ` \| ` |
+| NIPT jashtë formatit shqiptar | 244 | 244 | Kompani të huaja me numër TVSH të vendit të tyre |
+| Vlera fituese ose e kontratës = 0 ose ≤ 1 lek | 37 + 19 + 112 + 6 | të njëjta | Vlera logjikisht të pamundura: Pjesa II |
+| Vlera e fituesit mbi fondin limit | 8,571 | **5,178** | Pjesa II; bie sepse fondet ≤ 1 lek u bënë mungesë dhe nuk krahasohen më |
+| Procedurë e anuluar me fitues / me vlerë | 27,707 / 27,618 | të njëjta | Shënohen me `kontrate_e_lidhur` dhe `anulim_kontradiktor` ([`final_dataset.md`](final_dataset.md)) |
+| Vlera e kontratës ≠ vlera e fituesit | 26,749 | 26,749 | Mund të jetë e rregullt (negociata, TVSH, lote); kontrollohet në Pjesën II |
+| NIPT pa emër fituesi | 14 | 14 | Emri mungon në burim; NIPT-i mbahet si identifikues |
+
+Duplikate nuk kishte as para, as pas pastrimit. Tabela e plotë: [`quality_before_after.csv`](../reports/values_winners/quality_before_after.csv).
 
 ## 4. Vlerat e zbrazëta
 
