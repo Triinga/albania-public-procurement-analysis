@@ -122,7 +122,48 @@ Vetitë krijohen mbi datat e pastruara (2.2) dhe të plotësuara (2.3), pa fshir
 - `periudha_covid`: 2020 ndahet në 4,103 procedura para dhe 19,567 gjatë COVID; 2021 është tërësisht gjatë COVID. Pak rreshta (p.sh. 3 në 2017) kanë datë publikimi jashtë vitit të skedarit.
 - Janari dhe gushti kanë vazhdimisht më pak procedura; tetori dhe dhjetori më shumë.
 
-Diskretizimi dhe binarizimi i këtyre vetive bëhen në hapin pasues.
+## 2.5 Diskretizimi dhe binarizimi
+
+### Diskretizimi
+
+**`kategoria_e_kohezgjatjes`** (nga `kohezgjatja_e_tenderit`). U krahasuan tri metoda me 5 grupe:
+
+| Metoda | Rezultati | Pse (nuk) përdoret |
+|---|---|---|
+| Equal width | 277,191 rreshta (99.8%) në grupin e parë (0–88 ditë) | Shpërndarja është shumë e anshme (maksimumi 440, mediana 1), ndaj grupet e tjera janë pothuajse bosh |
+| Equal frequency | Vetëm 4 grupe; grupi i parë (0–1 ditë) ka 162,177 rreshta | 53% e tenderave zgjasin saktësisht 1 ditë, kuantilet përsëriten dhe grupet bashkohen |
+| **Kufij të zgjedhur** ✅ | Grupe me kuptim dhe të gjitha të populluara | Përdoret |
+
+| Grupi | Ditë | Rreshta |
+|---|---|---|
+| E njëjta ditë | 0 | 16,076 |
+| 1-3 ditë | 1–3 | 182,232 |
+| 4-14 ditë | 4–14 | 44,686 |
+| 15-30 ditë | 15–30 | 24,344 |
+| Mbi 30 ditë | > 30 | 10,426 |
+
+**`afersia_me_zgjedhjet`** (nga `Data_e_publikimit` dhe `zgjedhjet_me_te_aferta`). Dritarja bazohet te **periudha parazgjedhore prej 4 muajsh** para ditës së votimit, kur Kodi Zgjedhor (neni 91, paragrafi 4) kufizon përdorimin e burimeve publike. P.sh. për zgjedhjet e 11.05.2025 kufizimet nisën më 11.01.2025. Muajt llogariten si muaj kalendarikë (jo si numër ditësh). E njëjta gjatësi përdoret pas zgjedhjeve, si periudhë krahasimi.
+
+| Grupi | Data e publikimit |
+|---|---|
+| Mbi 4 muaj para | Para (zgjedhjet − 4 muaj) |
+| Periudha parazgjedhore (4 muaj) | Nga (zgjedhjet − 4 muaj) deri në ditën e votimit, përfshirë |
+| Deri 4 muaj pas | Pas ditës së votimit deri në (zgjedhjet + 4 muaj) |
+| Mbi 4 muaj pas | Pas (zgjedhjet + 4 muaj) |
+
+Vitet pa zgjedhje (2016, 2018, 2022, 2024) bien pothuajse tërësisht jashtë periudhës parazgjedhore. Përjashtim është 2020: 292 procedura të fundit të dhjetorit janë brenda 4 muajve para zgjedhjeve të 25.04.2021. Shpërndarja sipas vitit: [`election_proximity_by_year.csv`](../reports/time_integration/election_proximity_by_year.csv).
+
+### Binarizimi
+
+| Vetia | Përkufizimi | Rreshta me 1 | % |
+|---|---|---|---|
+| `gjate_covid` | `periudha_covid` = Gjatë COVID | 42,198 | 15.2 |
+| `periudhe_parazgjedhore` | Publikuar në 4 muajt para zgjedhjeve, përfshirë ditën e votimit (neni 91/4) | 47,804 | 17.2 |
+| `publikim_ne_fundjave` | Publikuar të shtunën ose të dielën | 2,781 | 1.0 |
+| `publikim_ne_dhjetor` | Publikuar në dhjetor (fundi i vitit buxhetor) | 25,623 | 9.2 |
+| `hapje_mbyllje_e_njejta_dite` | `kohezgjatja_e_tenderit` = 0 | 16,076 | 5.8 |
+
+Flamujt e pastrimit dhe të plotësimit (`Data_e_publikimit_corrected`, `Data_e_hapjes_invalid`, `Data_e_mbylljes_invalid`, `Data_e_hapjes_imputed`, `Data_e_mbylljes_imputed`) kthehen gjithashtu nga True/False në 1/0.
 
 - Kodi: `python -m src.time_integration.features`
 - Dataset-i me vetitë ruhet në `data/processed/time_features.csv` (jo në git).
@@ -141,3 +182,6 @@ Diskretizimi dhe binarizimi i këtyre vetive bëhen në hapin pasues.
 - **features_profile.csv**: Shpërndarja e vetive në ditë (mesatarja, kuartilet, min/max)
 - **covid_periods_by_year.csv**: Procedurat sipas periudhës COVID dhe vitit
 - **procedures_by_month.csv**: Procedurat sipas muajit të publikimit dhe vitit
+- **discretization_duration.csv**: Krahasimi equal width / equal frequency / kufij të zgjedhur për kohëzgjatjen
+- **election_proximity_by_year.csv**: Procedurat sipas afërsisë me zgjedhjet dhe vitit
+- **binary_summary.csv**: Numri dhe përqindja e vlerave 1 për çdo veti binare

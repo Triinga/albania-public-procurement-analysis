@@ -1,0 +1,11 @@
+feature,ones,pct_ones
+gjate_covid,42198,15.19
+periudhe_parazgjedhore,47804,17.21
+publikim_ne_fundjave,2781,1.0
+publikim_ne_dhjetor,25623,9.22
+hapje_mbyllje_e_njejta_dite,16076,5.79
+Data_e_publikimit_corrected,7110,2.56
+Data_e_hapjes_invalid,65,0.02
+Data_e_mbylljes_invalid,6,0.0
+Data_e_hapjes_imputed,234,0.08
+Data_e_mbylljes_imputed,1098,0.4

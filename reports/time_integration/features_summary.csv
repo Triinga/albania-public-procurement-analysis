@@ -7,3 +7,15 @@ kohezgjatja_e_tenderit,Kohore,Data_e_mbylljes - Data_e_hapjes (ditë),277764,int
 zgjedhjet_me_te_aferta,Zgjedhore,Data e zgjedhjeve më afër Data_e_publikimit,277764,datetime64[ns],
 ditet_nga_zgjedhjet,Zgjedhore,"Data_e_publikimit - zgjedhjet_me_te_aferta (ditë, < 0 = para)",277764,int64,143781
 periudha_covid,COVID,"Para (< 11.03.2020), Gjatë (deri 31.12.2021), Pas COVID",277764,category,
+kategoria_e_kohezgjatjes,Diskretizuar,kohezgjatja_e_tenderit në 5 grupe me kufij të zgjedhur,277764,category,
+afersia_me_zgjedhjet,Diskretizuar,Data_e_publikimit në 4 grupe (±4 muaj nga zgjedhjet),277764,category,
+gjate_covid,Binarizuar,1 nëse periudha_covid = Gjatë COVID,277764,Int8,0
+periudhe_parazgjedhore,Binarizuar,"1 nëse publikuar në 4 muajt para zgjedhjeve (Kodi Zgjedhor, neni 91/4)",277764,Int8,0
+publikim_ne_fundjave,Binarizuar,1 nëse publikuar të shtunën ose të dielën,277764,Int8,0
+publikim_ne_dhjetor,Binarizuar,1 nëse publikuar në dhjetor (fundi i vitit buxhetor),277764,Int8,0
+hapje_mbyllje_e_njejta_dite,Binarizuar,1 nëse kohezgjatja_e_tenderit = 0,277764,Int8,0
+Data_e_publikimit_corrected,Binarizuar,Flamuri i pastrimit/plotësimit -> 1/0,277764,Int8,0
+Data_e_hapjes_invalid,Binarizuar,Flamuri i pastrimit/plotësimit -> 1/0,277764,Int8,0
+Data_e_mbylljes_invalid,Binarizuar,Flamuri i pastrimit/plotësimit -> 1/0,277764,Int8,0
+Data_e_hapjes_imputed,Binarizuar,Flamuri i pastrimit/plotësimit -> 1/0,277764,Int8,0
+Data_e_mbylljes_imputed,Binarizuar,Flamuri i pastrimit/plotësimit -> 1/0,277764,Int8,0
