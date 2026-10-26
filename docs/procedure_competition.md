@@ -43,12 +43,19 @@ Kolonat tekstuale dhe kategoritë burimore të zëvendësuara nga encoding-u pë
 
 Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hapësirat dhe boshllëqet normalizohen, ndërsa mungesat ruhen me tipe nullable. Politika dhe numri i mungesave para/pas pastrimit dokumentohen në `missing_values.csv`.
 
+## Krahasimi i strategjive për vlerat e zbrazëta
+
+Për `Lloji_i_marreveshjes_kuader`, fshirja e rreshtave do të humbte 258,340 procedura (93.01%). Plotësimi me modën do ta rriste kategorinë më të shpeshtë nga 10,684 në 269,024 rreshta, ose 96.85% të dataset-it, duke krijuar një shpërndarje artificiale. Ruajtja e mungesave mban të gjitha 277,764 procedurat pa shpikur lloj marrëveshjeje.
+
+Për `Kodet_CPV`, fshirja do të humbte 61,688 procedura (22.21%). Plotësimi me modën do ta rriste kodin më të shpeshtë nga 11,255 në 72,943 rreshta, ose 26.26% të dataset-it, edhe pse nuk ka dëshmi se procedurat pa kod i përkasin asaj kategorie. Prandaj edhe këtu mungesa ruhet. Krahasimi i plotë dhe strategjia e rekomanduar dokumentohen në `missing_strategy_comparison.csv`.
+
 ## Raportet dhe rezultatet
 
 - `data_types.csv`: tipi konceptual, tipi në CSV, numri i vlerave unike dhe shembujt.
 - `quality_checks.csv`: kompletësia, formati, konsistenca dhe kontrollet e vlefshmërisë para pastrimit.
 - `quality_after.csv`: të njëjtat kontrolle pas normalizimit të tipeve dhe vlerave.
 - `missing_values.csv`: mungesat para/pas pastrimit dhe trajtimi i përdorur për secilën kolonë.
+- `missing_strategy_comparison.csv`: humbja e rreshtave dhe shtrembërimi i modës për tri strategjitë e krahasuara.
 - `competition_by_year.csv`: shpërndarja e grupeve të konkurrencës për secilin vit.
 - `cpv_division_profile.csv`: numri dhe përqindja e procedurave sipas ndarjes zyrtare CPV.
 - `encoding_summary.csv`: metoda e encoding-ut, numri i kategorive dhe kolonat e krijuara.
