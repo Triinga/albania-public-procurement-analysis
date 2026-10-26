@@ -17,7 +17,7 @@ import pandas as pd
 
 from src.common.data_loading import DATA_DIR, YEARS, read_years
 from src.common.sampling import SEED, compare_distributions, max_deviation, random_sample, stratified_sample
-from src.time_integration.columns import COLUMNS
+from src.time_integration.columns import INPUT_COLS
 from src.time_integration.features import build_features
 
 OUT_DIR = Path("reports/time_integration")
@@ -65,7 +65,7 @@ def numeric_comparison(population, samples):
 
 def main():
     folder = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA_DIR
-    cols_to_read = [c for c in COLUMNS if c != "viti"]
+    cols_to_read = INPUT_COLS
     df = build_features(read_years(folder, columns=cols_to_read))
     print(f"Years {YEARS.start}-{YEARS.stop - 1}: {len(df):,} procedures\n")
 

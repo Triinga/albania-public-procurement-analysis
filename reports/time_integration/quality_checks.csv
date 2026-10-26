@@ -16,3 +16,7 @@ Accuracy,Data_e_publikimit,Publication date in the future,0,277764,0.0
 Accuracy,Data_e_hapjes,Opening date in the future,0,277595,0.0
 Accuracy,Data_e_mbylljes,Closing date in the far future (> 2030),1,276672,0.0
 Accuracy,Data_e_mbylljes,Same day opening and closing,16037,276672,5.8
+Consistency,Data_e_publikimit,Published in a later year than the file,276,277764,0.1
+Consistency,Data_e_publikimit,Published later than February of the next year,15,277764,0.01
+Consistency,Data_e_publikimit,Published 2+ years after the file year,5,277764,0.0
+Consistency,Numri_i_references,Registration year differs from the file year,11,277764,0.0

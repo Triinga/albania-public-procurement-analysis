@@ -16,6 +16,7 @@ import pandas as pd
 
 from src.common.data_loading import DATA_DIR, YEARS, read_years
 from src.common.quality import has_extra_whitespace, run_checks
+from src.time_integration.cleaning import reference_date
 from src.time_integration.columns import COLUMNS, DATETIME_COLS
 
 OUT_DIR = Path("reports/time_integration")
@@ -104,8 +105,28 @@ def build_checks(df):
          open_close & (close_date.dt.date == open_date.dt.date),
          open_close),
     ]
-    
+
+    # ========== CONSISTENCY: publication year vs. the yearly file ==========
+    pub_year = pub_date.dt.year
+    registered = reference_date(df)
+    checks += [
+        ("Consistency", "Data_e_publikimit", "Published in a later year than the file",
+         pub_date.notna() & (pub_year > df["year"]), pub_date.notna()),
+        ("Consistency", "Data_e_publikimit", "Published later than February of the next year",
+         late_publication(df, pub_date), pub_date.notna()),
+        ("Consistency", "Data_e_publikimit", "Published 2+ years after the file year",
+         pub_date.notna() & (pub_year >= df["year"] + 2), pub_date.notna()),
+        ("Consistency", "Numri_i_references", "Registration year differs from the file year",
+         registered.notna() & (registered.dt.year != df["year"]), registered.notna()),
+    ]
+
     return run_checks(df, checks)
+
+
+def late_publication(df, pub_date):
+    """Published in a later year than the file, beyond the usual January-February spill-over."""
+    next_year_start = (pub_date.dt.year == df["year"] + 1) & (pub_date.dt.month <= 2)
+    return pub_date.notna() & (pub_date.dt.year > df["year"]) & ~next_year_start
 
 
 def main():
@@ -119,11 +140,17 @@ def main():
     print("Running quality checks...")
     quality = build_checks(df)
     
+    pub_date = parse_dates_safe(df["Data_e_publikimit"])
+    late = df[late_publication(df, pub_date)][["Numri_i_references", "Data_e_publikimit", "year"]]
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     quality.to_csv(OUT_DIR / "quality_checks.csv", index=False)
+    late.to_csv(OUT_DIR / "late_publications.csv", index=False)
     
     with pd.option_context("display.width", 200, "display.max_columns", 20, "display.max_colwidth", 80):
         print(quality.to_string(index=False))
+        print(f"\nPublished later than February of the next year: {len(late)}")
+        print(late.to_string(index=False))
     
     print(f"\n[OK] Saved to {OUT_DIR / 'quality_checks.csv'}\n")
 

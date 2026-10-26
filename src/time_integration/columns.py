@@ -13,3 +13,8 @@ COLUMNS = {
 
 DATETIME_COLS = [c for c, t in COLUMNS.items() if "(date)" in t.type]
 NUMERIC_COLS = [c for c, t in COLUMNS.items() if t.is_numeric]
+
+# Procedure type (procedure and competition part) is read only to impute the
+# missing dates: deadlines depend far more on the type than on the year.
+PROCEDURE_TYPE = "Lloji_i_procedures"
+INPUT_COLS = [c for c in COLUMNS if c != "viti"] + [PROCEDURE_TYPE]

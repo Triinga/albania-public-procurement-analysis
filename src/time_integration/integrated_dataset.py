@@ -24,7 +24,7 @@ import pandas as pd
 from src.common.data_loading import DATA_DIR, YEARS, read_years
 from src.procedure_competition.columns import COLUMNS as PROCEDURE_COLUMNS
 from src.procedure_competition.prepare import clean_and_engineer
-from src.time_integration.columns import COLUMNS as TIME_COLUMNS
+from src.time_integration.columns import INPUT_COLS as TIME_INPUT, PROCEDURE_TYPE
 from src.time_integration.features import build_features
 from src.values_winners import features as values_features
 from src.values_winners.cleaning import KEYS
@@ -45,7 +45,8 @@ def prepare_parts(raw):
     keys = raw[KEYS]
     values = values_features.binarize(values_features.discretize(
         values_features.add_features(values_features.prepare(raw[KEYS + ["year", *VALUE_COLUMNS]]))))
-    time = build_features(raw[[c for c in TIME_COLUMNS if c != "viti"] + ["year"]])
+    # The procedure type comes from the procedure part; the time part only borrows it
+    time = build_features(raw[TIME_INPUT + ["year"]]).drop(columns=[PROCEDURE_TYPE])
     procedure = clean_and_engineer(raw[[*PROCEDURE_COLUMNS, "year"]])
 
     # The cleaned authority name is kept under its own name; the raw one is the key

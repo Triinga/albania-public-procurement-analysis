@@ -2,6 +2,6 @@ check,before,after
 Publication before registration,0,0
 Opening before publication,7170,0
 Closing before opening,5,0
-Closing before publication,263,0
+Closing before publication,245,0
 Closing after export date,1,0
 Tender duration > 365 days,5,4
