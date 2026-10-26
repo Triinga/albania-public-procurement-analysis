@@ -100,7 +100,6 @@ python -m src.values_winners.aggregation
 python -m src.values_winners.pca
 
 # Koha dhe integrimi
-python -m src.time_integration.integration
 python -m src.time_integration.data_types
 python -m src.time_integration.quality
 python -m src.time_integration.cleaning

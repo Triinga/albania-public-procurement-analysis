@@ -26,10 +26,14 @@ Integrimi përfshin zgjedhjet kombëtare në Shqipëri për analizën e prokurim
 
 | Atributi | Përshkrimi | Kategoria | Tipi | Vlera unike |
 |---|---|---|---|---|
-| `Data_e_publikimit` | Data e publikimit të procedurave | Kategorik | Datetime | 3,320 |
-| `Data_e_hapjes` | Data e hapjes të kërkesave | Kategorik | Datetime | 3,353 |
-| `Data_e_mbylljes` | Data e mbylljes të kërkesave | Kategorik | Datetime | 3,193 |
-| `Numri_i_references` | Numri referues i procedurave | Numerik | Count | 277,757 |
+| `Data_e_publikimit` | Data e publikimit të procedurës | Numerik | Interval (datë) | 3,320 |
+| `Data_e_hapjes` | Data e hapjes së procedurës | Numerik | Interval (datë) | 3,353 |
+| `Data_e_mbylljes` | Data e mbylljes së procedurës | Numerik | Interval (datë) | 3,193 |
+| `Numri_i_references` | Numri referues i procedurës (`REF-xxxxx-MM-DD-YYYY`) | Kategorik | Nominal (identifikues) | 277,757 |
+| `viti` | Viti i skedarit vjetor (nga emri i skedarit, kolona `year`) | Numerik | Interval | 10 |
+
+- **Datat dhe viti janë numerike në shkallë intervale:** diferenca mes dy datave ka kuptim (p.sh. kohëzgjatja e tenderit në ditë), por nuk ka zero absolute, ndaj raporti mes tyre nuk ka kuptim. Në CSV ruhen si tekst `DD.MM.YYYY` dhe konvertohen në datë.
+- **`Numri_i_references` është identifikues nominal:** është tekst, nuk numëron asgjë dhe veprimet aritmetike nuk kanë kuptim. Data në fund të tij (data e regjistrimit) përdoret te pastrimi (2.2).
 
 ## 2.1 Kualiteti i të dhënave
 
@@ -115,12 +119,11 @@ Vetitë krijohen mbi datat e pastruara (2.2) dhe të plotësuara (2.3), pa fshir
 | `ditet_nga_zgjedhjet` | Zgjedhore | `Data_e_publikimit` − `zgjedhjet_me_te_aferta` (< 0 = para zgjedhjeve, > 0 = pas) |
 | `periudha_covid` | COVID | Para COVID (< 11.03.2020), Gjatë COVID (11.03.2020 – 31.12.2021), Pas COVID |
 
-**Gjetjet kryesore:**
-- `ditet_publikim_hapje`: mediana 0 ditë (hapja zakonisht ditën e publikimit), 75% ≤ 1 ditë, maksimumi 213 ditë.
-- `kohezgjatja_e_tenderit`: mediana 1 ditë, 75% ≤ 9 ditë, maksimumi 440 ditë (para pastrimit 30,316).
-- `ditet_nga_zgjedhjet`: vlerat shkojnë nga −374 deri në 486 ditë, mediana −16; zgjedhjet mbahen afërsisht çdo 2 vjet (vendore dhe parlamentare me radhë), ndaj çdo procedurë është brenda ~1 viti nga zgjedhjet më të afërta.
-- `periudha_covid`: 2020 ndahet në 4,103 procedura para dhe 19,567 gjatë COVID; 2021 është tërësisht gjatë COVID. Pak rreshta (p.sh. 3 në 2017) kanë datë publikimi jashtë vitit të skedarit.
-- Janari dhe gushti kanë vazhdimisht më pak procedura; tetori dhe dhjetori më shumë.
+**Kontrollet e vetive:**
+- Të gjitha vetitë kanë vlerë për çdo rresht (277,764) dhe asnjë diferencë në ditë nuk është negative ([`features_summary.csv`](../reports/time_integration/features_summary.csv)).
+- Kufiri i COVID-it ndan vitin 2020 në 4,103 procedura para dhe 19,567 gjatë COVID; 2021 është tërësisht gjatë COVID ([`covid_periods_by_year.csv`](../reports/time_integration/covid_periods_by_year.csv)).
+
+Analiza e shpërndarjes së këtyre vetive (statistikat përmbledhëse, ndryshimet sipas muajve etj.) i takon Pjesës II.
 
 ## 2.5 Diskretizimi dhe binarizimi
 
@@ -236,15 +239,11 @@ Ky dataset nuk përmban ende transformimin dhe PCA-në, që janë hapat e mbetur
 - **missing_summary.csv**: Mungesat para/pas plotësimit dhe numri i vlerave të plotësuara
 - **missing_by_year.csv**: Përqindja e mungesave sipas vitit
 - **data_types.csv**: Tipet e të dhënave për çdo kolonë
-- **integration_summary.csv**: Përmbledhja e 277,764 procedurave
-- **elections_mapping.csv**: Procedurat e publikuara ditën e zgjedhjeve (9 total)
 - **quality_checks.csv**: Kontrollet e cilësisë (17 kontrolle)
 - **cleaning_summary.csv**: Problemet e datave, veprimi dhe numri i rreshtave të rregulluar
 - **date_order_checks.csv**: Kontrollet e renditjes së datave para dhe pas pastrimit
 - **features_summary.csv**: Vetitë e krijuara, përkufizimi dhe numri i vlerave negative
-- **features_profile.csv**: Shpërndarja e vetive në ditë (mesatarja, kuartilet, min/max)
 - **covid_periods_by_year.csv**: Procedurat sipas periudhës COVID dhe vitit
-- **procedures_by_month.csv**: Procedurat sipas muajit të publikimit dhe vitit
 - **discretization_duration.csv**: Krahasimi equal width / equal frequency / kufij të zgjedhur për kohëzgjatjen
 - **election_proximity_by_year.csv**: Procedurat sipas afërsisë me zgjedhjet dhe vitit
 - **binary_summary.csv**: Numri dhe përqindja e vlerave 1 për çdo veti binare

@@ -24,9 +24,9 @@ def main():
     df = read_years(folder, columns=cols_to_read)
     print(f"Years {YEARS.start}-{YEARS.stop - 1}: {len(df):,} procedures\n")
 
-    # Analyze only the columns that exist
-    cols_to_analyze = {k: v for k, v in COLUMNS.items() if k in df.columns}
-    types = describe_types(df, cols_to_analyze)
+    # viti is not a CSV column: it comes from the file name, like the other text values
+    df["viti"] = df["year"].astype(str)
+    types = describe_types(df, COLUMNS)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     types.to_csv(OUT_DIR / "data_types.csv", index=False)

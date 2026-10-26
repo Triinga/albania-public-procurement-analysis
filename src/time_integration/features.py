@@ -185,12 +185,6 @@ def features_summary(df):
     return summary
 
 
-def numeric_profile(df, cols):
-    """Distribution of the numeric day features."""
-    profile = df[cols].describe(percentiles=[0.25, 0.5, 0.75]).T.round(2)
-    return profile.rename_axis("feature").reset_index()
-
-
 def main():
     folder = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA_DIR
     cols_to_read = [c for c in COLUMNS if c != "viti"]
@@ -201,9 +195,7 @@ def main():
     assert len(df) == len(raw), "rows must never be dropped"
 
     summary = features_summary(df)
-    profile = numeric_profile(df, ["ditet_publikim_hapje", "kohezgjatja_e_tenderit", "ditet_nga_zgjedhjet"])
     covid = pd.crosstab(df["year"], df["periudha_covid"])
-    by_month = pd.crosstab(df["year"], df["muaji_publikimit"])
     duration_bins = discretization_comparison(df["kohezgjatja_e_tenderit"], len(DURATION_LABELS),
                                               DURATION_BINS, DURATION_LABELS)
     election_bins = pd.crosstab(df["year"], df["afersia_me_zgjedhjet"])
@@ -212,9 +204,7 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
     summary.to_csv(OUT_DIR / "features_summary.csv", index=False)
-    profile.to_csv(OUT_DIR / "features_profile.csv", index=False)
     covid.to_csv(OUT_DIR / "covid_periods_by_year.csv")
-    by_month.to_csv(OUT_DIR / "procedures_by_month.csv")
     duration_bins.to_csv(OUT_DIR / "discretization_duration.csv", index=False)
     election_bins.to_csv(OUT_DIR / "election_proximity_by_year.csv")
     binaries.to_csv(OUT_DIR / "binary_summary.csv", index=False)
@@ -222,12 +212,8 @@ def main():
 
     with pd.option_context("display.width", 200, "display.max_columns", 20, "display.max_colwidth", 70):
         print(summary.to_string(index=False))
-        print("\nDay features:")
-        print(profile.to_string(index=False))
         print("\nCOVID periods by year:")
         print(covid.to_string())
-        print("\nProcedures by publication month:")
-        print(by_month.to_string())
         print("\nDiscretization of kohezgjatja_e_tenderit:")
         print(duration_bins.to_string(index=False))
         print("\nElection proximity by year:")

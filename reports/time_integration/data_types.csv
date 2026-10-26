@@ -1,5 +1,6 @@
 column,category,type,nature,csv_type,unique_values,examples
-Data_e_publikimit,Categorical,Datetime,Discrete,text,3320,04.11.2016 | 21.04.2016 | 13.05.2016
-Data_e_hapjes,Categorical,Datetime,Discrete,text,3353,04.11.2016 | 21.04.2016 | 13.05.2016
-Data_e_mbylljes,Categorical,Datetime,Discrete,text,3193,07.11.2016 | 22.04.2016 | 16.05.2016
-Numri_i_references,Numeric,Count,Discrete,text,277757,REF-56586-11-04-2016 | REF-34728-04-21-2016 | REF-37738-05-13-2016
+Data_e_publikimit,Numeric,Interval (date),Discrete,text,3320,04.11.2016 | 21.04.2016 | 13.05.2016
+Data_e_hapjes,Numeric,Interval (date),Discrete,text,3353,04.11.2016 | 21.04.2016 | 13.05.2016
+Data_e_mbylljes,Numeric,Interval (date),Discrete,text,3193,07.11.2016 | 22.04.2016 | 16.05.2016
+Numri_i_references,Categorical,Nominal (identifier),Discrete,text,277757,REF-56586-11-04-2016 | REF-34728-04-21-2016 | REF-37738-05-13-2016
+viti,Numeric,Interval,Discrete,text,10,2016 | 2017 | 2018
