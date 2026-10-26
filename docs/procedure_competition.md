@@ -7,11 +7,10 @@ Kodi: [`src/procedure_competition/prepare.py`](../src/procedure_competition/prep
 Ekzekutimi nga rrënja e repository-t; mund të zgjedhësh intervalin e viteve:
 
 ```powershell
-python -m src.procedure_competition.prepare "C:\rruga\te\CSV-te" 2016 2020
-python -m src.procedure_competition.prepare "C:\rruga\te\CSV-te" 2021 2025
+python -m src.procedure_competition.prepare "C:\rruga\te\CSV-te" 2016 2025
 ```
 
-Skripti pret një CSV për secilin vit të intervalit. Nëse gjenden disa eksporte për një vit, zgjidhet eksporti me datën më të re `Gjeneruar_me_DDMMYYYY`; nëse zgjedhja mbetet e paqartë, ekzekutimi ndalet. Të dhënat e papërpunuara lexohen si tekst; skedarët burimorë nuk ndryshohen. Rezultatet ruhen veçmas në nënfolder sipas intervalit, p.sh. `reports/procedure_competition/2016_2020/`. Dataset-i i pastruar ka po aq rreshta sa hyrja.
+Skripti pret një CSV për secilin vit të intervalit. Nëse gjenden disa eksporte për një vit, zgjidhet eksporti me datën më të re `Gjeneruar_me_DDMMYYYY`; nëse zgjedhja mbetet e paqartë, ekzekutimi ndalet. Të dhënat e papërpunuara lexohen si tekst; skedarët burimorë nuk ndryshohen. Rezultatet e periudhës së plotë ruhen në `reports/procedure_competition/2016_2025/`. Dataset-i i pastruar ka po aq rreshta sa hyrja.
 
 ## Atributet dhe trajtimi
 
@@ -63,4 +62,4 @@ Vlerat që mungojnë nuk plotësohen me kategori ose numra të hamendësuar. Hap
 
 Në ekzekutimin me eksportet e 19.10.2026 u lexuan 277,764 procedura dhe u ruajtën të gjitha. U gjetën 216,076 procedura me së paku një kod CPV; 61,968 qeliza kishin më shumë se një kod. Marrëveshja kuadër mungon në 258,340 raste (93.0%), ndaj boshllëqet mbeten missing dhe nuk imputohen. Këto përmbledhje janë në raportet CSV; numrat rifreskohen kur skripti ekzekutohet me eksporte të reja.
 
-Raportet e commit-uara janë ndarë në dy intervale të verifikueshme. Për 2016–2020 u ruajtën 151,007 nga 151,007 procedura. Për 2021–2025 u ruajtën 126,757 nga 126,757 procedura: 124,164 kishin së paku një kod CPV, 39,880 kishin disa kode CPV dhe 387 procedura të anuluara nuk kishin arsye anulimi. Në këtë interval, 16,556 procedura kishin vetëm një ofertë, 17,490 nuk kishin oferta të kualifikuara dhe 11,241 ishin marrëveshje kuadër. Shuma e dy intervaleve është 277,764 procedura.
+Raportet e commit-uara në `reports/procedure_competition/2016_2025/` mbulojnë të dhjetë vitet në një ekzekutim të vetëm. U ruajtën 277,764 nga 277,764 procedura: 216,076 kishin së paku një kod CPV, 61,968 kishin disa kode CPV dhe 1,520 procedura të anuluara nuk kishin arsye anulimi. Në gjithë periudhën, 37,275 procedura kishin vetëm një ofertë, 40,119 nuk kishin oferta të kualifikuara dhe 19,424 ishin marrëveshje kuadër.

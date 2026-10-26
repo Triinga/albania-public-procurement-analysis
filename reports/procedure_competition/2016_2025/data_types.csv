@@ -1,0 +1,12 @@
+column,category,type,nature,csv_type,unique_values,examples
+Autoriteti_kontraktues,Categorical,Nominal,Discrete,text,1786,Bashkia Fushe Arrez | Sh.A Ujesjelles Kanalizime Fier | Drejtoria e Administrates dhe Sherbimeve ne M.M.
+Objekti_i_prokurimit,Categorical,Text,Discrete,text,192779,Kolaudim punimesh ne objektin rikonstruksion rruga gjimnaz Fushe-Arrez | Blerje materiale te ndryshme 2 | 1 Bilete avioni ne itinerarin TR ROME TR 
+Lloji_i_procedures,Categorical,Nominal,Discrete,text,13,Small Value | Open Local | Request for Proposals
+Tipi_i_kontrates,Categorical,Nominal,Discrete,text,3,Services | Supplies | Works
+Lloji_i_marreveshjes_kuader,Categorical,Nominal,Discrete,text,3,Marreveshje Kuader me nje Operator Ekonomik | Marreveshje Kuader me disa Operatore Ekonomik | Marreveshje Kuader me disa Operatore Ekonomike (e ri-hapur)
+Anulluar,Categorical,Binary (Po/Jo),Discrete,text,2,Jo | Po
+Arsyeja_e_anullimit,Categorical,Text,Discrete,text,23352,"Autoriteti Kontraktor Bashkia Roskovec njofton se kjo procedure anullohet per shkak te nje lapsusi ne percaktimet e ne ftesen per oferte. | Mbështetur në nenin 24, pika 1, gërma b dhe ç) të Ligjit Nr. 9643 datë 20.11.2006  ”Për Prokurimin Publik”, (të ndryshuar), citohet....... ”1. Autoriteti kontraktor anulon procedurën e prokurimit vetëm: b) nëse nuk është paraqitur asnjë ofertë brenda afateve kohore;,  ç) nëse asnjë nga ofertat e paraqitura nuk përputhet me kriteret e përcaktuara në dokumentat e tenderit , në VKM-në Nr. 914 datë 29.12.2014 “Për Miratimin e Rregullave të Prokurimit Publik”, si dhe në Procesverbalin e Vlerësimit të | eshte hedhur gabim dita e zhvillit te tenderit"
+Pezulluar,Categorical,Binary (Po/Jo),Discrete,text,2,Jo | Po
+Numri_i_ofertave_te_dorezuara,Numeric,Count,Discrete,text,70,6 | 22 | 4
+Numri_i_ofertave_te_kualifikuara,Numeric,Count,Discrete,text,64,6 | 22 | 4
+Kodet_CPV,Categorical,Multi-valued nominal,Discrete,text,24872, 50000000-5 Shërbime mirëmbajtje dhe riparimi |  30125110-5 Toner per printer lazer /makina fax  |  09134100-8 Karburant diesel
