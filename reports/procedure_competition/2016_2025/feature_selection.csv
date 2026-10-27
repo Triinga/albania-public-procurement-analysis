@@ -1,0 +1,99 @@
+column,status,role,reason
+procedure_row_id,selected,identifier,Deterministic row identifier for outputs created in the same run
+Autoriteti_kontraktues,excluded,excluded_source,Replaced by contracting_authority_frequency
+Objekti_i_prokurimit,excluded,excluded_source,Free text retained only in the cleaned dataset
+Lloji_i_procedures,excluded,excluded_source,Replaced by procedure_type one-hot columns
+Tipi_i_kontrates,excluded,excluded_source,Replaced by contract_type one-hot columns
+Lloji_i_marreveshjes_kuader,excluded,excluded_source,Replaced by framework_type one-hot columns
+Anulluar,selected,direct_feature,Source feature retained for analysis
+Arsyeja_e_anullimit,excluded,excluded_source,Free text replaced by cancellation indicators
+Pezulluar,selected,direct_feature,Source feature retained for analysis
+Numri_i_ofertave_te_dorezuara,selected,direct_feature,Source feature retained for analysis
+Numri_i_ofertave_te_kualifikuara,selected,direct_feature,Source feature retained for analysis
+Kodet_CPV,excluded,excluded_source,Raw multi-value field replaced by parsed CPV features
+year,selected,direct_feature,Source feature retained for analysis
+cpv_count,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+primary_cpv_code,excluded,excluded_source,Replaced by primary_cpv_code_frequency
+primary_cpv_division,excluded,excluded_source,Replaced by cpv_division one-hot columns
+primary_cpv_division_name,excluded,excluded_source,Descriptive label retained in the cleaned dataset
+offers_missing,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+no_submitted_offers,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+qualified_offer_share,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+single_bidder,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+no_qualified_offers,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+competition_band,excluded,excluded_source,Replaced by competition_band one-hot columns
+is_framework_agreement,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+has_cancellation_reason,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+cancelled_without_reason,selected,engineered_feature,Derived indicator or quantitative feature retained for analysis
+procedure_type__consulting,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__design_contest,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__negotiated_with_notice_local,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__negotiated_without_notice,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__open_for_social_services_and_other_local,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__open_int,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__open_local,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__open_simple,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__purchase_tickets,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__request_for_proposals,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__restricted_int,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__restricted_local,selected,encoded_feature,Numeric representation retained for analysis
+procedure_type__small_value,selected,encoded_feature,Numeric representation retained for analysis
+contract_type__services,selected,encoded_feature,Numeric representation retained for analysis
+contract_type__supplies,selected,encoded_feature,Numeric representation retained for analysis
+contract_type__works,selected,encoded_feature,Numeric representation retained for analysis
+framework_type__marreveshje_kuader_me_disa_operatore_ekonomik,selected,encoded_feature,Numeric representation retained for analysis
+framework_type__marreveshje_kuader_me_disa_operatore_ekonomike_e_ri_hapur,selected,encoded_feature,Numeric representation retained for analysis
+framework_type__marreveshje_kuader_me_nje_operator_ekonomik,selected,encoded_feature,Numeric representation retained for analysis
+framework_type__missing,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__03,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__09,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__14,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__15,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__16,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__18,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__19,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__22,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__24,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__30,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__31,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__32,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__33,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__34,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__35,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__37,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__38,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__39,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__41,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__42,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__43,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__44,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__45,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__48,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__50,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__51,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__55,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__60,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__63,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__64,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__65,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__66,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__70,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__71,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__72,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__73,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__75,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__76,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__77,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__79,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__80,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__85,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__90,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__92,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__98,selected,encoded_feature,Numeric representation retained for analysis
+cpv_division__missing,selected,encoded_feature,Numeric representation retained for analysis
+competition_band__2_3_offers,selected,encoded_feature,Numeric representation retained for analysis
+competition_band__4_offers,selected,encoded_feature,Numeric representation retained for analysis
+competition_band__no_offers,selected,encoded_feature,Numeric representation retained for analysis
+competition_band__single_offer,selected,encoded_feature,Numeric representation retained for analysis
+contracting_authority_frequency,selected,encoded_feature,Numeric representation retained for analysis
+primary_cpv_code_frequency,selected,encoded_feature,Numeric representation retained for analysis

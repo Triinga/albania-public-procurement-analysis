@@ -15,6 +15,7 @@ import pandas as pd
 
 from src.common.data_loading import FILE_PATTERN, YEARS
 from src.common.data_types import describe_types
+from src.common.missing import compare_categorical_strategies
 from src.common.quality import duplicate_rows, has_extra_whitespace, run_checks
 from src.procedure_competition.columns import BINARY, COLUMNS, NUMERIC
 from src.procedure_competition.encoding import encode_categories
@@ -180,6 +181,16 @@ def missing_value_report(before, after):
     return pd.DataFrame(rows)
 
 
+def missing_strategy_comparison(df):
+    """Compare defensible treatments for high-missing categorical fields."""
+    reports = []
+    for column in ["Lloji_i_marreveshjes_kuader", "Kodet_CPV"]:
+        comparison = compare_categorical_strategies(df[column])
+        comparison.insert(0, "column", column)
+        reports.append(comparison)
+    return pd.concat(reports, ignore_index=True)
+
+
 def category_profile(df):
     rows = []
     for col in ["Lloji_i_procedures", "Tipi_i_kontrates", "Lloji_i_marreveshjes_kuader", "Anulluar", "Pezulluar"]:
@@ -299,6 +310,9 @@ def main():
     analysis_ready, feature_selection = select_analysis_features(encoded)
     quality_report(clean, cleaned=True).to_csv(out_dir / "quality_after.csv", index=False)
     missing_value_report(df, clean).to_csv(out_dir / "missing_values.csv", index=False)
+    missing_strategy_comparison(clean).to_csv(
+        out_dir / "missing_strategy_comparison.csv", index=False
+    )
     competition_profile(clean).to_csv(out_dir / "competition_by_year.csv", index=False)
     cpv_division_profile(clean).to_csv(out_dir / "cpv_division_profile.csv", index=False)
     encoding_summary.to_csv(out_dir / "encoding_summary.csv", index=False)

@@ -1,0 +1,16 @@
+metric,value
+source_years,2016-2025
+input_rows,277764
+output_rows,277764
+rows_removed,0
+rows_with_CPV_code,216076
+rows_with_multiple_CPV_codes,61968
+rows_with_mapped_CPV_division,216076
+rows_with_unmapped_CPV_division,0
+cancelled_without_reason,1520
+single_bidder_procedures,37275
+procedures_without_qualified_offers,40119
+framework_agreements,19424
+encoded_feature_columns,72
+selected_analysis_features,86
+excluded_columns_after_selection,11

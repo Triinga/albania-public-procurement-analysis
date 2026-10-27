@@ -1,0 +1,7 @@
+column,strategy,input_rows,missing_before,missing_pct_before,rows_kept,rows_removed,missing_after,imputed_rows,mode_value,mode_rows_after,mode_pct_of_rows_kept,distinct_non_missing_after,recommended,effect
+Lloji_i_marreveshjes_kuader,Deletion (drop missing rows),277764,258340,93.01,19424,258340,0,0,Marreveshje Kuader me disa Operatore Ekonomik,10684,55.0,3,False,Removes every row without a recorded source value
+Lloji_i_marreveshjes_kuader,Mode imputation,277764,258340,93.01,277764,0,0,258340,Marreveshje Kuader me disa Operatore Ekonomik,269024,96.85,3,False,Assigns the most frequent observed value to every missing row
+Lloji_i_marreveshjes_kuader,Keep missing values,277764,258340,93.01,277764,0,258340,0,Marreveshje Kuader me disa Operatore Ekonomik,10684,3.85,3,True,Preserves all rows and does not invent a source value
+Kodet_CPV,Deletion (drop missing rows),277764,61688,22.21,216076,61688,0,0,34980000-0 Bileta transporti,11255,5.21,24872,False,Removes every row without a recorded source value
+Kodet_CPV,Mode imputation,277764,61688,22.21,277764,0,0,61688,34980000-0 Bileta transporti,72943,26.26,24872,False,Assigns the most frequent observed value to every missing row
+Kodet_CPV,Keep missing values,277764,61688,22.21,277764,0,61688,0,34980000-0 Bileta transporti,11255,4.05,24872,True,Preserves all rows and does not invent a source value
