@@ -24,7 +24,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.common.data_loading import DATA_DIR, read_years
-from src.time_integration.columns import COLUMNS
+from src.time_integration.columns import INPUT_COLS
 from src.time_integration.missing_values import CLOSE, OPEN, PUB, fill_missing_dates, parse_dates
 
 OUT_DIR = Path("reports/time_integration")
@@ -86,7 +86,7 @@ def cleaning_summary(df):
 
 def main():
     folder = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA_DIR
-    cols_to_read = [c for c in COLUMNS if c != "viti"]
+    cols_to_read = INPUT_COLS
     df = parse_dates(read_years(folder, columns=cols_to_read))
     rows_before = len(df)
 

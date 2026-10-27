@@ -1,13 +1,20 @@
 """Time and integration columns and their data types."""
 from src.common.data_types import ColumnType
 
+# Dates and the year are interval-scaled: differences are meaningful (e.g. the
+# tender duration in days), but there is no absolute zero.
 COLUMNS = {
-    "Data_e_publikimit": ColumnType("Categorical", "Datetime", "Discrete"),
-    "Data_e_hapjes": ColumnType("Categorical", "Datetime", "Discrete"),
-    "Data_e_mbylljes": ColumnType("Categorical", "Datetime", "Discrete"),
-    "Numri_i_references": ColumnType("Numeric", "Count", "Discrete"),
-    "viti": ColumnType("Numeric", "Ordinal", "Discrete"),
+    "Data_e_publikimit": ColumnType("Numeric", "Interval (date)", "Discrete"),
+    "Data_e_hapjes": ColumnType("Numeric", "Interval (date)", "Discrete"),
+    "Data_e_mbylljes": ColumnType("Numeric", "Interval (date)", "Discrete"),
+    "Numri_i_references": ColumnType("Categorical", "Nominal (identifier)", "Discrete"),
+    "viti": ColumnType("Numeric", "Interval", "Discrete"),
 }
 
-DATETIME_COLS = [c for c, t in COLUMNS.items() if "Datetime" in t.type]
+DATETIME_COLS = [c for c, t in COLUMNS.items() if "(date)" in t.type]
 NUMERIC_COLS = [c for c, t in COLUMNS.items() if t.is_numeric]
+
+# Procedure type (procedure and competition part) is read only to impute the
+# missing dates: deadlines depend far more on the type than on the year.
+PROCEDURE_TYPE = "Lloji_i_procedures"
+INPUT_COLS = [c for c in COLUMNS if c != "viti"] + [PROCEDURE_TYPE]

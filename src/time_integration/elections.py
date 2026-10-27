@@ -29,20 +29,3 @@ ELECTIONS = {
     ],
 }
 
-
-def get_election_period(date):
-    """Return election period (year, month) or None if no election in that month."""
-    if not hasattr(date, 'year') or not hasattr(date, 'month'):
-        return None
-
-    year = date.year
-    month = date.month
-
-    if year not in ELECTIONS:
-        return None
-
-    for start, end in ELECTIONS[year]:
-        if start.month <= month <= end.month:
-            return (year, start.month)
-
-    return None

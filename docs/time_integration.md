@@ -26,14 +26,18 @@ Integrimi përfshin zgjedhjet kombëtare në Shqipëri për analizën e prokurim
 
 | Atributi | Përshkrimi | Kategoria | Tipi | Vlera unike |
 |---|---|---|---|---|
-| `Data_e_publikimit` | Data e publikimit të procedurave | Kategorik | Datetime | 3,320 |
-| `Data_e_hapjes` | Data e hapjes të kërkesave | Kategorik | Datetime | 3,353 |
-| `Data_e_mbylljes` | Data e mbylljes të kërkesave | Kategorik | Datetime | 3,193 |
-| `Numri_i_references` | Numri referues i procedurave | Numerik | Count | 277,757 |
+| `Data_e_publikimit` | Data e publikimit të procedurës | Numerik | Interval (datë) | 3,320 |
+| `Data_e_hapjes` | Data e hapjes së procedurës | Numerik | Interval (datë) | 3,353 |
+| `Data_e_mbylljes` | Data e mbylljes së procedurës | Numerik | Interval (datë) | 3,193 |
+| `Numri_i_references` | Numri referues i procedurës (`REF-xxxxx-MM-DD-YYYY`) | Kategorik | Nominal (identifikues) | 277,757 |
+| `viti` | Viti i skedarit vjetor (nga emri i skedarit, kolona `year`) | Numerik | Interval | 10 |
+
+- **Datat dhe viti janë numerike në shkallë intervale:** diferenca mes dy datave ka kuptim (p.sh. kohëzgjatja e tenderit në ditë), por nuk ka zero absolute, ndaj raporti mes tyre nuk ka kuptim. Në CSV ruhen si tekst `DD.MM.YYYY` dhe konvertohen në datë.
+- **`Numri_i_references` është identifikues nominal:** është tekst, nuk numëron asgjë dhe veprimet aritmetike nuk kanë kuptim. Data në fund të tij (data e regjistrimit) përdoret te pastrimi (2.2).
 
 ## 2.1 Kualiteti i të dhënave
 
-Kontrollet e cilësisë identifikojnë probleme në tre dimensione:
+Kontrollet e cilësisë identifikojnë probleme në katër dimensione:
 
 ### Kompletësia (Missing Values)
 - `Data_e_publikimit`: 0 mungesa (0%)
@@ -55,6 +59,19 @@ Kontrollet e cilësisë identifikojnë probleme në tre dimensione:
 | Data në të ardhmen | 0 | 0% | ✅ Në rregull |
 | Hapje = Mbyllje (e njëjta ditë) | 16,037 | 5.8% | 🟡 Mesatar |
 
+### Konsistenca (data e publikimit kundrejt skedarit vjetor)
+
+| Kontrolli | Rreshta | % |
+|---|---|---|
+| Publikuar në një vit më të vonë se skedari | 276 | 0.10% |
+| Nga këto: publikuar pas shkurtit të vitit pasues | 15 | 0.01% |
+| Nga këto: publikuar 2+ vjet pas vitit të skedarit | 5 | 0.00% |
+| Viti i regjistrimit (te `Numri_i_references`) ndryshon nga viti i skedarit | 11 | 0.00% |
+
+- Shumica (261) janë procedura të regjistruara në fund të vitit dhe të publikuara në janar–shkurt të vitit pasues, gjë që është e zakonshme.
+- **15 raste nuk janë normale**: vonesa nga disa muaj deri në 4 vjet (p.sh. një procedurë e skedarit të 2017-s e publikuar në shtator 2021, një e skedarit të 2025-s e publikuar në shtator 2026). Te disa prej tyre edhe data e regjistrimit është në një vit tjetër, pra procedura duket e vendosur në skedarin e gabuar. Lista: [`late_publications.csv`](../reports/time_integration/late_publications.csv).
+- Këto raste vetëm **identifikohen** këtu; `year` mbetet viti i skedarit. Trajtimi i tyre bëhet në Pjesën II.
+
 **Gjetje kryesore:** 7,170 procedure (2.58%) kanë data të hapjes para datës së publikimit - logjikisht të pamundur. Këto trajtohen te pastrimi (2.2).
 
 ## 2.2 Pastrimi
@@ -74,13 +91,13 @@ Kontrollet e renditjes së datave para dhe pas pastrimit (pas plotësimit të mu
 | Publikimi para regjistrimit | 0 | 0 |
 | Hapja para publikimit | 7,170 | **0** |
 | Mbyllja para hapjes | 5 | **0** |
-| Mbyllja para publikimit | 263 | **0** |
+| Mbyllja para publikimit | 245 | **0** |
 | Mbyllja pas datës së eksportit | 1 | **0** |
 | Kohëzgjatja e tenderit > 365 ditë | 5 | 4 |
 
 - Kohëzgjatja maksimale bie nga 30,316 në 440 ditë. 4 tenderat mbi 365 ditë (405–440 ditë) janë të mundshëm dhe mbahen.
 - Hapja dhe mbyllja në të njëjtën ditë (16,037) nuk konsiderohet gabim, sepse ndodh te procedurat me vlerë të vogël, dhe mbetet e pandryshuar.
-- 276 procedura kanë datë publikimi në vitin pasues të skedarit (p.sh. regjistruar më 30.12.2016, publikuar më 04.01.2017). Kjo nuk është gabim, prandaj `year` mbetet viti i skedarit.
+- Procedurat e publikuara në një vit më të vonë se skedari (2.1, konsistenca) nuk ndryshohen. Pas pastrimit mbeten 223 (nga 276, sepse te 53 publikimi u zhvendos te data e hapjes): 210 në janar–shkurt të vitit pasues dhe 13 me vonesë më të madh, që trajtohen në Pjesën II.
 - 7 referenca përdoren nga dy procedura të autoriteteve të ndryshme (shih [values_winners.md](values_winners.md)). Nuk janë kopje dhe nuk fshihen.
 - Kodi: `python -m src.time_integration.cleaning`
 
@@ -90,11 +107,36 @@ Asnjë rresht nuk fshihet. Datat që mungojnë plotësohen me vlerësim logjik d
 
 | Kolona | Mungesa | Metoda |
 |---|---|---|
-| `Data_e_hapjes` | 169 | Data e publikimit + mediana e vonesës publikim→hapje e vitit përkatës |
-| `Data_e_mbylljes` | 1,092 | Data e hapjes + mediana e kohëzgjatjes hapje→mbyllje e vitit përkatës |
+| `Data_e_hapjes` | 169 | Data e publikimit + mediana e vonesës publikim→hapje e procedurave të të njëjtit lloj në të njëjtin vit |
+| `Data_e_mbylljes` | 1,092 | Data e hapjes + mediana e kohëzgjatjes hapje→mbyllje e procedurave të të njëjtit lloj në të njëjtin vit |
 | `Data_e_publikimit`, `Numri_i_references` | 0 | Nuk kërkohet veprim |
 
-- Mediana llogaritet sipas vitit (afatet ndryshojnë nga viti në vit) dhe përdor vetëm diferenca ≥ 0, ndaj data e plotësuar nuk mund të dalë para datës nga e cila rrjedh. Nëse një vit nuk ka diferenca të vlefshme, përdoret mediana globale.
+### Krahasimi i strategjive
+
+Mungesat e `Data_e_mbylljes` nuk janë të rastësishme: 605 nga 1,092 janë procedura **Consulting**, 250 **Restricted Local**, 96 **Negotiated without Notice**, ndërsa procedurat **Small Value** (shumica e dataset-it, zakonisht 1 ditë) kanë vetëm 59. U krahasuan katër strategji:
+
+- **Fshirja e rreshtave** humb rreshtat e plotë, pra edhe vlerat, fituesit dhe ofertat e pjesëve të tjera, dhe humb kryesisht procedurat e konsulencës e të kufizuara (shtrembërim sipas llojit).
+- Për **strategjitë e plotësimit**, fshihen përkohësisht data të **njohura** me të njëjtën përzierje lloji × viti si mungesat reale, plotësohen me secilën strategji dhe krahasohen me vlerën e vërtetë (20 përsëritje me seed të ndryshëm).
+
+| Kolona | Strategjia | Rreshta të humbur | Gabimi mesatar (ditë) | Saktë (%) | Brenda 3 ditëve (%) |
+|---|---|---|---|---|---|
+| `Data_e_mbylljes` | Fshirja e rreshtave | 1,092 | – | – | – |
+| | Mediana globale | 0 | 46.17 | 8.1 | 16.4 |
+| | Mediana sipas vitit | 0 | 46.17 | 8.1 | 16.4 |
+| | Mediana sipas llojit të procedurës | 0 | 14.18 | 11.4 | 35.6 |
+| | **Mediana sipas llojit × vitit** ✅ | 0 | **13.89** | **13.2** | **38.0** |
+| `Data_e_hapjes` | Fshirja e rreshtave | 169 | – | – | – |
+| | Mediana globale | 0 | 0.34 | 77.3 | 99.1 |
+| | Mediana sipas vitit | 0 | 0.37 | 74.5 | 99.1 |
+| | Mediana sipas llojit të procedurës | 0 | 0.34 | 77.3 | 99.1 |
+| | **Mediana sipas llojit × vitit** ✅ | 0 | **0.33** | **77.7** | **99.2** |
+
+*Për `Data_e_mbylljes` u testuan 799 data në çdo përsëritje (jo 1,092), sepse disa kombinime lloji × viti kanë më pak data të njohura se mungesa.*
+
+**Pse mediana sipas llojit × vitit:** afatet e tenderit varen kryesisht nga **lloji i procedurës** (procedura me vlerë të vogël zgjat zakonisht 1 ditë, konsulenca dhe procedurat e kufizuara zgjasin javë). Mediana globale ose sipas vitit është ~1 ditë dhe për mungesat reale gabon mesatarisht **46 ditë**; mediana sipas llojit × vitit e ul gabimin në **~14 ditë**, pa humbur asnjë rresht. Për `Data_e_hapjes` të gjitha strategjitë janë pothuajse të njëjta (< 0.4 ditë gabim), sepse hapja është pothuajse gjithmonë ditën e publikimit ose të nesërmen; përdoret e njëjta strategji për konsistencë. Rezultati: [`missing_strategies.csv`](../reports/time_integration/missing_strategies.csv).
+
+- Lloji i procedurës (`Lloji_i_procedures`) i takon pjesës së procedurave; këtu lexohet vetëm për plotësimin e datave.
+- Mediana përdor vetëm diferenca ≥ 0, ndaj data e plotësuar nuk mund të dalë para datës nga e cila rrjedh. Nëse një kombinim lloji × viti nuk ka diferenca të vlefshme, përdoret mediana e llojit, pastaj mediana globale.
 - Një datë hapjeje e plotësuar nuk mund të dalë pas një date mbylljeje të njohur; në atë rast merr datën e mbylljes.
 - E njëjta metodë plotëson edhe datat që pastrimi (2.2) i shënon si të gabuara.
 - Pas plotësimit mbeten 0 mungesa dhe 277,764 rreshta (asnjë i fshirë).
@@ -115,12 +157,11 @@ Vetitë krijohen mbi datat e pastruara (2.2) dhe të plotësuara (2.3), pa fshir
 | `ditet_nga_zgjedhjet` | Zgjedhore | `Data_e_publikimit` − `zgjedhjet_me_te_aferta` (< 0 = para zgjedhjeve, > 0 = pas) |
 | `periudha_covid` | COVID | Para COVID (< 11.03.2020), Gjatë COVID (11.03.2020 – 31.12.2021), Pas COVID |
 
-**Gjetjet kryesore:**
-- `ditet_publikim_hapje`: mediana 0 ditë (hapja zakonisht ditën e publikimit), 75% ≤ 1 ditë, maksimumi 213 ditë.
-- `kohezgjatja_e_tenderit`: mediana 1 ditë, 75% ≤ 9 ditë, maksimumi 440 ditë (para pastrimit 30,316).
-- `ditet_nga_zgjedhjet`: vlerat shkojnë nga −374 deri në 486 ditë, mediana −16; zgjedhjet mbahen afërsisht çdo 2 vjet (vendore dhe parlamentare me radhë), ndaj çdo procedurë është brenda ~1 viti nga zgjedhjet më të afërta.
-- `periudha_covid`: 2020 ndahet në 4,103 procedura para dhe 19,567 gjatë COVID; 2021 është tërësisht gjatë COVID. Pak rreshta (p.sh. 3 në 2017) kanë datë publikimi jashtë vitit të skedarit.
-- Janari dhe gushti kanë vazhdimisht më pak procedura; tetori dhe dhjetori më shumë.
+**Kontrollet e vetive:**
+- Të gjitha vetitë kanë vlerë për çdo rresht (277,764) dhe asnjë diferencë në ditë nuk është negative ([`features_summary.csv`](../reports/time_integration/features_summary.csv)).
+- Kufiri i COVID-it ndan vitin 2020 në 4,103 procedura para dhe 19,567 gjatë COVID; 2021 është tërësisht gjatë COVID ([`covid_periods_by_year.csv`](../reports/time_integration/covid_periods_by_year.csv)).
+
+Analiza e shpërndarjes së këtyre vetive (statistikat përmbledhëse, ndryshimet sipas muajve etj.) i takon Pjesës II.
 
 ## 2.5 Diskretizimi dhe binarizimi
 
@@ -130,17 +171,17 @@ Vetitë krijohen mbi datat e pastruara (2.2) dhe të plotësuara (2.3), pa fshir
 
 | Metoda | Rezultati | Pse (nuk) përdoret |
 |---|---|---|
-| Equal width | 277,191 rreshta (99.8%) në grupin e parë (0–88 ditë) | Shpërndarja është shumë e anshme (maksimumi 440, mediana 1), ndaj grupet e tjera janë pothuajse bosh |
-| Equal frequency | Vetëm 4 grupe; grupi i parë (0–1 ditë) ka 162,177 rreshta | 53% e tenderave zgjasin saktësisht 1 ditë, kuantilet përsëriten dhe grupet bashkohen |
+| Equal width | 277,167 rreshta (99.8%) në grupin e parë (0–88 ditë) | Shpërndarja është shumë e anshme (maksimumi 440, mediana 1), ndaj grupet e tjera janë pothuajse bosh |
+| Equal frequency | Vetëm 4 grupe; grupi i parë (0–1 ditë) ka 161,150 rreshta | 52% e tenderave zgjasin saktësisht 1 ditë, kuantilet përsëriten dhe grupet bashkohen |
 | **Kufij të zgjedhur** ✅ | Grupe me kuptim dhe të gjitha të populluara | Përdoret |
 
 | Grupi | Ditë | Rreshta |
 |---|---|---|
 | E njëjta ditë | 0 | 16,076 |
-| 1-3 ditë | 1–3 | 182,232 |
-| 4-14 ditë | 4–14 | 44,686 |
-| 15-30 ditë | 15–30 | 24,344 |
-| Mbi 30 ditë | > 30 | 10,426 |
+| 1-3 ditë | 1–3 | 181,273 |
+| 4-14 ditë | 4–14 | 44,716 |
+| 15-30 ditë | 15–30 | 24,361 |
+| Mbi 30 ditë | > 30 | 11,338 |
 
 **`afersia_me_zgjedhjet`** (nga `Data_e_publikimit` dhe `zgjedhjet_me_te_aferta`). Dritarja bazohet te **periudha parazgjedhore prej 4 muajsh** para ditës së votimit, kur Kodi Zgjedhor (neni 91, paragrafi 4) kufizon përdorimin e burimeve publike. P.sh. për zgjedhjet e 11.05.2025 kufizimet nisën më 11.01.2025. Muajt llogariten si muaj kalendarikë (jo si numër ditësh). E njëjta gjatësi përdoret pas zgjedhjeve, si periudhë krahasimi.
 
@@ -192,7 +233,7 @@ Një seed i vetëm mund ta favorizojë rastësisht njërën metodë, prandaj sec
 
 *(mesatarja e 50 seed-eve; rasti më i keq gjendet te `sampling_max_deviation.csv`)*
 
-**Zgjedhja:** mostra e shtresëzuar sipas **vitit dhe afërsisë me zgjedhjet**. Ajo ruan saktësisht përqindjen e çdo viti dhe të periudhave zgjedhore, që janë boshti i integrimit (10 vite + zgjedhjet), dhe ruan edhe periudhat COVID. Për variablat jashtë shtresave, të tri metodat kanë luhatje të ngjashme e të vogla (< 0.35 pp mesatarisht), ndaj shtresëzimi nuk humb asgjë. Mesatarja dhe mediana e vetive në ditë mbeten të afërta me dataset-in e plotë (p.sh. kohëzgjatja mesatare 6.04 → 6.12 ditë, mediana 1 → 1).
+**Zgjedhja:** mostra e shtresëzuar sipas **vitit dhe afërsisë me zgjedhjet**. Ajo ruan saktësisht përqindjen e çdo viti dhe të periudhave zgjedhore, që janë boshti i integrimit (10 vite + zgjedhjet), dhe ruan edhe periudhat COVID. Për variablat jashtë shtresave, të tri metodat kanë luhatje të ngjashme e të vogla (< 0.35 pp mesatarisht), ndaj shtresëzimi nuk humb asgjë. Mesatarja dhe mediana e vetive në ditë mbeten të afërta me dataset-in e plotë (p.sh. kohëzgjatja mesatare 6.20 → 6.27 ditë, mediana 1 → 1).
 
 Funksionet e mostrimit janë të përgjithshme ([`src/common/sampling.py`](../src/common/sampling.py)), që pipeline-i final t'i zbatojë mbi dataset-in e integruar.
 
@@ -235,16 +276,14 @@ Ky dataset nuk përmban ende transformimin dhe PCA-në, që janë hapat e mbetur
 
 - **missing_summary.csv**: Mungesat para/pas plotësimit dhe numri i vlerave të plotësuara
 - **missing_by_year.csv**: Përqindja e mungesave sipas vitit
+- **missing_strategies.csv**: Krahasimi i strategjive për vlerat e zbrazëta (fshirja dhe tri mediana kundrejt medianës sipas llojit × vitit)
 - **data_types.csv**: Tipet e të dhënave për çdo kolonë
-- **integration_summary.csv**: Përmbledhja e 277,764 procedurave
-- **elections_mapping.csv**: Procedurat e publikuara ditën e zgjedhjeve (9 total)
-- **quality_checks.csv**: Kontrollet e cilësisë (17 kontrolle)
+- **quality_checks.csv**: Kontrollet e cilësisë (21 kontrolle)
+- **late_publications.csv**: Procedurat e publikuara pas shkurtit të vitit pasues të skedarit (vetëm identifikim)
 - **cleaning_summary.csv**: Problemet e datave, veprimi dhe numri i rreshtave të rregulluar
 - **date_order_checks.csv**: Kontrollet e renditjes së datave para dhe pas pastrimit
 - **features_summary.csv**: Vetitë e krijuara, përkufizimi dhe numri i vlerave negative
-- **features_profile.csv**: Shpërndarja e vetive në ditë (mesatarja, kuartilet, min/max)
 - **covid_periods_by_year.csv**: Procedurat sipas periudhës COVID dhe vitit
-- **procedures_by_month.csv**: Procedurat sipas muajit të publikimit dhe vitit
 - **discretization_duration.csv**: Krahasimi equal width / equal frequency / kufij të zgjedhur për kohëzgjatjen
 - **election_proximity_by_year.csv**: Procedurat sipas afërsisë me zgjedhjet dhe vitit
 - **binary_summary.csv**: Numri dhe përqindja e vlerave 1 për çdo veti binare

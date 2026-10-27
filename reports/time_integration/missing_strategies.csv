@@ -1,0 +1,11 @@
+column,strategy,rows_lost,tested,mean_error_days,exact_pct,within_3_days_pct
+Data_e_hapjes,Fshirja e rreshtave,169,,,,
+Data_e_hapjes,Mediana globale,0,169.0,0.34,77.3,99.1
+Data_e_hapjes,Mediana sipas vitit,0,169.0,0.37,74.5,99.1
+Data_e_hapjes,Mediana sipas llojit,0,169.0,0.34,77.3,99.1
+Data_e_hapjes,Mediana sipas llojit x vitit (e zgjedhur),0,169.0,0.33,77.7,99.2
+Data_e_mbylljes,Fshirja e rreshtave,1092,,,,
+Data_e_mbylljes,Mediana globale,0,799.0,46.17,8.1,16.4
+Data_e_mbylljes,Mediana sipas vitit,0,799.0,46.17,8.1,16.4
+Data_e_mbylljes,Mediana sipas llojit,0,799.0,14.18,11.4,35.6
+Data_e_mbylljes,Mediana sipas llojit x vitit (e zgjedhur),0,799.0,13.89,13.2,38.0
