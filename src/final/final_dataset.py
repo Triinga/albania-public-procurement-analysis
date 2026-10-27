@@ -4,12 +4,17 @@ Builds on the integrated dataset (all three parts, see
 src.time_integration.integrated_dataset) and adds the last steps:
 
 1. Consistency between the parts: a procedure can be cancelled and still show
-   a winner. Nothing is changed or removed; two columns describe these cases:
-   - `kontrate_e_lidhur`: 1 if the procedure has a winner and is not cancelled;
-   - `anulim_kontradiktor`: 1 if a cancelled procedure contradicts itself
-     (a signed contract value, or the reason says no offer was submitted while
-     offers exist).
-   How these procedures are treated is decided in Part II.
+   a winner. Nothing is changed or removed; new columns describe these cases:
+   - `kontrate_e_lidhur`: 1 if the procedure has a winner and is not cancelled.
+     An operational classification from the procedure status, not independent
+     proof that a contract was signed;
+   - `flag_kontrate_anuluar`, `flag_pa_oferte_kontradikte`: the two kinds of
+     contradictory cancellation; `anulim_kontradiktor` is 1 if at least one holds
+     and `arsye_kontradikte` names which;
+   - `statusi_analitik`: one analytic status per procedure (see STATUS_LABELS).
+     A missing contract value does not mean there was no contract: the field is
+     empty in 81.5% of the procedures.
+   How the contradictory procedures are treated is decided in Part II.
 2. Transformation of the amounts (log, min-max, z-score; see
    src.values_winners.transformation).
 3. PCA components (see src.values_winners.pca); procedures without all PCA
@@ -43,6 +48,13 @@ PCA_VARIANCE_PCT = 90  # keep the components that explain at least 90% of the va
 NO_OFFER_REASON = r"asnjë ofert"
 OFFERS_EXISTED_REASON = r"përshtatshme|vlefshme"
 
+CONFIRMED = "Kontratë e konfirmuar"           # not cancelled, contract value recorded
+UNCONFIRMED = "Me fitues, kontratë e pakonfirmuar"  # not cancelled, winner, no contract value
+NOT_CONFIRMED = "Pa kontratë të konfirmuar"   # not cancelled, no winner, no contract value
+NOT_CONCLUDED = "Jo e lidhur"                 # cancelled, without contradiction
+CONTRADICTORY = "Kontradiktor"                # cancelled, but contradicts itself
+STATUS_LABELS = [CONFIRMED, UNCONFIRMED, NOT_CONFIRMED, NOT_CONCLUDED, CONTRADICTORY]
+
 
 def contradictions(df):
     """The two kinds of contradictory cancellation, as boolean masks."""
@@ -57,13 +69,40 @@ def contradictions(df):
     }
 
 
+def analytic_status(df, contradictory):
+    """One status per procedure; the first matching rule wins."""
+    cancelled = df["Anulluar"].eq(True).fillna(False)
+    contract = df["Vlera_e_fituesit_ne_lidhjen_e_kontrates"].notna()
+    winner = df["Fituesi"].notna()
+    rules = [
+        (contradictory, CONTRADICTORY),
+        (cancelled, NOT_CONCLUDED),
+        (contract, CONFIRMED),
+        (winner, UNCONFIRMED),
+    ]
+    status = pd.Series(NOT_CONFIRMED, index=df.index)
+    for mask, label in reversed(rules):
+        status = status.mask(mask, label)
+    return pd.Categorical(status, categories=STATUS_LABELS)
+
+
 def add_consistency_flags(df):
-    """Flags for procedures whose cancellation and winner columns disagree."""
+    """Flags and analytic status for procedures whose cancellation and winner disagree."""
     df = df.copy()
     cancelled = df["Anulluar"].eq(True).fillna(False)
     found = contradictions(df)
+    signed, no_offer = found["signed_contract"], found["no_offer_reason_with_offers"]
+    contradictory = signed | no_offer
+
     df["kontrate_e_lidhur"] = to_binary(df["Fituesi"].notna() & ~cancelled)
-    df["anulim_kontradiktor"] = to_binary(found["signed_contract"] | found["no_offer_reason_with_offers"])
+    df["flag_kontrate_anuluar"] = to_binary(signed)
+    df["flag_pa_oferte_kontradikte"] = to_binary(no_offer)
+    df["anulim_kontradiktor"] = to_binary(contradictory)
+    df["arsye_kontradikte"] = pd.Series(pd.NA, index=df.index, dtype="string")
+    df.loc[signed, "arsye_kontradikte"] = "E anuluar, por me vlerë kontrate të lidhur"
+    df.loc[no_offer, "arsye_kontradikte"] = "Arsyeja: asnjë ofertë, por ka oferta"
+    df.loc[signed & no_offer, "arsye_kontradikte"] = "Të dyja"
+    df["statusi_analitik"] = analytic_status(df, contradictory)
     return df
 
 
@@ -96,6 +135,7 @@ def consistency_summary(df):
          int(found["signed_contract"].sum())),
         ("  of which: reason says no offer was submitted, but offers exist",
          int(found["no_offer_reason_with_offers"].sum())),
+        ("  of which: both", int((found["signed_contract"] & found["no_offer_reason_with_offers"]).sum())),
         ("Winner with 0 qualified offers",
          int((has_winner & df["Numri_i_ofertave_te_kualifikuara"].eq(0)).sum())),
     ]
@@ -118,7 +158,9 @@ def build(raw):
     df, variance = add_pca(df)
     df, constant = drop_constant(df)
 
-    added = {c: "final: consistency" for c in ["kontrate_e_lidhur", "anulim_kontradiktor"]}
+    added = {c: "final: consistency" for c in [
+        "kontrate_e_lidhur", "flag_kontrate_anuluar", "flag_pa_oferte_kontradikte",
+        "anulim_kontradiktor", "arsye_kontradikte", "statusi_analitik"]}
     added |= {c: "final: transformation" for c in df.columns if c.endswith(("_log", "_log_minmax", "_log_z"))}
     added |= {c: "final: PCA" for c in variance["component"]}
     tables = {
@@ -136,6 +178,8 @@ def build(raw):
         "final_consistency": consistency_summary(df),
         "final_dropped_columns": pd.DataFrame({"column": constant,
                                                "reason": "Same value in every row"}),
+        "final_status": df["statusi_analitik"].value_counts(sort=False).rename_axis("statusi_analitik")
+                          .reset_index(name="procedures"),
     }
     return df, tables
 
@@ -155,7 +199,7 @@ def main():
     df.to_csv(PROCESSED_DIR / "prokurimi_final.csv", index=False)
 
     with pd.option_context("display.width", 200, "display.max_rows", 200):
-        for name in ["final_summary", "final_consistency", "final_dropped_columns"]:
+        for name in ["final_summary", "final_consistency", "final_status", "final_dropped_columns"]:
             print(f"{name}:\n{tables[name].to_string(index=False)}\n")
     print(f"Saved {len(df):,} rows x {df.shape[1]} columns to {PROCESSED_DIR / 'prokurimi_final.csv'}")
 
