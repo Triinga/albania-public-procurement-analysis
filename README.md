@@ -4,7 +4,7 @@ Analizë e prokurimit publik në Shqipëri për vitet **2016–2025** (277,764 p
 
 Projekt grupor (Grupi 13) për lëndën **Përgatitja dhe vizualizimi i të dhënave**. Projekti ka 3 faza; ky repository përmban **Fazën I: përgatitjen e të dhënave** (mbledhja, tipet, kualiteti, integrimi, agregimi, mostrimi, pastrimi, vlerat e zbrazëta, krijimi i vetive, diskretizimi, binarizimi, transformimi, zgjedhja e vetive dhe reduktimi i dimensionit me PCA).
 
-Rezultati përfundimtar është **`prokurimi_final.csv`** (277,764 procedura × 80 kolona), i përshkruar te [docs/final_dataset.md](docs/final_dataset.md). Hapat shpjegohen një nga një te notebook-u [notebooks/01_parapercesimi.ipynb](notebooks/01_parapercesimi.ipynb).
+Rezultati përfundimtar është **`prokurimi_final.csv`** (277,764 procedura × 84 kolona), i përshkruar te [docs/final_dataset.md](docs/final_dataset.md). Hapat shpjegohen një nga një te notebook-u [notebooks/01_parapercesimi.ipynb](notebooks/01_parapercesimi.ipynb).
 
 ## Anëtarët dhe ndarja e punës
 
@@ -76,7 +76,7 @@ pip install -r requirements.txt
 python -m src.final.final_dataset
 ```
 
-Skripti i bën vetë të gjithë hapat e Fazës I për të tri pjesët (pastrimin, vlerat e zbrazëta, vetitë, integrimin e zgjedhjeve dhe CPV, transformimin dhe PCA-në), ndaj nuk duhet ekzekutuar asnjë skript tjetër më parë. Zgjat rreth 1 minutë dhe krijon `data/processed/prokurimi_final.csv` (277,764 rreshta × 80 kolona, ~209 MB). Përshkrimi i kolonave: [`reports/final/final_columns.csv`](reports/final/final_columns.csv).
+Skripti i bën vetë të gjithë hapat e Fazës I për të tri pjesët (pastrimin, vlerat e zbrazëta, vetitë, integrimin e zgjedhjeve dhe CPV, transformimin dhe PCA-në), ndaj nuk duhet ekzekutuar asnjë skript tjetër më parë. Zgjat rreth 1 minutë dhe krijon `data/processed/prokurimi_final.csv` (277,764 rreshta × 84 kolona, ~218 MB). Përshkrimi i kolonave: [`reports/final/final_columns.csv`](reports/final/final_columns.csv).
 
 Nëse duhet vetëm dataset-i i integruar, pa transformimin dhe PCA-në (64 kolona, ~155 MB): `python -m src.time_integration.integrated_dataset`.
 

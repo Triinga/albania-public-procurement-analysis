@@ -2,8 +2,8 @@ metric,value
 Rows (procedures),277764
 Rows in the raw files,277764
 Columns in the integrated dataset,64
-Columns added,17
+Columns added,21
 Constant columns dropped,1
-Columns in the final dataset,80
+Columns in the final dataset,84
 PCA components kept (>= 90% variance),6
 Procedures with PCA components,201837

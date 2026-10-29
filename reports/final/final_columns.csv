@@ -63,7 +63,11 @@ is_framework_agreement,integrated dataset,boolean,277764,0.0
 has_cancellation_reason,integrated dataset,boolean,277764,0.0
 cancelled_without_reason,integrated dataset,boolean,277764,0.0
 kontrate_e_lidhur,final: consistency,Int8,277764,0.0
+flag_kontrate_anuluar,final: consistency,Int8,277764,0.0
+flag_pa_oferte_kontradikte,final: consistency,Int8,277764,0.0
 anulim_kontradiktor,final: consistency,Int8,277764,0.0
+arsye_kontradikte,final: consistency,string,5054,98.18
+statusi_analitik,final: consistency,category,277764,0.0
 Fondi_limit_log,final: transformation,float64,235477,15.22
 Fondi_limit_log_minmax,final: transformation,float64,235477,15.22
 Fondi_limit_log_z,final: transformation,float64,235477,15.22
