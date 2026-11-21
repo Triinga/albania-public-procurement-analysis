@@ -45,7 +45,7 @@ Lloji_i_procedures,integrated dataset,string,277764,0.0
 Tipi_i_kontrates,integrated dataset,string,277764,0.0
 Lloji_i_marreveshjes_kuader,integrated dataset,string,19424,93.01
 Anulluar,integrated dataset,boolean,277764,0.0
-Arsyeja_e_anullimit,integrated dataset,string,71903,74.11
+Arsyeja_e_anullimit,integrated dataset,string,71905,74.11
 Pezulluar,integrated dataset,boolean,277764,0.0
 Numri_i_ofertave_te_dorezuara,integrated dataset,Int64,277764,0.0
 Numri_i_ofertave_te_kualifikuara,integrated dataset,Int64,277764,0.0

@@ -24,7 +24,7 @@ Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value is 0,112,51505,0.22
 Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value between 0 and 1 lek,6,51505,0.01
 Accuracy,Vlera_e_fituesit,Winner value above fund limit,8571,205231,4.18
 Accuracy,Fondi_limit,Fund is 0 but a winner value exists,13234,13329,99.29
-Consistency,Fituesi,Cancelled procedure with a winner,27707,73423,37.74
-Consistency,Vlera_e_fituesit,Cancelled procedure with a winner value,27618,73423,37.61
+Consistency,Fituesi,Cancelled procedure with a winner,27708,73425,37.74
+Consistency,Vlera_e_fituesit,Cancelled procedure with a winner value,27619,73425,37.62
 Consistency,NIPT_i_fituesit,NIPT without winner name,14,223884,0.01
 Consistency,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Contract value differs from winner value,26749,51505,51.93

@@ -24,8 +24,8 @@ Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value is 0,112,112,Mbetet qëll
 Accuracy,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Value between 0 and 1 lek,6,6,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II
 Accuracy,Vlera_e_fituesit,Winner value above fund limit,8571,5178,Mbetet qëllimisht,Vlerë logjikisht e pamundur: trajtohet në Pjesën II; bie sepse fondet ≤ 1 lek u bënë mungesë dhe nuk krahasohen më
 Accuracy,Fondi_limit,Fund is 0 but a winner value exists,13234,0,Rregulluar,Fondi 0 u shënua si mungesë e maskuar (NaN)
-Consistency,Fituesi,Cancelled procedure with a winner,27707,27707,Mbetet qëllimisht,Shënohet me kontrate_e_lidhur / anulim_kontradiktor në dataset-in përfundimtar
-Consistency,Vlera_e_fituesit,Cancelled procedure with a winner value,27618,27618,Mbetet qëllimisht,Shënohet me kontrate_e_lidhur / anulim_kontradiktor në dataset-in përfundimtar
+Consistency,Fituesi,Cancelled procedure with a winner,27708,27708,Mbetet qëllimisht,Shënohet me kontrate_e_lidhur / anulim_kontradiktor në dataset-in përfundimtar
+Consistency,Vlera_e_fituesit,Cancelled procedure with a winner value,27619,27619,Mbetet qëllimisht,Shënohet me kontrate_e_lidhur / anulim_kontradiktor në dataset-in përfundimtar
 Consistency,NIPT_i_fituesit,NIPT without winner name,14,14,Mbetet qëllimisht,Emri mungon në burim; NIPT-i mbahet si identifikues
 Consistency,Vlera_e_fituesit_ne_lidhjen_e_kontrates,Contract value differs from winner value,26749,26749,Mbetet qëllimisht,"Mund të jetë e rregullt (negociata, TVSH, lote); kontrollohet në Pjesën II"
 Consistency,Fituesi,NIPT written with more than one winner name,861,0,Rregulluar,Çdo NIPT merr emrin që përdoret më shpesh

@@ -14,6 +14,8 @@ from pathlib import Path
 
 import pandas as pd
 
+sys.stdout.reconfigure(encoding="utf-8")
+
 from src.common.cleaning import JOINT_SEPARATOR
 from src.common.data_loading import DATA_DIR, YEARS, read_years
 from src.common.quality import ALBANIAN_NIPT, duplicate_rows, has_extra_whitespace, run_checks

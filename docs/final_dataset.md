@@ -29,10 +29,10 @@ Lista e plotë e kolonave, me hapin ku u shtuan, tipin dhe mungesat: [`final_col
 
 ## 2. Konsistenca: tenderët e anuluar me fitues
 
-Kur bashkohen kolonat e pjesëve, del një mospërputhje: **27,707 tenderë janë të anuluar (`Anulluar`), por kanë fitues (`Fituesi`)**.
+Kur bashkohen kolonat e pjesëve, del një mospërputhje: **27,708 tenderë janë të anuluar (`Anulluar`), por kanë fitues (`Fituesi`)**.
 
 **A është gabim kolona `Anulluar`?** Jo në shumicën e rasteve:
-- 27,700 nga 27,707 kanë **arsye anulimi** të shkruar (p.sh. "dokumentet e tenderit përmbajnë gabime"). Një anulim i shënuar gabimisht nuk do të kishte arsye.
+- 27,701 nga 27,708 kanë **arsye anulimi** të shkruar (p.sh. "dokumentet e tenderit përmbajnë gabime"). Një anulim i shënuar gabimisht nuk do të kishte arsye.
 - 93% janë procedura **Small Value**. Fituesi i shpallur nuk do të thotë domosdoshmërisht që kontrata u lidh: tenderi mund të anulohet pas shpalljes (p.sh. pas ankimit).
 
 Por disa raste kundërshtojnë vetveten:
@@ -43,7 +43,7 @@ Por disa raste kundërshtojnë vetveten:
 
 | Kolona | Përkufizimi |
 |---|---|
-| `kontrate_e_lidhur` | 1 nëse ka fitues **dhe** nuk është e anuluar (196,163) |
+| `kontrate_e_lidhur` | 1 nëse ka fitues **dhe** nuk është e anuluar (196,162) |
 | `flag_kontrate_anuluar` | 1 nëse është e anuluar, por ka **vlerë kontrate të lidhur** (`Vlera_e_fituesit_ne_lidhjen_e_kontrates`) |
 | `flag_pa_oferte_kontradikte` | 1 nëse është e anuluar me arsyen që **nuk u paraqit asnjë ofertë**, ndërkohë që `Numri_i_ofertave_te_dorezuara` > 0 |
 | `anulim_kontradiktor` | 1 nëse vlen të paktën njëri nga dy flag-et |
@@ -68,14 +68,14 @@ Rregullat zbatohen me radhë; vlen rregulli i parë që plotësohet:
 | # | Statusi | Rregulli | Procedura |
 |---|---|---|---|
 | 1 | **Kontradiktor** | `anulim_kontradiktor = 1` | 5,054 |
-| 2 | **Jo e lidhur** | E anuluar, pa kontradiktë | 68,369 |
+| 2 | **Jo e lidhur** | E anuluar, pa kontradiktë | 68,371 |
 | 3 | **Kontratë e konfirmuar** | Jo e anuluar, me vlerë kontrate të lidhur | 48,028 |
-| 4 | **Me fitues, kontratë e pakonfirmuar** | Jo e anuluar, me fitues, pa vlerë kontrate | 150,174 |
-| 5 | **Pa kontratë të konfirmuar** | Jo e anuluar, pa fitues, pa vlerë kontrate | 6,139 |
+| 4 | **Me fitues, kontratë e pakonfirmuar** | Jo e anuluar, me fitues, pa vlerë kontrate | 150,173 |
+| 5 | **Pa kontratë të konfirmuar** | Jo e anuluar, pa fitues, pa vlerë kontrate | 6,138 |
 | | **Gjithsej** | | **277,764** |
 
 **Kujdes në interpretim:**
-- **Mungesa e vlerës së kontratës nuk do të thotë mungesë kontrate.** Fusha `Vlera_e_fituesit_ne_lidhjen_e_kontrates` mungon te **81.5%** e tenderëve (por vetëm te 47.7% në 2017), pra varet nga mënyra si plotësohet, jo nga lidhja e kontratës. Prandaj ajo nuk përdoret si kusht i detyrueshëm: përndryshe 150,174 tenderë me fitues do të dilnin "pa kontratë". Ata dallohen si **të pakonfirmuar**, jo si të palidhur.
+- **Mungesa e vlerës së kontratës nuk do të thotë mungesë kontrate.** Fusha `Vlera_e_fituesit_ne_lidhjen_e_kontrates` mungon te **81.5%** e tenderëve (por vetëm te 47.7% në 2017), pra varet nga mënyra si plotësohet, jo nga lidhja e kontratës. Prandaj ajo nuk përdoret si kusht i detyrueshëm: përndryshe 150,173 tenderë me fitues do të dilnin "pa kontratë". Ata dallohen si **të pakonfirmuar**, jo si të palidhur.
 - **`kontrate_e_lidhur` është klasifikim operacional**, i bazuar në statusin e tenderit (ka fitues dhe nuk është i anuluar), **jo dëshmi e pavarur** e nënshkrimit të kontratës. Nëse përdoret në analizë, rezultatet **nuk** duhen paraqitur si numër i kontratave të konfirmuara; numri i kontratave të konfirmuara është ai i statusit **Kontratë e konfirmuar** (48,028).
 - **"Pa kontratë të konfirmuar"**: tenderë jo të anuluar dhe pa fitues. Mund të jenë ende të papërfunduar në datën e eksportit, prandaj nuk pohohet që kontrata nuk u lidh.
 - **2,039** tenderë jo të anuluar kanë vlerë kontrate, por nuk kanë emër fituesi. Ata janë **Kontratë e konfirmuar** (vlera e kontratës është prova), por kanë `kontrate_e_lidhur = 0`, sepse ky rregull kërkon fitues.

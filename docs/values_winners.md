@@ -106,8 +106,8 @@ Për kontrollin e duplikateve lexohen të 21 kolonat. Kolona `Anulluar` (nga pje
 
 | Kontrolli | Rreshta | % |
 |---|---|---|
-| Procedurë e anuluar (`Anulluar = Po`) me fitues | 27,707 | 37.7 e të anuluarave |
-| Procedurë e anuluar me vlerë fituese | 27,618 | 37.6 e të anuluarave |
+| Procedurë e anuluar (`Anulluar = Po`) me fitues | 27,708 | 37.7 e të anuluarave |
+| Procedurë e anuluar me vlerë fituese | 27,619 | 37.6 e të anuluarave |
 | NIPT pa emër fituesi | 14 | 0.01 |
 | Vlera në kontratë ≠ vlera e fituesit (kur ekzistojnë të dyja) | 26,749 | 51.9 |
 | Emra fituesish me disa NIPT | 30 emra | – |
@@ -164,7 +164,7 @@ Të njëjtat kontrolle të kualitetit (seksioni 2) ekzekutohen përsëri mbi të
 | NIPT jashtë formatit shqiptar | 244 | 244 | Kompani të huaja me numër TVSH të vendit të tyre |
 | Vlera fituese ose e kontratës = 0 ose ≤ 1 lek | 37 + 19 + 112 + 6 | të njëjta | Vlera logjikisht të pamundura: Pjesa II |
 | Vlera e fituesit mbi fondin limit | 8,571 | **5,178** | Pjesa II; bie sepse fondet ≤ 1 lek u bënë mungesë dhe nuk krahasohen më |
-| Procedurë e anuluar me fitues / me vlerë | 27,707 / 27,618 | të njëjta | Shënohen me `kontrate_e_lidhur` dhe `anulim_kontradiktor` ([`final_dataset.md`](final_dataset.md)) |
+| Procedurë e anuluar me fitues / me vlerë | 27,708 / 27,619 | të njëjta | Shënohen me `kontrate_e_lidhur` dhe `anulim_kontradiktor` ([`final_dataset.md`](final_dataset.md)) |
 | Vlera e kontratës ≠ vlera e fituesit | 26,749 | 26,749 | Mund të jetë e rregullt (negociata, TVSH, lote); kontrollohet në Pjesën II |
 | NIPT pa emër fituesi | 14 | 14 | Emri mungon në burim; NIPT-i mbahet si identifikues |
 
@@ -207,7 +207,7 @@ Duplikate nuk kishte as para, as pas pastrimit. Tabela e plotë: [`quality_befor
 | Procedura | Gjithsej | Pa fitues | % |
 |---|---|---|---|
 | Jo e anuluar | 204,341 | 8,178 | 4.0 |
-| E anuluar | 73,423 | 45,716 | **62.3** |
+| E anuluar | 73,425 | 45,717 | **62.3** |
 
 **Fondi sipas llojit të procedurës** (llojet kryesore):
 
