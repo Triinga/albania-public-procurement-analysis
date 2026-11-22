@@ -1,0 +1,8 @@
+rasti,outlier_status,procedures
+E anuluar me vlerë kontrate: gabim sistematik i eksportit 2017,gabim,3466
+"Arsyeja 'asnjë ofertë', por ka oferta të kualifikuara dhe fitues",gabim,1380
+"Zbulim jo i saktë: oferta pa asnjë të kualifikuar, arsyeja do të thotë 'asnjë ofertë e vlefshme'",(nuk është gabim),162
+"Fitues me 0 oferta të kualifikuara, por procedura u anulua (konsistente)",e vërtetë por e rrallë,72
+"Arsyeja 'asnjë ofertë', ka oferta, pa provë tjetër",e pasigurt,35
+E anuluar me vlerë kontrate (mund të jetë anulim i pjesshëm),e pasigurt,11
+Fitues me 0 oferta të kualifikuara dhe procedura nuk u anulua,gabim,2

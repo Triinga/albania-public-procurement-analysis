@@ -1,0 +1,11 @@
+metric,value
+Procedures with all 9 features,201837.0
+"Chi-square threshold (99.9%, df=9)",27.877
+Expected share above the threshold if normal (%),0.1
+"Outliers, global",11690.0
+"Outliers, within procedure type",11017.0
+"Global only (false detection, scale)",2854.0
+Group only (hidden by the global scale),2181.0
+Status: gabim,49.0
+Status: e vërtetë por e rrallë,8789.0
+Status: e pasigurt,5033.0
