@@ -1,0 +1,14 @@
+Lloji_i_procedures,procedures,mean_offers,median_offers,mean_qualified,single_bidder_pct,no_offers_pct,cancelled_pct,mean_qualified_share
+Consulting,1226.0,5.53,4.0,3.85,6.28,12.72,28.71,0.71
+Design Contest,20.0,1.15,0.0,0.65,10.0,65.0,25.0,0.62
+Negotiated with Notice Local,3.0,3.33,3.0,3.0,33.33,0.0,33.33,0.67
+Negotiated without Notice,5307.0,0.83,1.0,0.67,50.31,35.97,41.61,0.85
+Open For Social Services And Other Local,2.0,2.0,2.0,1.0,50.0,0.0,0.0,0.67
+Open INT,5153.0,2.16,1.0,1.26,32.33,22.78,25.69,0.68
+Open Local,21980.0,3.14,2.0,1.61,23.65,19.71,27.34,0.59
+Open Simple,16725.0,2.27,1.0,1.45,30.92,21.21,29.61,0.69
+Purchase Tickets,17766.0,4.28,4.0,4.0,5.31,2.09,11.85,0.93
+Request for Proposals,25549.0,2.49,2.0,1.43,26.8,22.61,33.62,0.63
+Restricted INT,204.0,6.27,4.0,3.88,0.98,14.71,16.18,0.67
+Restricted Local,500.0,7.04,6.0,4.35,2.6,7.0,17.6,0.65
+Small Value,183329.0,11.32,9.0,7.94,8.01,4.58,26.05,0.71

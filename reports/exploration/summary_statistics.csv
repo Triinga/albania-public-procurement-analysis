@@ -1,0 +1,11 @@
+column,subset,n,mean,std,min,q1,median,q3,max,iqr,mad,skewness,kurtosis
+Numri_i_ofertave_te_dorezuara,Të gjitha,277764,8.457,8.754,0.0,2.0,5.0,13.0,103.0,11.0,4.0,1.424,1.918
+Numri_i_ofertave_te_dorezuara,Pa gabimet,272839,8.354,8.701,0.0,2.0,5.0,13.0,103.0,11.0,4.0,1.446,2.006
+Numri_i_ofertave_te_kualifikuara,Të gjitha,277764,5.903,7.154,0.0,1.0,3.0,8.0,94.0,7.0,2.0,1.873,3.971
+Numri_i_ofertave_te_kualifikuara,Pa gabimet,272839,5.771,7.024,0.0,1.0,3.0,8.0,94.0,7.0,2.0,1.902,4.155
+qualified_offer_share,Të gjitha,252020,0.711,0.331,0.0,0.5,0.857,1.0,1.0,0.5,0.143,-0.771,-0.76
+qualified_offer_share,Pa gabimet,247095,0.707,0.332,0.0,0.485,0.833,1.0,1.0,0.515,0.167,-0.752,-0.789
+cpv_count,Të gjitha,277764,1.415,2.052,0.0,1.0,1.0,1.0,79.0,0.0,0.0,6.348,82.121
+cpv_count,Pa gabimet,272839,1.425,2.058,0.0,1.0,1.0,1.0,79.0,0.0,0.0,6.34,81.962
+nr_fituesve,Të gjitha,223870,1.003,0.174,1.0,1.0,1.0,1.0,35.0,0.0,0.0,99.061,12689.438
+nr_fituesve,Pa gabimet,218950,1.003,0.176,1.0,1.0,1.0,1.0,35.0,0.0,0.0,97.966,12410.518
