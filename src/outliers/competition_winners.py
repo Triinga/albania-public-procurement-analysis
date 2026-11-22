@@ -73,6 +73,8 @@ MIN_GROUP_ROWS = 1000
 # The cancellation contradictions with a signed contract are almost all from
 # one export year, so they are a recording error of that year, not behaviour.
 SYSTEMATIC_YEAR = 2017
+# Winner value this many times above (or below) the fund limit = unit/decimal error.
+SCALE_ERROR_FACTOR = 100
 KNN_SAMPLE, KNN_NEIGHBOURS, SEED = 20_000, 5, 42
 
 
@@ -299,9 +301,30 @@ def robust_d2(X, known_errors):
 
 
 def amount_errors(df):
-    """Amounts already known to be impossible (Semine's threshold and the <= 1 lek values)."""
+    """Amounts already known to be impossible.
+
+    - Semine's threshold (above 100 billion lek) and the values <= 1 lek (Phase I);
+    - a winner value 100 times above or below the fund limit. The ratio
+      value/fund is 0.1-3.2 for 96% of procedures; beyond a factor of 100 the
+      values sit in separate clusters (a peak at exactly x1000, i.e. one amount
+      entered in thousands of lek), so they are a unit or decimal error, not a
+      real price. See docs/outliers.md, section 4.5.
+    """
     amounts = df[["Fondi_limit", "Vlera_e_fituesit"]]
-    return (amounts.gt(AMOUNT_ERROR_ABOVE) | amounts.le(1)).any(axis=1)
+    ratio = df["Vlera_e_fituesit"] / df["Fondi_limit"].where(df["Fondi_limit"] > 1)
+    scale_error = ratio.ge(SCALE_ERROR_FACTOR) | ratio.le(1 / SCALE_ERROR_FACTOR)
+    return (amounts.gt(AMOUNT_ERROR_ABOVE) | amounts.le(1)).any(axis=1) | scale_error.fillna(False)
+
+
+def value_fund_ratio_profile(df):
+    """Distribution of log10(winner value / fund limit), the evidence for SCALE_ERROR_FACTOR."""
+    both = df["Fondi_limit"].gt(1) & df["Vlera_e_fituesit"].gt(1)
+    log_ratio = np.log10(df.loc[both, "Vlera_e_fituesit"] / df.loc[both, "Fondi_limit"])
+    counts = pd.cut(log_ratio, np.arange(-6, 6.5, 0.5)).value_counts().sort_index()
+    return pd.DataFrame({"log10_ratio": counts.index.astype(str),
+                         "ratio_from": [10 ** i.left for i in counts.index],
+                         "ratio_to": [10 ** i.right for i in counts.index],
+                         "procedures": counts.values})
 
 
 def multivariate(df, count_impossible):
@@ -336,6 +359,7 @@ def multivariate(df, count_impossible):
         ("Procedures with all 9 features", len(X)),
         ("Chi-square threshold (99.9%, df=9)", CHI2_999_DF9),
         ("Expected share above the threshold if normal (%)", 0.1),
+        ("Known amount/count errors among them", int(known.sum())),
         ("Outliers, global", int(out_global.sum())),
         ("Outliers, within procedure type", int(out_group.sum())),
         ("Global only (false detection, scale)", int((out_global & ~out_group).sum())),
@@ -437,6 +461,7 @@ def main():
         "multivariate_summary": multi_summary,
         "multivariate_drivers": drivers,
         "multivariate_knn_check": knn,
+        "value_fund_ratio": value_fund_ratio_profile(df),
     }
     for name, table in tables.items():
         table.to_csv(OUT_DIR / f"{name}.csv", index=False)

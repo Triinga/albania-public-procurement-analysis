@@ -36,7 +36,7 @@ Interpretimi:
 - **Asimetri pozitive te numrat:** mesatarja është mbi medianë (8.5 kundrejt 5 oferta). Bishti i djathtë (deri 103 oferta) e tërheq mesataren lart, prandaj për këto kolona **mediana dhe IQR** e përshkruajnë më mirë procedurën tipike. Kjo është edhe arsyeja pse detektimi bëhet mbi shkallën log.
 - **`qualified_offer_share`** ka asimetri negative: 44% e procedurave kanë të gjitha ofertat të kualifikuara (vlera 1).
 - **`cpv_count` dhe `nr_fituesve`** janë pothuajse konstante (Q1 = Q3 = 1). Kurtoza shumë e madhe tregon që pak raste (marrëveshje kuadër me deri 35 fitues, procedura me deri 79 kode CPV) e mbajnë gjithë variancën. Për to devijimi standard nuk ka kuptim si masë e "shpërndarjes tipike".
-- **Pa gabimet** (272,839 procedura) statistikat ndryshojnë pak: mesatarja e ofertave bie nga 8.46 në 8.35. Gabimet e kësaj pjese janë kryesisht gabime **konsistence** (anulime kontradiktore), jo vlera ekstreme. Prandaj nuk e shtrembërojnë shpërndarjen e numrave.
+- **Pa gabimet** (266,969 procedura) statistikat ndryshojnë pak: mesatarja e ofertave kalon nga 8.46 në 8.42. Gabimet e kësaj pjese janë gabime **konsistence** (anulime kontradiktore) dhe gabime **shkalle në shuma** (vlera ×1000 ose ×1/1000 e fondit), jo numra ekstremë ofertash. Prandaj nuk e shtrembërojnë shpërndarjen e numrave.
 
 ### 2.3 Krahasime sipas grupeve
 
@@ -76,11 +76,11 @@ Për çdo tabelë jepet **Cramér's V** (0 = pa lidhje, 1 = lidhje e plotë), se
 
 ### 2.5 Përqendrimi i tregut
 
-Indeksi Herfindahl-Hirschman: $HHI = \sum_i s_i^2$, ku $s_i$ është pjesa (%) e fituesit $i$ në vlerën e fituar (0–10,000). Pragjet sipas US DOJ/FTC Merger Guidelines (2023): < 1,000 i pa përqendruar, 1,000–1,800 mesatarisht i përqendruar, > 1,800 shumë i përqendruar. Llogaritet mbi procedurat jo të anuluara me fitues, pa shumat e pamundura.
+Indeksi Herfindahl-Hirschman: $HHI = \sum_i s_i^2$, ku $s_i$ është pjesa (%) e fituesit $i$ në vlerën e fituar (0–10,000). Pragjet sipas US DOJ/FTC Merger Guidelines (2023): < 1,000 i pa përqendruar, 1,000–1,800 mesatarisht i përqendruar, > 1,800 shumë i përqendruar. Llogaritet mbi procedurat jo të anuluara me fitues, pa shumat e pamundura (përfshirë gabimet e shkallës vlerë/fond, `docs/outliers.md` 4.5).
 
-- **Në tërësi** ([`concentration_overall.csv`](../reports/exploration/concentration_overall.csv)): 6,600 fitues, HHI = 78, pra treg **i pa përqendruar**. 10 fituesit më të mëdhenj marrin 20.1% të vlerës, por vetëm 10.8% të kontratave, që do të thotë se fitojnë kontrata më të mëdha se mesatarja.
-- **Sipas ndarjes CPV** ([`concentration_by_cpv.csv`](../reports/exploration/concentration_by_cpv.csv)): i vetmi treg **mesatarisht i përqendruar** është ai i **shërbimeve financiare dhe të sigurimeve**: HHI = 1,160, 164 fitues dhe 4 më të mëdhenjtë marrin 62% të vlerës. Kjo përputhet me natyrën e tregut, ku pak kompani sigurimesh (ALBSIG, SIGAL, INSIG etj.) mbulojnë gjithë sektorin publik. Tregjet e tjera janë të pa përqendruara (HHI 81–911).
-- **Sipas vitit** ([`concentration_by_year.csv`](../reports/exploration/concentration_by_year.csv)): HHI është 80–125 çdo vit, me përjashtim të **2017 (894)** dhe **2021 (439)**. Shkaku janë dy kontrata të vetme reale: koncesioni PPP i **Rrugës së Arbrit** (33.6 miliardë lekë, 29% e vlerës së 2017) dhe **Tuneli i Llogarasë** (17 miliardë, 18% e 2021). HHI sipas **numrit të kontratave** mbetet i qëndrueshëm (27–62) në të gjitha vitet. Pra këto kulme nuk janë gabime dhe as përqendrim i tregut, por raste "të vërteta por të rralla" që e ndryshojnë treguesin e bazuar në vlerë. Për këtë arsye jepen të dy treguesit.
+- **Në tërësi** ([`concentration_overall.csv`](../reports/exploration/concentration_overall.csv)): 6,567 fitues, HHI = 78, pra treg **i pa përqendruar**. 10 fituesit më të mëdhenj marrin 20.1% të vlerës, por vetëm 10.9% të kontratave, që do të thotë se fitojnë kontrata më të mëdha se mesatarja.
+- **Sipas ndarjes CPV** ([`concentration_by_cpv.csv`](../reports/exploration/concentration_by_cpv.csv)): i vetmi treg **mesatarisht i përqendruar** është ai i **shërbimeve financiare dhe të sigurimeve**: HHI = 1,160, 164 fitues dhe 4 më të mëdhenjtë marrin 62% të vlerës. Kjo përputhet me natyrën e tregut, ku pak kompani sigurimesh (ALBSIG, SIGAL, INSIG etj.) mbulojnë gjithë sektorin publik. Tregjet e tjera janë të pa përqendruara (HHI 81–913).
+- **Sipas vitit** ([`concentration_by_year.csv`](../reports/exploration/concentration_by_year.csv)): HHI është 80–125 çdo vit, me përjashtim të **2017 (914)** dhe **2021 (440)**. Shkaku janë dy kontrata të vetme reale: koncesioni PPP i **Rrugës së Arbrit** (33.6 miliardë lekë, 29% e vlerës së 2017) dhe **Tuneli i Llogarasë** (17 miliardë, 18% e 2021). HHI sipas **numrit të kontratave** mbetet i qëndrueshëm (26–63) në të gjitha vitet. Pra këto kulme nuk janë gabime dhe as përqendrim i tregut, por raste "të vërteta por të rralla" që e ndryshojnë treguesin e bazuar në vlerë. Për këtë arsye jepen të dy treguesit.
 
 ### 2.6 Korrelacioni: Pearson kundrejt Spearman, me dhe pa përjashtuesit
 
@@ -88,7 +88,7 @@ Llogaritet për ofertat, pjesën e kualifikuar, `cpv_count`, fondin, vlerën dhe
 
 | Çifti | Pearson (të gjitha) | Pearson (pa përjashtuesit multivariantë) | Spearman |
 |---|---|---|---|
-| Fondi – vlera fituese | 0.718 | **0.991** | 0.904 |
+| Fondi – vlera fituese | 0.718 | **0.993** | 0.904 |
 | Oferta të dorëzuara – të kualifikuara | 0.859 | 0.883 | 0.860 |
 | Fondi – kohëzgjatja e tenderit | 0.598 | 0.671 | 0.457 |
 | Vlera – kohëzgjatja | 0.432 | 0.678 | 0.409 |
@@ -97,7 +97,7 @@ Llogaritet për ofertat, pjesën e kualifikuar, `cpv_count`, fondin, vlerën dhe
 | Oferta – vlera fituese | −0.037 | −0.143 | −0.113 |
 
 Interpretimi:
-- **Ndikimi i përjashtuesve:** korrelacioni Pearson fond–vlerë rritet nga 0.72 në 0.99 kur hiqen përjashtuesit multivariantë. Pak procedura ku fondi dhe vlera nuk përputhen fare (p.sh. vlerë ≤ 1 lek, ose vlerë 100 herë mbi fondin) e ulin fort Pearson. Spearman (0.90), që bazohet në rangje, ndikohet shumë më pak. Kjo tregon pse detektimi duhej bërë para analizës.
+- **Ndikimi i përjashtuesve:** korrelacioni Pearson fond–vlerë rritet nga 0.72 në 0.99 kur hiqen përjashtuesit multivariantë. Rreth 6,000 procedura me gabim shkalle (vlera ×1000 ose ×1/1000 e fondit) e ulin fort Pearson. Spearman (0.90), që bazohet në rangje, ndikohet shumë më pak. Kjo tregon pse detektimi duhej bërë para analizës.
 - **Konkurrenca dhe madhësia:** tenderët më të gjatë, që zakonisht janë më të mëdhenj, kanë **më pak** oferta (ρ ≈ −0.33). Lidhja mes numrit të ofertave dhe vlerës është e dobët (ρ ≈ −0.11).
 - **Pearson ≠ Spearman** te `qualified_offer_share` (−0.15 kundrejt −0.30): lidhja nuk është lineare, sepse vlerat grumbullohen në 0 dhe 1, prandaj Spearman është masa e duhur.
 

@@ -145,24 +145,38 @@ $$D^2(x) = (x - \mu)^\top \Sigma^{-1} (x - \mu)$$
 
 - **Pse Mahalanobis dhe jo z-score për secilën kolonë:** merr parasysh korrelacionet. Një procedurë me fond të madh **dhe** vlerë fituese të vogël mund të jetë normale në secilën kolonë veç e veç, por e pazakontë në kombinim, sepse fondi dhe vlera kanë korrelacion 0.99.
 - **Pragu:** χ² me 9 shkallë lirie, 99.9% → **D² > 27.877**.
-- **Mënjanimi i efektit maskues:** mesatarja dhe kovarianca e zakonshme tërhiqen nga vetë përjashtuesit dhe i bëjnë ata të duken më afër. Prandaj vlerësohen në dy hapa: (1) pa gabimet e njohura të shumave (pragu i Semines > 100 miliardë lekë, si dhe ≤ 1 lek); (2) përsëri, pa përjashtuesit e hapit të parë. Ky është një version i thjeshtë i idesë së kovariancës robuste (MCD).
+- **Mënjanimi i efektit maskues:** mesatarja dhe kovarianca e zakonshme tërhiqen nga vetë përjashtuesit dhe i bëjnë ata të duken më afër. Prandaj vlerësohen në dy hapa: (1) pa gabimet e njohura të shumave (shih më poshtë); (2) përsëri, pa përjashtuesit e hapit të parë. Ky është një version i thjeshtë i idesë së kovariancës robuste (MCD).
+- **Gabimet e njohura të shumave:** pragu i Semines (> 100 miliardë lekë), vlerat ≤ 1 lek dhe **vlera fituese ≥ 100 herë ose ≤ 1/100 e fondit limit**. Rregulli i fundit doli nga vetë detektimi: histogrami i D² kishte një grumbull të dytë të ndarë (D² ≈ 250–800, ~5,700 procedura). Këto procedura kishin raport vlerë/fond ≈ 0.0001 ose ≈ 1000. Shpërndarja e raportit ([`value_fund_ratio.csv`](../reports/outliers/value_fund_ratio.csv)) e tregon qartë:
+
+  | Raporti vlerë fituese / fond | Procedura |
+  |---|---|
+  | 0.1 – 3.2 (zona normale) | 194,365 (96.3%) |
+  | 10 – 100 | 204 |
+  | **316 – 1,000** (vlerë e shënuar në lekë, fondi në mijëra, ose anasjelltas) | **1,340** |
+  | ≥ 100 gjithsej | 1,614 |
+  | ≤ 1/100 | 4,323 |
+
+  Asnjë fitues nuk fiton realisht me 1,000 herë fondin, dhe as me 1% të tij. Kulmi te saktësisht ×1000 tregon gabim njësie. Pa këtë rregull, këto procedura do të dilnin "e vërtetë por e rrallë", pra si zbulime jo të sakta në drejtimin tjetër, ku gabimi merret për vlerë reale. Rregulli i përket edhe pjesës së shumave (5,178 rastet "vlera mbi fondin"), prandaj duhet të përdoret e njëjta logjikë edhe aty.
 - **Globalisht dhe brenda llojit të procedurës**, njësoj si te univariantja. Llojet me më pak se 1,000 rreshta përdorin flag-un global.
 
 | | Procedura |
 |---|---|
-| Përjashtues globalisht | 11,690 |
-| Përjashtues brenda llojit | 11,017 |
-| Vetëm globalisht (zbulim jo i saktë nga shkalla) | 2,854 |
-| Vetëm brenda llojit (i fshehur nga shkalla globale) | 2,181 |
-| **gabim** (përjashtues + gabim i njohur në shuma ose numra) | 49 |
-| **e vërtetë por e rrallë** (të dyja e shënojnë) | 8,789 |
-| **e pasigurt** (vetëm njëra e shënon) | 5,033 |
+| Gabime të njohura (shuma/numra) mes 201,837 procedurave | 5,985 |
+| Përjashtues globalisht | 13,838 |
+| Përjashtues brenda llojit | 14,358 |
+| Vetëm globalisht (zbulim jo i saktë nga shkalla) | 1,185 |
+| Vetëm brenda llojit (i fshehur nga shkalla globale) | 1,705 |
+| **gabim** (përjashtues + gabim i njohur) | 5,985 |
+| **e vërtetë por e rrallë** (të dyja e shënojnë) | 6,668 |
+| **e pasigurt** (vetëm njëra e shënon) | 2,890 |
 
-**Interpretimi i numrit të përjashtuesve:** me shpërndarje normale shumëdimensionale do të prisnim 0.1% mbi prag (~200 procedura), ndërsa gjejmë 5.8%. Kjo **nuk** do të thotë 5.8% gabime. Tregon që të dhënat nuk janë normale: numrat e ofertave janë diskretë, shumat kanë bisht të gjatë edhe pas log-ut dhe `qualified_offer_share` grumbullohet në 0 dhe 1. Prandaj pragu χ² përdoret si **kriter seleksionimi**. Vendimi përfundimtar merret nga kombinimi global/grup dhe nga gabimet e njohura, jo vetëm nga D².
+Të **5,985** gabimet e njohura dalin përjashtuese edhe nga Mahalanobis (100%), pra metoda i gjen gabimet që dihen pa iu thënë paraprakisht.
 
-**Cila veti e shtyn përjashtuesin** (veçoria me |z| më të madh, [`multivariate_drivers.csv`](../reports/outliers/multivariate_drivers.csv)): `Vlera_e_fituesit` (4,487), `qualified_offer_share` (3,096), `Fondi_limit` (2,745), `kohezgjatja_e_tenderit` (1,309). Shumat dominojnë, prandaj flag-et e shumave të Semines dhe ky flag multivariant plotësojnë njëri-tjetrin.
+**Interpretimi i numrit të përjashtuesve:** me shpërndarje normale shumëdimensionale do të prisnim 0.1% mbi prag (~200 procedura), ndërsa gjejmë 6.9%. Kjo **nuk** do të thotë 6.9% gabime. Tregon që të dhënat nuk janë normale: numrat e ofertave janë diskretë, shumat kanë bisht të gjatë edhe pas log-ut dhe `qualified_offer_share` grumbullohet në 0 dhe 1. Prandaj pragu χ² përdoret si **kriter seleksionimi**. Vendimi përfundimtar merret nga kombinimi global/grup dhe nga gabimet e njohura, jo vetëm nga D².
 
-**Kontrolli me KNN (metoda e ushtrimeve):** në një mostër prej 20,000 procedurash llogaritet distanca mesatare nga 5 fqinjët më të afërt dhe merret e njëjta pjesë (5.75%) si përjashtuese ([`multivariate_knn_check.csv`](../reports/outliers/multivariate_knn_check.csv)). **43.7%** e përjashtuesve të Mahalanobis i gjen edhe KNN. Nëse metodat do të ishin të pavarura, do të prisnim 5.75%, pra përputhja është ≈7.6 herë më e madhe se rastësia. Korrelacioni Spearman mes D² dhe distancës KNN është 0.48. Dy metoda me ide të ndryshme (distanca nga qendra kundrejt dendësisë lokale) tregojnë kryesisht të njëjtat procedura. Dallimi vjen nga përjashtuesit lokalë, që KNN i gjen e Mahalanobis jo.
+**Cila veti e shtyn përjashtuesin** (veçoria me |z| më të madh, [`multivariate_drivers.csv`](../reports/outliers/multivariate_drivers.csv)): `Vlera_e_fituesit` (4,676), `qualified_offer_share` (3,171), `Fondi_limit` (2,849), `kohezgjatja_e_tenderit` (1,533). Shumat dominojnë, prandaj flag-et e shumave të Semines dhe ky flag multivariant plotësojnë njëri-tjetrin.
+
+**Kontrolli me KNN (metoda e ushtrimeve):** në një mostër prej 20,000 procedurash llogaritet distanca mesatare nga 5 fqinjët më të afërt dhe merret e njëjta pjesë (6.76%) si përjashtuese ([`multivariate_knn_check.csv`](../reports/outliers/multivariate_knn_check.csv)). **42.0%** e përjashtuesve të Mahalanobis i gjen edhe KNN. Nëse metodat do të ishin të pavarura, do të prisnim 6.76%, pra përputhja është ≈6.2 herë më e madhe se rastësia. Korrelacioni Spearman mes D² dhe distancës KNN është 0.49. Dy metoda me ide të ndryshme (distanca nga qendra kundrejt dendësisë lokale) tregojnë kryesisht të njëjtat procedura. Dallimi vjen nga përjashtuesit lokalë, që KNN i gjen e Mahalanobis jo.
 
 ### 4.6 Flag-et që i jap për dataset-in final
 

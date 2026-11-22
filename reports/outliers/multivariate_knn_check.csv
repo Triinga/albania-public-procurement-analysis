@@ -1,10 +1,10 @@
 metric,value
 Sample size,20000.0
 Neighbours (k),5.0
-Share flagged by Mahalanobis in the sample (%),5.75
-Flagged by Mahalanobis,1150.0
-Flagged by KNN (same share),1150.0
-Flagged by both,502.0
-Mahalanobis outliers also found by KNN (%),43.7
-Expected overlap if unrelated (%),5.75
-"Spearman correlation, Mahalanobis D2 vs KNN distance",0.484
+Share flagged by Mahalanobis in the sample (%),6.76
+Flagged by Mahalanobis,1351.0
+Flagged by KNN (same share),1351.0
+Flagged by both,567.0
+Mahalanobis outliers also found by KNN (%),42.0
+Expected overlap if unrelated (%),6.76
+"Spearman correlation, Mahalanobis D2 vs KNN distance",0.493
