@@ -1,0 +1,25 @@
+column,outlier_status,procedures
+Fondi_limit,gabim,0
+Fondi_limit,e vërtetë por e rrallë,13714
+Fondi_limit,e pasigurt,9787
+Fondi_limit,(nuk është përjashtues),254263
+Vlera_e_fituesit,gabim,1
+Vlera_e_fituesit,e vërtetë por e rrallë,10789
+Vlera_e_fituesit,e pasigurt,7363
+Vlera_e_fituesit,(nuk është përjashtues),259611
+Vlera_e_fituesit_ne_lidhjen_e_kontrates,gabim,1
+Vlera_e_fituesit_ne_lidhjen_e_kontrates,e vërtetë por e rrallë,2690
+Vlera_e_fituesit_ne_lidhjen_e_kontrates,e pasigurt,1102
+Vlera_e_fituesit_ne_lidhjen_e_kontrates,(nuk është përjashtues),273971
+ditet_publikim_hapje,gabim,0
+ditet_publikim_hapje,e vërtetë por e rrallë,0
+ditet_publikim_hapje,e pasigurt,3752
+ditet_publikim_hapje,(nuk është përjashtues),274012
+kohezgjatja_e_tenderit,gabim,0
+kohezgjatja_e_tenderit,e vërtetë por e rrallë,4670
+kohezgjatja_e_tenderit,e pasigurt,45506
+kohezgjatja_e_tenderit,(nuk është përjashtues),227588
+ditet_nga_zgjedhjet,gabim,0
+ditet_nga_zgjedhjet,e vërtetë por e rrallë,57
+ditet_nga_zgjedhjet,e pasigurt,1412
+ditet_nga_zgjedhjet,(nuk është përjashtues),276295
