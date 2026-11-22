@@ -146,7 +146,7 @@ $$D^2(x) = (x - \mu)^\top \Sigma^{-1} (x - \mu)$$
 - **Pse Mahalanobis dhe jo z-score për secilën kolonë:** merr parasysh korrelacionet. Një procedurë me fond të madh **dhe** vlerë fituese të vogël mund të jetë normale në secilën kolonë veç e veç, por e pazakontë në kombinim, sepse fondi dhe vlera kanë korrelacion 0.99.
 - **Pragu:** χ² me 9 shkallë lirie, 99.9% → **D² > 27.877**.
 - **Mënjanimi i efektit maskues:** mesatarja dhe kovarianca e zakonshme tërhiqen nga vetë përjashtuesit dhe i bëjnë ata të duken më afër. Prandaj vlerësohen në dy hapa: (1) pa gabimet e njohura të shumave (shih më poshtë); (2) përsëri, pa përjashtuesit e hapit të parë. Ky është një version i thjeshtë i idesë së kovariancës robuste (MCD).
-- **Gabimet e njohura të shumave:** pragu i Semines (> 100 miliardë lekë), vlerat ≤ 1 lek dhe **vlera fituese ≥ 100 herë ose ≤ 1/100 e fondit limit**. Rregulli i fundit doli nga vetë detektimi: histogrami i D² kishte një grumbull të dytë të ndarë (D² ≈ 250–800, ~5,700 procedura). Këto procedura kishin raport vlerë/fond ≈ 0.0001 ose ≈ 1000. Shpërndarja e raportit ([`value_fund_ratio.csv`](../reports/outliers/value_fund_ratio.csv)) e tregon qartë:
+- **Gabimet e njohura të shumave:** pragu i Semines (> 100 miliardë lekë), vlerat ≤ 1 lek dhe **vlera fituese ≥ 100 herë ose ≤ 1/100 e fondit limit**. Rregulli i fundit doli nga vetë detektimi: në versionin e parë, histogrami i D² kishte një grumbull të dytë të ndarë (D² ≈ 250–800, ~5,700 procedura, të klasifikuara gabimisht si "e vërtetë por e rrallë"). Këto procedura kishin raport vlerë/fond ≈ 0.0001 ose ≈ 1000. Shpërndarja e raportit ([`value_fund_ratio.csv`](../reports/outliers/value_fund_ratio.csv)) e tregon qartë:
 
   | Raporti vlerë fituese / fond | Procedura |
   |---|---|
