@@ -12,9 +12,15 @@ Also checks the two cases Phase I left for Part II:
 - The 13 procedures published later than February of the year after the file
   (`late_publication`, after Phase I's date cleaning).
 
-This is a first pass at the task's "mënjanimi i zbulimeve jo të sakta"; the
-thresholds below (not an impossible-value rule from the assignment text) are
-a provisional interpretation, to confirm with the task text and with Tringa.
+Thresholds (see `docs/outliers.md` for the data behind each one):
+- A value above `AMOUNT_ERROR_ABOVE` is a known error: the largest real amount
+  is ~39 billion lek, and the only values above 100 billion are the ~35,000
+  billion lek entries Phase I already flagged as impossible.
+- A contract/winner ratio in `[0.75, 1.25]` covers the entire real pattern
+  (almost all cases are a ratio of exactly 1.0 or 1.2 = 20% TVSH); the 122
+  cases outside it are mostly a contract value of 0 next to a real winner
+  value, not a scale difference, so they go to Part II for review instead of
+  being dropped.
 
 Usage (from the repository root):
     python -m src.outliers.amounts_time [csv_folder]
