@@ -94,6 +94,21 @@ def correlations(df, errors):
     return pearson_all.round(3), spearman_all.round(3), pairs
 
 
+def period_profile(df, by, errors):
+    """Amounts and time, median by group, without the known errors."""
+    grouped = df[~errors].groupby(by, observed=True)
+    table = pd.DataFrame({
+        "procedures": grouped.size(),
+        "median_fondi": grouped["Fondi_limit"].median(),
+        "median_vlera_fituese": grouped["Vlera_e_fituesit"].median(),
+        "median_kursimi_pct": grouped["kursimi_pct"].median(),
+        "median_dite_publikim_hapje": grouped["ditet_publikim_hapje"].median(),
+        "median_kohezgjatje": grouped["kohezgjatja_e_tenderit"].median(),
+        "cancelled_pct": grouped["Anulluar"].mean() * 100,
+    })
+    return table.round(2).reset_index()
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     folder = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA_DIR
@@ -107,11 +122,17 @@ def main():
     pearson.to_csv(OUT_DIR / "correlation_pearson_9_features.csv")
     spearman.to_csv(OUT_DIR / "correlation_spearman_9_features.csv")
     pairs.to_csv(OUT_DIR / "correlation_pairs_9_features.csv", index=False)
+    by_covid = period_profile(df, "periudha_covid", errors)
+    by_covid.to_csv(OUT_DIR / "amounts_time_by_covid.csv", index=False)
+    by_election = period_profile(df, "afersia_me_zgjedhjet", errors)
+    by_election.to_csv(OUT_DIR / "amounts_time_by_election_period.csv", index=False)
 
     with pd.option_context("display.width", 250, "display.max_rows", 200):
         print(f"Known errors (amounts/time, this part): {int(errors.sum()):,} of {len(df):,}\n")
         print(f"summary_statistics_amounts_time:\n{summary.to_string(index=False)}\n")
         print(f"correlation_pairs_9_features:\n{pairs.to_string(index=False)}\n")
+        print(f"amounts_time_by_covid:\n{by_covid.to_string(index=False)}\n")
+        print(f"amounts_time_by_election_period:\n{by_election.to_string(index=False)}\n")
 
 
 if __name__ == "__main__":
