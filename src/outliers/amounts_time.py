@@ -30,8 +30,6 @@ from pathlib import Path
 
 import pandas as pd
 
-sys.stdout.reconfigure(encoding="utf-8")
-
 from src.common.data_loading import DATA_DIR, read_years
 from src.common.outliers import detect, outlier_status, status_counts
 from src.final.final_dataset import build
@@ -98,6 +96,7 @@ def late_publications_phase2(df):
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")
     folder = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA_DIR
     raw = read_years(folder)
     df, _ = build(raw)
