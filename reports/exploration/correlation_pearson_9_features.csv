@@ -1,0 +1,10 @@
+,Fondi_limit,Vlera_e_fituesit,ditet_publikim_hapje,kohezgjatja_e_tenderit,ditet_nga_zgjedhjet,Numri_i_ofertave_te_dorezuara,Numri_i_ofertave_te_kualifikuara,qualified_offer_share,cpv_count
+Fondi_limit,1.0,0.718,-0.184,0.598,-0.016,-0.109,-0.11,-0.063,0.026
+Vlera_e_fituesit,0.718,1.0,-0.152,0.432,-0.027,-0.049,-0.078,-0.107,0.015
+ditet_publikim_hapje,-0.184,-0.152,1.0,-0.262,0.055,0.127,0.151,0.064,0.047
+kohezgjatja_e_tenderit,0.598,0.432,-0.262,1.0,-0.016,-0.388,-0.392,-0.073,-0.008
+ditet_nga_zgjedhjet,-0.016,-0.027,0.055,-0.016,1.0,0.008,0.033,0.055,0.014
+Numri_i_ofertave_te_dorezuara,-0.109,-0.049,0.127,-0.388,0.008,1.0,0.858,-0.212,0.143
+Numri_i_ofertave_te_kualifikuara,-0.11,-0.078,0.151,-0.392,0.033,0.858,1.0,0.293,0.022
+qualified_offer_share,-0.063,-0.107,0.064,-0.073,0.055,-0.212,0.293,1.0,-0.244
+cpv_count,0.026,0.015,0.047,-0.008,0.014,0.143,0.022,-0.244,1.0

@@ -19,6 +19,7 @@ from src.common.data_loading import DATA_DIR, read_years
 from src.final.final_dataset import build
 from src.outliers.amounts_time import (AMOUNT_ERROR_ABOVE, DURATION_ERROR_ABOVE,
                                        SAVINGS_PCT_ERROR_ABOVE, value_fund_scale_error)
+from src.values_winners.pca import feature_matrix
 
 OUT_DIR = Path("reports/exploration")
 
@@ -63,6 +64,36 @@ def summary_statistics(df, errors):
     return pd.DataFrame(rows).round(3)
 
 
+def correlations(df, errors):
+    """Pearson and Spearman on the 9 PCA features (fondi, vlera, kohët, ofertat, CPV).
+
+    Uses `src.values_winners.pca.feature_matrix` (same features, same log +
+    z-score, same 201,837 complete rows as the PCA itself) instead of a new
+    selection, so this matrix and the PCA always agree on what "the 9 features"
+    are. Pearson is also computed without the known errors, since one unit-scale
+    error can create a correlation that is not really there.
+    """
+    X = feature_matrix(df)
+    keep = ~errors.reindex(X.index, fill_value=False)
+    pearson_all = X.corr("pearson")
+    pearson_clean = X[keep].corr("pearson")
+    spearman_all = X.corr("spearman")
+
+    pairs = []
+    columns = list(X.columns)
+    for i, a in enumerate(columns):
+        for b in columns[i + 1:]:
+            pairs.append({"feature_a": a, "feature_b": b,
+                          "pearson_all": pearson_all.loc[a, b],
+                          "pearson_without_errors": pearson_clean.loc[a, b],
+                          "spearman_all": spearman_all.loc[a, b]})
+    pairs = pd.DataFrame(pairs)
+    pairs["error_effect"] = pairs["pearson_without_errors"] - pairs["pearson_all"]
+    pairs["pearson_minus_spearman"] = pairs["pearson_all"] - pairs["spearman_all"]
+    pairs = pairs.round(3).sort_values("spearman_all", key=abs, ascending=False)
+    return pearson_all.round(3), spearman_all.round(3), pairs
+
+
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     folder = Path(sys.argv[1]) if len(sys.argv) > 1 else DATA_DIR
@@ -72,10 +103,15 @@ def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     summary = summary_statistics(df, errors)
     summary.to_csv(OUT_DIR / "summary_statistics_amounts_time.csv", index=False)
+    pearson, spearman, pairs = correlations(df, errors)
+    pearson.to_csv(OUT_DIR / "correlation_pearson_9_features.csv")
+    spearman.to_csv(OUT_DIR / "correlation_spearman_9_features.csv")
+    pairs.to_csv(OUT_DIR / "correlation_pairs_9_features.csv", index=False)
 
     with pd.option_context("display.width", 250, "display.max_rows", 200):
         print(f"Known errors (amounts/time, this part): {int(errors.sum()):,} of {len(df):,}\n")
         print(f"summary_statistics_amounts_time:\n{summary.to_string(index=False)}\n")
+        print(f"correlation_pairs_9_features:\n{pairs.to_string(index=False)}\n")
 
 
 if __name__ == "__main__":
