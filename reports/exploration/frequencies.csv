@@ -1,0 +1,79 @@
+column,value,procedures,pct
+Lloji_i_procedures,Small Value,183329,66.0
+Lloji_i_procedures,Request for Proposals,25549,9.2
+Lloji_i_procedures,Open Local,21980,7.91
+Lloji_i_procedures,Purchase Tickets,17766,6.4
+Lloji_i_procedures,Open Simple,16725,6.02
+Lloji_i_procedures,Negotiated without Notice,5307,1.91
+Lloji_i_procedures,Open INT,5153,1.86
+Lloji_i_procedures,Consulting,1226,0.44
+Lloji_i_procedures,Restricted Local,500,0.18
+Lloji_i_procedures,Restricted INT,204,0.07
+Lloji_i_procedures,Design Contest,20,0.01
+Lloji_i_procedures,Negotiated with Notice Local,3,0.0
+Lloji_i_procedures,Open For Social Services And Other Local,2,0.0
+Tipi_i_kontrates,Supplies,167761,60.4
+Tipi_i_kontrates,Services,92777,33.4
+Tipi_i_kontrates,Works,17226,6.2
+competition_band,4+ offers,168411,60.63
+competition_band,2-3 offers,46334,16.68
+competition_band,Single offer,37275,13.42
+competition_band,No offers,25744,9.27
+statusi_analitik,"Me fitues, kontratë e pakonfirmuar",150173,54.06
+statusi_analitik,Jo e lidhur,68371,24.61
+statusi_analitik,Kontratë e konfirmuar,48028,17.29
+statusi_analitik,Pa kontratë të konfirmuar,6138,2.21
+statusi_analitik,Kontradiktor,5054,1.82
+Anulluar,False,204339,73.57
+Anulluar,True,73425,26.43
+kategoria_e_fondit,I mesëm,61425,22.11
+kategoria_e_fondit,I vogël,58980,21.23
+kategoria_e_fondit,Shumë i vogël,58870,21.19
+kategoria_e_fondit,I madh,56202,20.23
+kategoria_e_fondit,(mungon),42287,15.22
+primary_cpv_division_name,(mungon CPV),61688,22.21
+primary_cpv_division_name,"Medical equipments, pharmaceuticals and personal care products",25212,9.08
+primary_cpv_division_name,Transport equipment and auxiliary products to transportation,20949,7.54
+primary_cpv_division_name,"Office and computing machinery, equipment and supplies except furniture and software packages",17493,6.3
+primary_cpv_division_name,Printed matter and related products,15030,5.41
+primary_cpv_division_name,Construction work,14882,5.36
+primary_cpv_division_name,"Petroleum products, fuel, electricity and other sources of energy",10919,3.93
+primary_cpv_division_name,Repair and maintenance services,10835,3.9
+primary_cpv_division_name,"Furniture (incl. office furniture), furnishings, domestic appliances (excl. lighting) and cleaning products",9715,3.5
+primary_cpv_division_name,"Architectural, construction, engineering and inspection services",9580,3.45
+primary_cpv_division_name,"Electrical machinery, apparatus, equipment and consumables; lighting",8931,3.22
+primary_cpv_division_name,Construction structures and materials; auxiliary products to construction (except electric apparatus),8839,3.18
+primary_cpv_division_name,"Business services: law, marketing, consulting, recruitment, printing and security",7203,2.59
+primary_cpv_division_name,Financial and insurance services,6712,2.42
+primary_cpv_division_name,Chemical products,4797,1.73
+primary_cpv_division_name,"Agricultural, farming, fishing, forestry and related products",4750,1.71
+primary_cpv_division_name,"Other community, social and personal services",4603,1.66
+primary_cpv_division_name,"Food, beverages, tobacco and related products",4274,1.54
+primary_cpv_division_name,"Clothing, footwear, luggage articles and accessories",3773,1.36
+primary_cpv_division_name,Industrial machinery,3251,1.17
+primary_cpv_division_name,"Sewage, refuse, cleaning and environmental services",3074,1.11
+primary_cpv_division_name,Transport services (excl. Waste transport),2866,1.03
+primary_cpv_division_name,"IT services: consulting, software development, Internet and support",2661,0.96
+primary_cpv_division_name,"Radio, television, communication, telecommunication and related equipment",2387,0.86
+primary_cpv_division_name,"Security, fire-fighting, police and defence equipment",2182,0.79
+primary_cpv_division_name,"Mining, basic metals and related products",1636,0.59
+primary_cpv_division_name,"Hotel, restaurant and retail trade services",1626,0.59
+primary_cpv_division_name,Software package and information systems,1057,0.38
+primary_cpv_division_name,"Laboratory, optical and precision equipments (excl. glasses)",1024,0.37
+primary_cpv_division_name,"Musical instruments, sport goods, games, toys, handicraft, art materials and accessories",904,0.33
+primary_cpv_division_name,Supporting and auxiliary transport services; travel agencies services,772,0.28
+primary_cpv_division_name,"Leather and textile fabrics, plastic and rubber materials",678,0.24
+primary_cpv_division_name,"Machinery for mining, quarrying, construction equipment",448,0.16
+primary_cpv_division_name,Health and social work services,425,0.15
+primary_cpv_division_name,"Agricultural, forestry, horticultural, aquacultural and apicultural services",413,0.15
+primary_cpv_division_name,"Recreational, cultural and sporting services",357,0.13
+primary_cpv_division_name,Collected and purified water,303,0.11
+primary_cpv_division_name,Postal and telecommunications services,288,0.1
+primary_cpv_division_name,"Administration, defence and social security services",267,0.1
+primary_cpv_division_name,Agricultural machinery,237,0.09
+primary_cpv_division_name,Education and training services,229,0.08
+primary_cpv_division_name,Real estate services,149,0.05
+primary_cpv_division_name,Installation services (except software),123,0.04
+primary_cpv_division_name,Research and development services and related consultancy services,106,0.04
+primary_cpv_division_name,Public utilities,86,0.03
+primary_cpv_division_name,Services related to the oil and gas industry,30,0.01

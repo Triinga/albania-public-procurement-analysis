@@ -1,0 +1,7 @@
+component,explained_variance_pct,largest_loadings,interpretation
+PC1,29.19,"kohezgjatja_e_tenderit (+0.50), Fondi_limit (+0.44), Numri_i_ofertave_te_kualifikuara (-0.42)","Madhësia dhe kompleksiteti kundrejt konkurrencës: fond/vlerë e madhe dhe tender i gjatë, me më pak oferta"
+PC2,18.53,"Numri_i_ofertave_te_dorezuara (-0.56), Numri_i_ofertave_te_kualifikuara (-0.48), Vlera_e_fituesit (-0.44)",Shkalla e përgjithshme: shumë oferta dhe shuma të mëdha bashkë
+PC3,14.46,"qualified_offer_share (-0.72), cpv_count (+0.57), Numri_i_ofertave_te_kualifikuara (-0.31)",Cilësia e ofertave: pjesa e kualifikuar e ulët kundrejt shumë kodeve CPV
+PC4,11.38,"ditet_nga_zgjedhjet (-0.88), ditet_publikim_hapje (-0.37), cpv_count (-0.24)",Afërsia me zgjedhjet (ditet_nga_zgjedhjet)
+PC5,9.95,"ditet_publikim_hapje (+0.85), ditet_nga_zgjedhjet (-0.44), Vlera_e_fituesit (+0.16)",Koha nga publikimi deri te hapja
+PC6,8.56,"cpv_count (+0.74), qualified_offer_share (+0.55), ditet_publikim_hapje (-0.25)",Shumë kode CPV me pjesë të lartë ofertash të kualifikuara

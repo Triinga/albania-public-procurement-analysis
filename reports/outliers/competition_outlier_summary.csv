@@ -1,0 +1,13 @@
+column,outlier_status,procedures
+Numri_i_ofertave_te_dorezuara,gabim,0
+Numri_i_ofertave_te_dorezuara,e vërtetë por e rrallë,559
+Numri_i_ofertave_te_dorezuara,e pasigurt,1099
+Numri_i_ofertave_te_dorezuara,(nuk është përjashtues),276106
+Numri_i_ofertave_te_kualifikuara,gabim,0
+Numri_i_ofertave_te_kualifikuara,e vërtetë por e rrallë,1054
+Numri_i_ofertave_te_kualifikuara,e pasigurt,1696
+Numri_i_ofertave_te_kualifikuara,(nuk është përjashtues),275014
+cpv_count,gabim,0
+cpv_count,e vërtetë por e rrallë,21
+cpv_count,e pasigurt,13017
+cpv_count,(nuk është përjashtues),264726
