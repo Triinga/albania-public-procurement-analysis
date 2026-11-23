@@ -4,7 +4,45 @@
 
 ## 1. Pjesa e Semines: shumat dhe koha
 
-*(Shtohet nga Semine.)*
+> Kodi: [`src/exploration/amounts_time.py`](../src/exploration/amounts_time.py) · Ekzekutimi: `python -m src.outliers.amounts_time`, pastaj `python -m src.exploration.amounts_time` · Raportet: [`reports/exploration/`](../reports/exploration/) (skedarët `summary_statistics_amounts_time`, `correlation_*_9_features`, `amounts_time_by_covid`, `amounts_time_by_election_period`)
+
+Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontrates`, `kursimi`, `kursimi_pct`, `ditet_publikim_hapje`, `kohezgjatja_e_tenderit`, `ditet_nga_zgjedhjet`. Statistikat jepen për **të gjitha** procedurat dhe **pa gabimet e njohura** (seksioni 2.1 i `docs/outliers.md`: shuma mbi 100 miliardë, ≤ 1 lek, gabimi i shkallës ×100, ose `|kursimi_pct| > 1000%`) — i njëjti ndarje si te pjesa e Tringës, në vend të fshirjes së rreshtave.
+
+### 1.1 Statistika përmbledhëse
+
+Shembull, `Fondi_limit` dhe `Vlera_e_fituesit` (klasike + të forta, lista e plotë te [`summary_statistics_amounts_time.csv`](../reports/exploration/summary_statistics_amounts_time.csv)):
+
+| Kolona | Nëngrupi | n | mesatare | median | asimetri (skew) |
+|---|---|---|---|---|---|
+| `Fondi_limit` | Të gjitha | 235,477 | 9.2M | 390,000 | 135.7 |
+| `Fondi_limit` | Pa gabimet | 229,305 | 9.2M | 391,300 | 134.5 |
+| `Vlera_e_fituesit` | Të gjitha | 220,382 | 163M | 234,900 | 469.4 |
+| `Vlera_e_fituesit` | Pa gabimet | 214,202 | 4.6M | 242,000 | 255.6 |
+
+Mesatarja e `Vlera_e_fituesit` bie nga 163 milionë në 4.6 milionë lekë kur hiqen gabimet e shkallës — tregon sa fort e shtrembërojnë 5,993 rastet mesataren (mediana, përkundrazi, lëviz fare pak: 234,900 → 242,000, sepse është e fortë ndaj tyre). Asimetria e lartë (edhe pas largimit të gabimeve) është e pritshme te shumat në lekë; trajtohet në Pjesën II me transformimin log/log të shenjuar (`docs/outliers.md` §2.4).
+
+### 1.2 Matrica e korrelacionit (9 vetitë e PCA-së)
+
+Mbi të njëjtat 9 veti dhe 201,837 procedura si PCA-ja (`src.values_winners.pca.feature_matrix`: fondi, vlera, 2 kohëzgjatje, ditët nga zgjedhjet, 2 numra ofertash, pjesa e kualifikuar, `cpv_count`), Pearson (me dhe pa gabimet e njohura) dhe Spearman. Matricat e plota: [`correlation_pearson_9_features.csv`](../reports/exploration/correlation_pearson_9_features.csv), [`correlation_spearman_9_features.csv`](../reports/exploration/correlation_spearman_9_features.csv); çiftet e renditura sipas forcës: [`correlation_pairs_9_features.csv`](../reports/exploration/correlation_pairs_9_features.csv).
+
+**Gjetja kryesore:** `Fondi_limit` ↔ `Vlera_e_fituesit` ka Pearson **0.718** mbi të gjitha procedurat, por **0.983** pa gabimet e shkallës (§2.1) — pikërisht ato 5,993 raste (fond/vlerë me faktor ~100× ose ~1000×) e ulin ndjeshëm korrelacionin e dukshëm, edhe pse ekonomikisht fondi dhe vlera fituese duhet të lidhen fort. Kjo është prova më e qartë pse rregulli i gabimit të shkallës (i përbashkët me Tringën, §2.1) ishte i nevojshëm: pa të, dataset-i do të dukej sikur fondi dhe vlera janë vetëm mesatarisht të lidhura, kur në të vërtetë janë thuajse plotësisht të lidhura.
+
+Çifte të tjera të forta: `Numri_i_ofertave_te_dorezuara` ↔ `_kualifikuara` (0.86, siç dihej nga PCA-ja, `docs/values_winners.md` §8.1), `Fondi_limit`/`Vlera_e_fituesit` ↔ `kohezgjatja_e_tenderit` (~0.6, tenderët më të mëdhenj zgjasin më shumë). Pearson dhe Spearman bien afërsisht dakord kudo (dallimi më i madh është te `Fondi_limit`↔`Vlera_e_fituesit`, 0.185, pikërisht sepse Pearson prekej nga bishti i gjatë edhe pas log-ut).
+
+### 1.3 Para, gjatë dhe pas COVID-it; sipas periudhës zgjedhore
+
+([`amounts_time_by_covid.csv`](../reports/exploration/amounts_time_by_covid.csv), [`amounts_time_by_election_period.csv`](../reports/exploration/amounts_time_by_election_period.csv), pa gabimet e njohura)
+
+| Periudha COVID | Procedura | Mediana fondi | Mediana vlerë fituese | Mediana kursimi % | Anuluar % |
+|---|---|---|---|---|---|
+| Para COVID | 127,546 | 291,666 | 196,740 | 10.00 | **30.4** |
+| Gjatë COVID | 41,212 | 400,000 | 275,000 | **7.95** | 23.2 |
+| Pas COVID | 102,826 | 500,000 | 295,000 | 10.73 | 23.8 |
+
+- **Anulimet bien nga 30.4% (para COVID) në ~23% (gjatë/pas)** — e kundërta e pritshmes (krizë → më pak anulime, jo më shumë). Mund të lidhet me ndryshime në procedurat e vogla gjatë periudhës, ose me vetë mënyrën e raportimit; kërkon vështrim më të afërt në Pjesën II, jo përfundim i nxituar këtu.
+- **Kursimi bie te "Gjatë COVID"** (7.95% kundrejt ~10% para/pas) — i përputhshëm me vështirësitë e furnizimit/çmimet gjatë pandemisë, që ulën hapësirën për oferta më të ulëta se fondi.
+- **Fondi dhe vlera fituese rriten vazhdimisht** nga para në pas COVID — pjesërisht inflacion/çmime, pjesërisht më shumë vite në dataset pas 2020.
+- **Sipas periudhës zgjedhore**, dallimet janë të vogla (mediana e fondit 367,000–449,183 lekë, kursimi 9.6–10.6%, anulimet ~27% kudo) — **nuk duket** ndikim i dukshëm i afërsisë me zgjedhjet mbi shumat apo kohën, ndryshe nga sa mund të pritej.
 
 ## 2. Pjesa e Tringës: konkurrenca, procedurat dhe fituesit
 

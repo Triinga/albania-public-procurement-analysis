@@ -10,6 +10,12 @@ def log_transform(series):
     return np.log1p(series)
 
 
+def signed_log_transform(series):
+    """sign(x) * log(1 + |x|): reduces skew like `log_transform`, but also works
+    for columns with negative values (e.g. a percentage that can be negative)."""
+    return np.sign(series) * np.log1p(series.abs())
+
+
 def min_max(series):
     """Scale to the range [0, 1]."""
     lo, hi = series.min(), series.max()

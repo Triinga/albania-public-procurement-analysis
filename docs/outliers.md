@@ -37,6 +37,13 @@ Kolonat: `Fondi_limit`, `Vlera_e_fituesit`, `Vlera_e_fituesit_ne_lidhjen_e_kontr
 
 Shkalla midis shumës më të madhe reale (~39 miliardë) dhe vlerave "35,000 miliardë" (të njohura tashmë si të pamundura te Faza I, `docs/values_winners.md`) është ~900×, pra **100 miliardë lekë** (~1 miliard euro) e ndan qartë njërën grup nga tjetri, pa prekur asnjë shumë reale, pavarësisht sa e madhe. Të njëjtin prag (me kuptim: kohëzgjatje negative ose mbi 10 vjet) e përdor edhe për kohën.
 
+**Shtesë, për konsistencë me seksionin 4.5 (Tringa):** detektimi multivariant zbuloi se `Vlera_e_fituesit` **≥100 herë** ose **≤1/100** e `Fondi_limit` është gabim njësie/decimali (shih arsyetimin te 4.5), jo thjesht shumë e rrallë e vërtetë. Pa këtë rregull, 5,984 procedura do të dilnin "e vërtetë por e rrallë" te kjo pjesë, ndërsa "gabim" te pjesa e Tringës — dy pjesët do të mospërputheshin për të njëjtat procedura. Prandaj `Fondi_limit`/`Vlera_e_fituesit` tani përdorin të njëjtin rregull (`SCALE_ERROR_FACTOR = 100`), plus vlerat ≤ 1 lek (tashmë "logjikisht të pamundura" te Faza I):
+
+| Kolona | gabim (para shtesës) | gabim (pas shtesës) |
+|---|---|---|
+| `Fondi_limit` | 0 | 5,985 |
+| `Vlera_e_fituesit` | 1 | 5,993 |
+
 ### 2.2 Kontrolli i 26,749 rasteve: vlera e kontratës ≠ vlera e fituesit
 
 Raporti `ratio = vlera_kontrate / vlera_fituese` mbi 51,503 rastet kur të dyja ekzistojnë tregon një model shumë të pastër:
@@ -53,6 +60,18 @@ Pothuajse të gjitha rastet janë raporti **1.0** (pa ndryshim) ose **1.2** (+20
 ### 2.3 Kontrolli i 13 publikimeve të vonuara
 
 Rillogaritur drejt nga dataset-i final (jo nga lista e para-pastrimit): përputhet saktësisht me `docs/time_integration.md` (223 mbeten pas pastrimit, 210 janar–shkurt normale + **13** me vonesë më të madhe). Lista e plotë me ditët e vonesës: [`late_publications_phase2.csv`](../reports/outliers/late_publications_phase2.csv).
+
+### 2.4 Transformimi i `kursimi` dhe `kursimi_pct`
+
+Faza I i la këto dy kolona të patransformuara, sepse `kursimi_pct` shkon deri në **-8.75 miliardë%** — jo prej mbishpenzimeve të mëdha reale, por prej një `Fondi_limit` thuajse zero (p.sh. 7 lekë) që e bën përqindjen artificialisht gjigante. Verifikuar me të dhënat: `kursimi_pct` nuk e kalon kurrë **+100%** (kur fituesi = 0), prandaj çdo vlerë përtej **-1000%** (≈10× fondin, ende brenda mbishpenzimeve që Faza I i mbajti qëllimisht) trajtohet si gabim, njësoj si rastet me `Fondi_limit`/`Vlera_e_fituesit` "gabim" (2.1, duke përfshirë tani gabimin e shkallës ×100).
+
+| Kontrolli | Procedura |
+|---|---|
+| `kursimi`/`kursimi_pct` me vlerë | 201,837 |
+| Nga këto, të pamundura (shih më sipër) | 6,180 |
+| Transformuar | 195,665 |
+
+**Si:** `kursimi` dhe `kursimi_pct` mund të jenë negative (fitues mbi fond), ndaj nuk përdoret `log(1+x)` (kërkon x ≥ 0, siç e dokumenton `src.common.transform.log_transform`) por **log i shenjuar**: `sign(x) · log(1 + |x|)` (`signed_log_transform`), pastaj min-max dhe z-score, njësoj si për shumat. Rezultati: asimetria (skew) bie nga 75 në -2.75 (`kursimi`) dhe nga -16.6 në -1.1 (`kursimi_pct`). Kolonat origjinale `kursimi`/`kursimi_pct` nuk ndryshohen; rreshtat e pamundur marrin `NaN` te kolonat e reja dhe shënohen te `kursimi_impossible`. Raportet: [`savings_transformation_counts.csv`](../reports/outliers/savings_transformation_counts.csv), [`savings_transformation_summary.csv`](../reports/outliers/savings_transformation_summary.csv).
 
 ## 3. Si vazhdon Tringa
 

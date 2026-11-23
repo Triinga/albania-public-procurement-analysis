@@ -1,12 +1,12 @@
 column,outlier_status,procedures
-Fondi_limit,gabim,0
-Fondi_limit,e vërtetë por e rrallë,13714
-Fondi_limit,e pasigurt,9787
-Fondi_limit,(nuk është përjashtues),254263
-Vlera_e_fituesit,gabim,1
-Vlera_e_fituesit,e vërtetë por e rrallë,10789
-Vlera_e_fituesit,e pasigurt,7363
-Vlera_e_fituesit,(nuk është përjashtues),259611
+Fondi_limit,gabim,5985
+Fondi_limit,e vërtetë por e rrallë,11697
+Fondi_limit,e pasigurt,9556
+Fondi_limit,(nuk është përjashtues),250526
+Vlera_e_fituesit,gabim,5993
+Vlera_e_fituesit,e vërtetë por e rrallë,6504
+Vlera_e_fituesit,e pasigurt,7302
+Vlera_e_fituesit,(nuk është përjashtues),257965
 Vlera_e_fituesit_ne_lidhjen_e_kontrates,gabim,1
 Vlera_e_fituesit_ne_lidhjen_e_kontrates,e vërtetë por e rrallë,2690
 Vlera_e_fituesit_ne_lidhjen_e_kontrates,e pasigurt,1102
