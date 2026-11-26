@@ -1,0 +1,8 @@
+parametri,vlera
+Synimi (klasa),single_bidder
+Ndarja trajnim/test,"80/20, e shtresëzuar"
+ADASYN n_neighbors,5
+random_state,42
+Kolona pas one-hot,73
+Shembuj sintetikë të krijuar,163272
+Modeli,LogisticRegression(max_iter=1000)

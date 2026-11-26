@@ -1,0 +1,15 @@
+veti,lloji
+Fondi_limit_log,numerike
+cpv_count,numerike
+ditet_publikim_hapje,numerike
+kohezgjatja_e_tenderit,numerike
+muaji_publikimit,numerike
+year,numerike
+Fondi_limit_missing,binare
+is_framework_agreement,binare
+periudhe_parazgjedhore,binare
+gjate_covid,binare
+publikim_ne_dhjetor,binare
+Lloji_i_procedures,kategorike (one-hot)
+Tipi_i_kontrates,kategorike (one-hot)
+primary_cpv_division,kategorike (one-hot)
